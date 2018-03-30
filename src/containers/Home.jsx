@@ -18,7 +18,7 @@ export default class Home extends PureComponent {
     return (
       <div className={styles[`root`]} ref={el => this.rootNode = el}>
         <Header t={t}/>
-        <canvas ref={el => this.canvas = el }/>
+        <canvas className={styles[`canvas`]} ref={el => this.canvas = el }/>
         <Footer t={t} i18n={i18n}/>
       </div>
     );
