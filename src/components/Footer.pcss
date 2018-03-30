@@ -1,0 +1,22 @@
+.root {
+  -post-align: bottom left fixed;
+  -post-padding: 0 5%;
+  -post-size: 100% 50px;
+  -post-box: default left center;
+  z-index: 10;
+}
+
+.nav {
+  flex-grow: 1;
+}
+
+.github-button {
+  -post-size: 20px;
+  -post-transition: all .2s ease-out;
+  background: url(@/assets/images/github-icon.svg) center / 100% no-repeat;
+  display: block;
+
+  &:hover {
+    opacity: .6;
+  }
+}

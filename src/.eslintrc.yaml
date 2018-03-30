@@ -1,0 +1,5 @@
+env:
+  browser: true
+globals:
+  $APP_CONFIG: true
+  $TRANSLATIONS: true

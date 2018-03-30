@@ -1,0 +1,10 @@
+{
+  "hello": "Hello, world!",
+  "description": "This is an experimental React static app starter kit.",
+  "home": "Home",
+  "about": "About",
+  "not-found": "This page does not exist",
+  "about-title": "Just some random names fetched from the Internet",
+  "en": "EN",
+  "jp": "日"
+}
