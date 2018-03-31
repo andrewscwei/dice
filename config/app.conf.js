@@ -3,6 +3,16 @@
  */
 
 module.exports = {
+  // App preferences.
+  preferences: {
+    labelColor: 0xaaaaaa,
+    diceColor: 0x202020,
+    scale: 50,
+    ambientLightColor: 0xf0f5fb,
+    spotLightColor: 0xefdfd5,
+    deskColor: 0xdfdfdf
+  },
+
   // HTML metadata.
   meta: {
     // Title of the app.
@@ -20,12 +30,6 @@ module.exports = {
 
   // Port.
   port: process.env.PORT || 8080,
-
-  // Force redirects to HTTPS.
-  forceSSL: process.env.FORCE_SSL || false,
-
-  // Determines whether SSR is enabled.
-  ssrEnabled: process.env.NODE_ENV !== `development`,
 
   // Supported locales. First locale is the default locale.
   locales: [`en`],
