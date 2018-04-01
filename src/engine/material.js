@@ -6,7 +6,8 @@ const MATERIAL_OPTIONS = {
   specular: 0x111111,
   color: 0xf0f0f0,
   // color: 0x1d2f31,
-  shininess: 6
+  shininess: 6,
+  shading: THREE.FlatShading
 };
 
 export function createDiceMaterials(faceLabels, size, margin) {

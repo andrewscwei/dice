@@ -258,8 +258,6 @@ export default class Scene extends Component {
   }
 
   animate(timestamp) {
-    this.log(`Animating for timestamp ${timestamp}`);
-
     let time = (new Date()).getTime();
     let timeDiff = (time - this.lastTime) / 1000;
     if (timeDiff > 3) timeDiff = this.props.frameRate;
