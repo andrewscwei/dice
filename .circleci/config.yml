@@ -4,8 +4,6 @@ jobs:
     working_directory: ~/repo
     docker:
       - image: node:8.9.4
-    environment:
-      - DOCKER_VERSION: 17.03.1-ce
     steps:
       - checkout
       - restore_cache:

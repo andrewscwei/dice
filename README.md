@@ -1,5 +1,7 @@
 # dice
 
+Demo is available [here](http://andrewscwei.github.io/dice).
+
 ## Usage
 
 ```sh
