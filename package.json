@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf build",
-    "build": "npm run clean && NODE_ENV=production webpack --colors --profile --config config/build.conf.js --display-error-details && react-snapshot",
+    "build": "npm run clean && NODE_ENV=production webpack --colors --profile --config config/build.conf.js --display-error-details",
     "test": "echo \"No tests yet\"",
     "dev": "NODE_ENV=development webpack-serve --config config/build.conf.js",
     "lint": "npm run lint:js && npm run lint:css",
