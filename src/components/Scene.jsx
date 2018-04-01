@@ -33,9 +33,10 @@ export default class Scene extends Component {
   // Desk instance.
   desk = null;
 
+  // References to all generated dice.
   diceCollection = [];
+
   useAdaptiveTimestep = true;
-  animationSelector = true;
 
   get diceBodyMaterial() { return new Cannon.Material(); }
 
