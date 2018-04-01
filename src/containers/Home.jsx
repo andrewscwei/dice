@@ -1,4 +1,5 @@
 import styles from '@/containers/Home.pcss';
+import Hammer from 'hammerjs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Scene from '@/components/Scene';
@@ -14,14 +15,16 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    window.addEventListener(`click`, this.onClick);
+    this.hammer = new Hammer(this.rootNode);
+    this.hammer.on(`tap`, this.onTap);
   }
 
   componentWillUnmount() {
-    window.removeEventListener(`click`, this.onClick);
+    this.hammer.remove(`tap`);
+    this.hammer = undefined;
   }
 
-  onClick = (event) => {
+  onTap = () => {
     this.scene.roll();
   }
 
