@@ -14,11 +14,11 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    window.addEventListener(`pointerup`, this.onClick);
+    window.addEventListener(`click`, this.onClick);
   }
 
   componentWillUnmount() {
-    window.removeEventListener(`pointerup`, this.onClick);
+    window.removeEventListener(`click`, this.onClick);
   }
 
   onClick = (event) => {
