@@ -7,7 +7,7 @@ module.exports = {
   preferences: {
     labelColor: 0xaaaaaa,
     diceColor: 0x202020,
-    scale: 70,
+    scale: 60,
     ambientLightColor: 0xf0f5fb,
     spotLightColor: 0xefdfd5,
     deskColor: 0xdfdfdf
