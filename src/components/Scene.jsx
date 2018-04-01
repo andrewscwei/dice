@@ -123,6 +123,7 @@ export default class Scene extends Component {
 
   componentDidMount() {
     this.rootNode.appendChild(this.renderer.domElement);
+
     this.lastTime = 0;
     this.reset();
   }
@@ -132,7 +133,7 @@ export default class Scene extends Component {
   }
 
   createLight() {
-    this.log(`Creating new light...`);
+    this.log(`Creating new light for rect ${JSON.stringify(this.rect)}...`);
 
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
@@ -154,7 +155,7 @@ export default class Scene extends Component {
   }
 
   createCamera() {
-    this.log(`Creating new camera...`);
+    this.log(`Creating new camera for rect ${JSON.stringify(this.rect)}...`);
 
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
@@ -167,7 +168,7 @@ export default class Scene extends Component {
   }
 
   createDesk() {
-    this.log(`Creating new desk...`);
+    this.log(`Creating new desk for rect ${JSON.stringify(this.rect)}...`);
 
     const desk = new THREE.Mesh(new THREE.PlaneGeometry(this.rect.width, this.rect.height, 1, 1), new THREE.MeshPhongMaterial({ color: this.props.deskColor }));
     desk.receiveShadow = true;

@@ -16,15 +16,23 @@ export default class Home extends PureComponent {
   componentDidMount() {
     this.hammer = new Hammer(this.scene.rootNode);
     this.hammer.on(`tap`, this.onTap);
+
+    window.addEventListener(`resize`, this.onResize);
   }
 
   componentWillUnmount() {
     this.hammer.remove(`tap`);
     this.hammer = undefined;
+
+    window.removeEventListener(`resize`, this.onResize);
   }
 
-  onTap = () => {
+  onTap = (event) => {
     this.scene.roll();
+  }
+
+  onResize = (event) => {
+    this.scene.reset();
   }
 
   render() {
