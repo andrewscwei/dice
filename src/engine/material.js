@@ -3,10 +3,10 @@ import { createTextTexture } from '@/engine/texture';
 import { toWebHexString } from '@/utils/palette';
 
 const MATERIAL_OPTIONS = {
-  specular: 0x172022,
+  specular: 0x111111,
   color: 0xf0f0f0,
-  shininess: 40,
-  shading: THREE.FlatShading
+  // color: 0x1d2f31,
+  shininess: 6
 };
 
 export function createDiceMaterials(faceLabels, size, margin) {
@@ -14,7 +14,7 @@ export function createDiceMaterials(faceLabels, size, margin) {
 
   for (var i = 0; i < faceLabels.length; i++) {
     materials.push(new THREE.MeshPhongMaterial({
-      map: createTextTexture(size, margin, faceLabels[i], toWebHexString($APP_CONFIG.preferences.labelColor), toWebHexString($APP_CONFIG.preferences.diceColor)),
+      map: createTextTexture(size, margin, faceLabels[i], toWebHexString(0xffffff), toWebHexString(0x202020)),
       ...MATERIAL_OPTIONS
     }));
   }

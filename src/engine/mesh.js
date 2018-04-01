@@ -1,6 +1,6 @@
 import * as geom from '@/engine/geom';
 import * as THREE from 'three';
-import { createDiceMaterials } from 'material';
+import { createDiceMaterials } from '@/engine/material';
 
 const FACE_LABELS = [` `, `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`, `12`, `13`, `14`, `15`, `16`, `17`, `18`, `19`, `20`];
 
@@ -19,6 +19,16 @@ const MATERIALS = {
   d12: new THREE.MeshFaceMaterial(createDiceMaterials(FACE_LABELS, $APP_CONFIG.preferences.scale / 2, 1.0)),
   d20: new THREE.MeshFaceMaterial(createDiceMaterials(FACE_LABELS, $APP_CONFIG.preferences.scale / 2, 1.0))
 };
+
+export function createDiceByType(type) {
+  switch (type) {
+  case `d8`: return createD8();
+  case `d10`: return createD10();
+  case `d12`: return createD12();
+  case `d20`: return createD20();
+  default: return createD6();
+  }
+}
 
 export function createD6() {
   return new THREE.Mesh(GEOMS.d6, MATERIALS.d6);

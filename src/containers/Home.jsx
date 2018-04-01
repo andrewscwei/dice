@@ -30,17 +30,20 @@ export default class Home extends PureComponent {
 
     return (
       <div className={styles[`root`]} ref={el => this.rootNode = el}>
-        <Header t={t}/>
+        {/* <Header t={t}/> */}
         <Scene
           className={styles[`canvas`]}
-          width={1024}
-          height={768}
+          frameRate={1/60}
           ambientLightColor={0xf0f5fb}
           spotLightColor={0xefdfd5}
-          deskColor={0xdfdfdf}
+          deskColor={0x111111}
+          diceMass={{ d6: 300, d8: 340, d10: 350, d12: 350, d20: 400 }}
+          diceInertia={{ d6: 13, d8: 10, d10: 9, d12: 8, d20: 6 }}
+          diceType={`d6`}
+          diceCount={5}
           ref={el => this.scene = el}
         />
-        <Footer t={t} i18n={i18n}/>
+        {/* <Footer t={t} i18n={i18n}/> */}
       </div>
     );
   }

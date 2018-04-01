@@ -136,7 +136,7 @@ export function createGeom(vertices, faces, radius, tab, af, chamfer) {
 
   let cg = chamferGeom(vectors, faces, chamfer);
   let geom = makeGeom(cg.vectors, cg.faces, radius, tab, af);
-  geom.cannon_shape = createShape(vectors, faces, radius);
+  geom.cannonShape = createShape(vectors, faces, radius);
 
   return geom;
 }
