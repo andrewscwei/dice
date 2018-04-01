@@ -1,7 +1,8 @@
 {
   "name": "dice",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Dice app",
+  "private": true,
   "keywords": [
     "dice",
     "3d"
@@ -11,7 +12,7 @@
     "clean": "rimraf build",
     "build": "npm run clean && NODE_ENV=production webpack --colors --profile --config config/build.conf.js --display-error-details",
     "test": "echo \"No tests yet\"",
-    "dev": "NODE_ENV=development webpack-serve --host 0.0.0.0 --open --config config/build.conf.js",
+    "dev": "NODE_ENV=development webpack-serve --open --config config/build.conf.js",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:fix": "npm run lint:js:fix && npm run lint:css:fix",
     "lint:js": "eslint . -f node_modules/eslint-friendly-formatter --ignore-path .gitignore --ext .jsx --ext .js",
@@ -54,6 +55,7 @@
     "postlude": "^0.4.0",
     "precss": "^3.1.2",
     "prop-types": "^15.6.1",
+    "raw-loader": "^0.5.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-i18next": "^7.5.1",

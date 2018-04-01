@@ -1,6 +1,5 @@
 import styles from '@/containers/Home.pcss';
 import Hammer from 'hammerjs';
-import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Scene from '@/components/Scene';
 import PropTypes from 'prop-types';
@@ -15,7 +14,7 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    this.hammer = new Hammer(this.rootNode);
+    this.hammer = new Hammer(this.scene.rootNode);
     this.hammer.on(`tap`, this.onTap);
   }
 
@@ -33,7 +32,6 @@ export default class Home extends PureComponent {
 
     return (
       <div className={styles[`root`]} ref={el => this.rootNode = el}>
-        {/* <Header t={t}/> */}
         <Scene
           className={styles[`canvas`]}
           frameRate={1/60}
@@ -46,7 +44,7 @@ export default class Home extends PureComponent {
           diceCount={5}
           ref={el => this.scene = el}
         />
-        {/* <Footer t={t} i18n={i18n}/> */}
+        <Footer t={t} i18n={i18n}/>
       </div>
     );
   }

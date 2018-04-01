@@ -11,6 +11,7 @@ export default class Footer extends PureComponent {
   render() {
     return (
       <footer className={styles[`root`]}>
+        <a className={styles[`monogram`]} href='https://www.andr.mu' dangerouslySetInnerHTML={{ __html: require(`!raw-loader!@/assets/images/mu.svg`) }}/>
         <nav className={styles[`nav`]}>
           <a className={styles[`github-button`]} href='https://github.com/andrewscwei/dice'/>
         </nav>
