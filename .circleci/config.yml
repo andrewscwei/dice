@@ -20,34 +20,6 @@ jobs:
           command: npm run build
       - store_artifacts:
           path: ~/repo/build
-      - deploy:
-          name: Deploy to GitHub pages
-          command: |
-            if [[ $(git describe --tags) =~ ^v[0-9]+(\.[0-9]+)+(-rc[0-9]+)?(-alpha[0-9]+)?$ ]]; then
-              if [ `git branch | grep gh-pages` ]
-              then
-                git branch -D gh-pages
-              fi
-              git checkout -b gh-pages
-
-              # Move generated files to root and delete everything else.
-              find . -maxdepth 1 ! -name '.' ! -name '..' ! -name 'build' ! -name '.git' ! -name '.gitignore' -exec rm -rf {} \;
-              mv build/* .
-              rm -R build/
-
-              # Push to gh-pages.
-              ORIGIN_URL=`git config --get remote.origin.url`
-
-              git config user.name "$GITHUB_USERNAME"
-              git config user.email "$GITHUB_EMAIL"
-              git add -fA
-              git commit --allow-empty -m "$(git log -1 --pretty=%B) [ci skip]"
-              git push -f $ORIGIN_URL gh-pages
-
-              echo "Successfully published demo to GitHub pages"
-            else
-              echo "Skipping publish because this is not a release"
-            fi
 
 workflows:
   version: 2

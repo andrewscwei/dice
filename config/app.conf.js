@@ -37,7 +37,7 @@ module.exports = {
   // Config options specific to the `build` task.
   build: {
     // Public path of all loaded assets.
-    publicPath: process.env.PUBLIC_PATH || ``,
+    publicPath: process.env.PUBLIC_PATH || `/`,
 
     // Specifies whether the linter should run.
     linter: true,

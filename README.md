@@ -1,6 +1,6 @@
 # dice
 
-Demo is available [here](http://andrewscwei.github.io/dice).
+Demo is available [here](https://dice.andr.mu).
 
 ## Usage
 
