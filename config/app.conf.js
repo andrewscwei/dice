@@ -25,6 +25,9 @@ module.exports = {
     url: require(`../package.json`).homepage
   },
 
+  // Google Analytics ID (i.e. UA-XXXXXXXX-1)
+  ga: process.env.GOOGLE_ANALYTICS_ID,
+
   // Port.
   port: process.env.PORT || 8080,
 
