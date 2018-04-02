@@ -1,6 +1,6 @@
-# dice
+# dice [![CircleCI](https://circleci.com/gh/andrewscwei/dice.svg?style=svg&circle-token=2c1542f86f0dcc7f1f426e6849fc8d4e512ccce3)](https://circleci.com/gh/andrewscwei/dice)
 
-Demo is available [here](https://dice.andr.mu).
+Demo is available [here](http://dice.andr.mu).
 
 ## Usage
 
