@@ -9,12 +9,16 @@
   }
 }
 
-.close-button {
-  -post-align: top right absolute;
-  -post-size: 20px;
-  -post-edge: 40px 20px _ _;
-  -post-transition: opacity .2s ease-out;
-  background: transparent;
+.done-button {
+  -post-padding: 14px 24px;
+  -post-margin: 2em _ _;
+  -post-transition: background .2s ease-out;
+  background: #fff;
+  color: #000;
+  font-family: Roboto, sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 
   & svg {
     -post-size: 100%;
@@ -22,12 +26,12 @@
   }
 
   &:hover {
-    opacity: .6;
+    background: #ccc;
   }
 }
 
 .title {
-  -post-margin: _ _ 20px;
+  -post-margin: _ _ 80px;
   font-family: Roboto, sans-serif;
   font-size: 60px;
   color: rgba(#fff, .4);
@@ -36,9 +40,11 @@
 }
 
 .option {
+  -post-size: 200px auto;
   font-family: Roboto, sans-serif;
-  font-size: 26px;
+  font-size: 22px;
   color: #fff;
+  text-align: right;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -50,10 +56,21 @@
 
 .select {
   -post-box: default;
-  -post-padding: 5px 20px;
+  -post-size: 80px 40px;
   -post-margin: _ _ _ 20px;
+  -post-padding: _ 10px;
+  -post-transition: background .2s ease-out;
+  text-align: center;
   font-family: Roboto, sans-serif;
-  font-size: 20px;
+  font-size: 22px;
   background: #fff;
   border-radius: 0;
+
+  &:hover {
+    background: #ccc;
+  }
+}
+
+.actions {
+  -post-box: default;
 }

@@ -9,7 +9,7 @@ export default class Settings extends Component {
     t: PropTypes.func.isRequired,
     className: PropTypes.string,
     style: PropTypes.object,
-    onCloseButtonClick: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
     onChange: PropTypes.func,
     maxDiceCount: PropTypes.number.isRequired,
     defaultDiceType: PropTypes.string.isRequired,
@@ -38,11 +38,10 @@ export default class Settings extends Component {
   }
 
   render() {
-    const { t, className, style, onCloseButtonClick, maxDiceCount } = this.props;
+    const { t, className, style, onSave, maxDiceCount } = this.props;
 
     return (
       <div className={classNames(styles[`root`], className)} style={{ ...style || {} }}>
-        <button className={styles[`close-button`]} onClick={(event) => onCloseButtonClick() }dangerouslySetInnerHTML={{ __html: require(`!raw-loader!@/assets/images/close-icon.svg`) }}/>
         <main>
           <h1 className={styles[`title`]}>{t(`settings`)}</h1>
           <div className={styles[`row`]}>
@@ -60,6 +59,9 @@ export default class Settings extends Component {
                 <option value={i+1} key={i}>{i+1}</option>
               ))}
             </select>
+          </div>
+          <div className={styles[`actions`]}>
+            <button className={styles[`done-button`]} onClick={(event) => onSave()}>{t(`done`)}</button>
           </div>
         </main>
       </div>

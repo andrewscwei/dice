@@ -3,6 +3,13 @@
  */
 
 module.exports = {
+  // App preferences.
+  preferences: {
+    defaultDiceType: `d6`,
+    defaultDiceCount: 5,
+    maxDiceCount: 23
+  },
+
   // HTML metadata.
   meta: {
     // Title of the app.

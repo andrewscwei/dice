@@ -1,6 +1,5 @@
 import classNames from 'classnames';
-import styles from '@/containers/Home.pcss';
-import DiceType from '@/enums/DiceType';
+import styles from './Home.pcss';
 import Footer from '@/components/Footer';
 import Hammer from 'hammerjs';
 import PropTypes from 'prop-types';
@@ -21,9 +20,9 @@ export default class Home extends PureComponent {
     super(props);
 
     this.state = {
-      showSettings: false,
-      diceType: DiceType.D6,
-      diceCount: 5
+      areSettingsVisible: false,
+      diceType: $APP_CONFIG.preferences.defaultDiceType,
+      diceCount: $APP_CONFIG.preferences.defaultDiceCount
     };
   }
 
@@ -32,16 +31,18 @@ export default class Home extends PureComponent {
     this.hammer.on(`tap`, this.rollDice);
 
     this.shake = new Shake({
-      threshold: 6
+      threshold: 5
     });
 
     this.shake.start();
 
+    document.body.addEventListener(`touchmove`, this.onTouchMove);
     window.addEventListener(`resize`, this.onResize);
     window.addEventListener(`shake`, this.rollDice);
   }
 
   componentWillUnmount() {
+    document.body.removeEventListener(`touchmove`, this.onTouchMove);
     window.removeEventListener(`shake`, this.rollDice);
     window.removeEventListener(`resize`, this.onResize);
 
@@ -53,19 +54,14 @@ export default class Home extends PureComponent {
   }
 
   openSettings = () => {
-    this.setState({ showSettings: true });
+    this.setState({ areSettingsVisible: true });
   }
 
   closeSettings = () => {
-    this.setState({ showSettings: false });
+    this.setState({ areSettingsVisible: false });
   }
 
-  rollDice = () => {
-    if (this.state.showSettings === true) return;
-    this.scene.roll();
-  }
-
-  onSettingsChange = () => {
+  updateSettings = () => {
     if (!this.settings) return;
 
     this.setState({
@@ -74,8 +70,17 @@ export default class Home extends PureComponent {
     });
   }
 
+  rollDice = () => {
+    if (this.state.areSettingsVisible === true) return;
+    this.scene.roll();
+  }
+
   onResize = (event) => {
     this.scene.reset();
+  }
+
+  onTouchMove = (event) => {
+    event.preventDefault();
   }
 
   render() {
@@ -89,8 +94,8 @@ export default class Home extends PureComponent {
           ambientLightColor={0xf0f5fb}
           spotLightColor={0xefdfd5}
           planeColor={0x111111}
-          diceScale={54}
           diceType={this.state.diceType}
+          diceScale={54}
           diceColor={0x202020}
           diceLabelColor={0xffffff}
           diceCount={this.state.diceCount}
@@ -98,12 +103,12 @@ export default class Home extends PureComponent {
         />
         <Footer onSettingsButtonClick={this.openSettings} t={t} i18n={i18n}/>
         <Settings
-          className={classNames(styles[`settings`], this.state.showSettings && styles[`settings--reveal`] )}
-          maxDiceCount={20}
-          onCloseButtonClick={this.closeSettings}
-          onChange={this.onSettingsChange}
-          defaultDiceType={DiceType.D6}
-          defaultDiceCount={5}
+          className={classNames(styles[`settings`], this.state.areSettingsVisible && styles[`settings--reveal`] )}
+          onSave={this.closeSettings}
+          onChange={this.updateSettings}
+          defaultDiceType={$APP_CONFIG.preferences.defaultDiceType}
+          defaultDiceCount={$APP_CONFIG.preferences.defaultDiceCount}
+          maxDiceCount={$APP_CONFIG.preferences.maxDiceCount}
           ref={el => this.settings = el}
           t={t}
         />

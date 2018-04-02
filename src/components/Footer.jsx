@@ -1,4 +1,4 @@
-import styles from '@/components/Footer.pcss';
+import styles from './Footer.pcss';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 

@@ -10,6 +10,9 @@ import React, { Component } from 'react';
 import { createDiceByType } from '@/engine/mesh';
 import { rng, randomVectorFromVector } from '@/utils/random';
 
+const BOUNDS_SCALE_X = 1.0;
+const BOUNDS_SCALE_Y = 0.8;
+
 const DICE_FACE_RANGE = {
   [DiceType.D6]: [1, 6],
   [DiceType.D8]: [1, 8],
@@ -80,7 +83,7 @@ export default class Scene extends Component {
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
 
-    const deskBodyMaterial = new Cannon.Material();
+    const planeBodyMaterial = new Cannon.Material();
     const barrierBodyMaterial = new Cannon.Material();
     const diceBodyMaterial = new Cannon.Material();
 
@@ -89,29 +92,29 @@ export default class Scene extends Component {
     this._world.broadphase = new Cannon.NaiveBroadphase();
     this._world.solver.iterations = 16;
 
-    this._world.addContactMaterial(new Cannon.ContactMaterial(deskBodyMaterial, diceBodyMaterial, 0, 0.5));
+    this._world.addContactMaterial(new Cannon.ContactMaterial(planeBodyMaterial, diceBodyMaterial, 0, 0.5));
     this._world.addContactMaterial(new Cannon.ContactMaterial(barrierBodyMaterial, diceBodyMaterial, 0, 1.0));
     this._world.addContactMaterial(new Cannon.ContactMaterial(diceBodyMaterial, diceBodyMaterial, 0, 0.5));
-    this._world.add(new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: deskBodyMaterial }));
+    this._world.add(new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: planeBodyMaterial }));
 
     const b1 = new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: barrierBodyMaterial });
     b1.quaternion.setFromAxisAngle(new Cannon.Vec3(1, 0, 0), Math.PI / 2);
-    b1.position.set(0, h * 0.93, 0);
+    b1.position.set(0, h * BOUNDS_SCALE_Y, 0);
     this._world.add(b1);
 
     const b2 = new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: barrierBodyMaterial });
     b2.quaternion.setFromAxisAngle(new Cannon.Vec3(1, 0, 0), -Math.PI / 2);
-    b2.position.set(0, -h * 0.93, 0);
+    b2.position.set(0, -h * BOUNDS_SCALE_Y, 0);
     this._world.add(b2);
 
     const b3 = new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: barrierBodyMaterial });
     b3.quaternion.setFromAxisAngle(new Cannon.Vec3(0, 1, 0), -Math.PI / 2);
-    b3.position.set(w * 0.93, 0, 0);
+    b3.position.set(w * BOUNDS_SCALE_X, 0, 0);
     this._world.add(b3);
 
     const b4 = new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: barrierBodyMaterial });
     b4.quaternion.setFromAxisAngle(new Cannon.Vec3(0, 1, 0), Math.PI / 2);
-    b4.position.set(-w * 0.93, 0, 0);
+    b4.position.set(-w * BOUNDS_SCALE_X, 0, 0);
     this._world.add(b4);
 
     return this._world;
@@ -163,7 +166,7 @@ export default class Scene extends Component {
     light.shadow.camera.far = t * 5;
     light.shadow.camera.fov = 20;
     light.shadow.bias = 0.002;
-    light.shadow.mapSize.width = 515;
+    light.shadow.mapSize.width = 512;
     light.shadow.mapSize.height = 512;
 
     return light;
