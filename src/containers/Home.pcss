@@ -10,3 +10,17 @@
   -post-size: 100%;
   cursor: default;
 }
+
+.settings {
+  -post-size: 100vw 100vh;
+  -post-align: top left fixed;
+  -post-transition: all .2s ease-out;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+
+  &--reveal {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

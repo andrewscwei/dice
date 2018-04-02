@@ -1,0 +1,59 @@
+.root {
+  -post-padding: 10%;
+  -post-box: default;
+  background: rgba(#111, .9);
+
+  & main {
+    -post-size: 100% auto;
+    -post-max-size: 700px _;
+  }
+}
+
+.close-button {
+  -post-align: top right absolute;
+  -post-size: 20px;
+  -post-edge: 40px 20px _ _;
+  -post-transition: opacity .2s ease-out;
+  background: transparent;
+
+  & svg {
+    -post-size: 100%;
+    fill: #fff;
+  }
+
+  &:hover {
+    opacity: .6;
+  }
+}
+
+.title {
+  -post-margin: _ _ 20px;
+  font-family: Roboto, sans-serif;
+  font-size: 60px;
+  color: rgba(#fff, .4);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.option {
+  font-family: Roboto, sans-serif;
+  font-size: 26px;
+  color: #fff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.row {
+  -post-box: default left center;
+  -post-margin: 10px _;
+}
+
+.select {
+  -post-box: default;
+  -post-padding: 5px 20px;
+  -post-margin: _ _ _ 20px;
+  font-family: Roboto, sans-serif;
+  font-size: 20px;
+  background: #fff;
+  border-radius: 0;
+}

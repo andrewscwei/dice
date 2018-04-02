@@ -26,11 +26,16 @@
   }
 }
 
-.github-button {
+.button {
   -post-size: 20px;
   -post-transition: all .2s ease-out;
-  background: url(@/assets/images/github-icon.svg) center / 100% no-repeat;
+  -post-space-between: 10px;
+  background: transparent;
   display: block;
+
+  & svg {
+    -post-size: 100%;
+  }
 
   &:hover {
     opacity: .6;

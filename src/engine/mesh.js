@@ -21,24 +21,24 @@ export function createD6(scale, diceColor, labelColor) {
 
 export function createD8(scale, diceColor, labelColor) {
   const geoms = geom.createD8Geom(scale);
-  const materials = material.createD8Materials(scale / 2, diceColor, labelColor);
+  const materials = material.createDiceNumberedMaterials(scale / 2, diceColor, labelColor);
   return new THREE.Mesh(geoms, materials);
 }
 
 export function createD10(scale, diceColor, labelColor) {
   const geoms = geom.createD10Geom(scale);
-  const materials = material.createD10Materials(scale / 2, diceColor, labelColor);
+  const materials = material.createDiceNumberedMaterials(scale / 2, diceColor, labelColor);
   return new THREE.Mesh(geoms, materials);
 }
 
 export function createD12(scale, diceColor, labelColor) {
   const geoms = geom.createD12Geom(scale);
-  const materials = material.createD12Materials(scale / 2, diceColor, labelColor);
+  const materials = material.createDiceNumberedMaterials(scale / 2, diceColor, labelColor);
   return new THREE.Mesh(geoms, materials);
 }
 
 export function createD20(scale, diceColor, labelColor) {
   const geoms = geom.createD20Geom(scale);
-  const materials = material.createD20Materials(scale / 2, diceColor, labelColor);
+  const materials = material.createDiceNumberedMaterials(scale / 2, diceColor, labelColor);
   return new THREE.Mesh(geoms, materials);
 }
