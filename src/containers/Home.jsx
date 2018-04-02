@@ -27,14 +27,14 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    this.hammer = new Hammer(this.scene.rootNode);
-    this.hammer.on(`tap`, this.rollDice);
+    this.touchHandler = new Hammer(this.scene.rootNode);
+    this.touchHandler.on(`tap`, this.rollDice);
 
-    this.shake = new Shake({
+    this.shakeHandler = new Shake({
       threshold: 5
     });
 
-    this.shake.start();
+    this.shakeHandler.start();
 
     document.body.addEventListener(`touchmove`, this.onTouchMove);
     window.addEventListener(`resize`, this.onResize);
@@ -46,11 +46,11 @@ export default class Home extends PureComponent {
     window.removeEventListener(`shake`, this.rollDice);
     window.removeEventListener(`resize`, this.onResize);
 
-    this.shake.stop();
-    this.shake = undefined;
+    this.shakeHandler.stop();
+    this.shakeHandler = undefined;
 
-    this.hammer.remove(`tap`);
-    this.hammer = undefined;
+    this.touchHandler.remove(`tap`);
+    this.touchHandler = undefined;
   }
 
   openSettings = () => {
@@ -89,7 +89,7 @@ export default class Home extends PureComponent {
     return (
       <div className={styles[`root`]} ref={el => this.rootNode = el}>
         <Scene
-          className={styles[`canvas`]}
+          className={styles[`scene`]}
           frameRate={1/60}
           ambientLightColor={0xf0f5fb}
           spotLightColor={0xefdfd5}
@@ -101,7 +101,7 @@ export default class Home extends PureComponent {
           diceCount={this.state.diceCount}
           ref={el => this.scene = el}
         />
-        <Footer onSettingsButtonClick={this.openSettings} t={t} i18n={i18n}/>
+        <Footer className={styles[`footer`]} onSettingsButtonClick={this.openSettings} t={t} i18n={i18n}/>
         <Settings
           className={classNames(styles[`settings`], this.state.areSettingsVisible && styles[`settings--reveal`] )}
           onSave={this.closeSettings}

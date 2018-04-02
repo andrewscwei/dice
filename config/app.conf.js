@@ -5,6 +5,7 @@
 module.exports = {
   // App preferences.
   preferences: {
+    // Default dice type.
     defaultDiceType: `d6`,
     defaultDiceCount: 5,
     maxDiceCount: 23
