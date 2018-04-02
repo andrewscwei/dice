@@ -46,7 +46,7 @@ export default class Home extends PureComponent {
           frameRate={1/60}
           ambientLightColor={0xf0f5fb}
           spotLightColor={0xefdfd5}
-          deskColor={0x111111}
+          planeColor={0x111111}
           diceType={DiceType.D6}
           diceCount={5}
           ref={el => this.scene = el}

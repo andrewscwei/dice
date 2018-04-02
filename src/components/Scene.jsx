@@ -10,9 +10,29 @@ import React, { Component } from 'react';
 import { createDiceByType } from '@/engine/mesh';
 import { rng, randomVectorFromVector } from '@/utils/random';
 
-const DICE_FACE_RANGE = { [DiceType.D6]: [1, 6], [DiceType.D8]: [1, 8], [DiceType.D10]: [0, 9], [DiceType.D12]: [1, 12], [DiceType.D20]: [1, 20] };
-const DICE_MASS = { [DiceType.D6]: 300, [DiceType.D8]: 340, [DiceType.D10]: 350, [DiceType.D12]: 350, [DiceType.D20]: 400 };
-const DICE_INERTIA= { [DiceType.D6]: 13, [DiceType.D8]: 10, [DiceType.D10]: 9, [DiceType.D12]: 8, [DiceType.D20]: 6 };
+const DICE_FACE_RANGE = {
+  [DiceType.D6]: [1, 6],
+  [DiceType.D8]: [1, 8],
+  [DiceType.D10]: [0, 9],
+  [DiceType.D12]: [1, 12],
+  [DiceType.D20]: [1, 20]
+};
+
+const DICE_MASS = {
+  [DiceType.D6]: 300,
+  [DiceType.D8]: 340,
+  [DiceType.D10]: 350,
+  [DiceType.D12]: 350,
+  [DiceType.D20]: 400
+};
+
+const DICE_INERTIA = {
+  [DiceType.D6]: 13,
+  [DiceType.D8]: 10,
+  [DiceType.D10]: 9,
+  [DiceType.D12]: 8,
+  [DiceType.D20]: 6
+};
 
 @logging(`Scene`)
 export default class Scene extends Component {
@@ -24,7 +44,7 @@ export default class Scene extends Component {
     diceCount: PropTypes.number.isRequired,
     ambientLightColor: PropTypes.number.isRequired,
     spotLightColor: PropTypes.number.isRequired,
-    deskColor: PropTypes.number.isRequired
+    planeColor: PropTypes.number.isRequired
   }
 
   // Light instance.
@@ -34,7 +54,7 @@ export default class Scene extends Component {
   camera = null;
 
   // Desk instance.
-  desk = null;
+  plane = null;
 
   // References to all generated dice.
   diceCollection = [];
@@ -98,7 +118,7 @@ export default class Scene extends Component {
     if (this._renderer) return this._renderer;
     this._renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer({ antialias: true });
     this._renderer.shadowMap.enabled = true;
-    this._renderer.shadowMap.type = THREE.PCFShadowMap;
+    this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this._renderer.setClearColor(0xffffff, 1);
     return this._renderer;
   }
@@ -129,19 +149,19 @@ export default class Scene extends Component {
 
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
-    const mw = Math.max(w, h);
+    const t = Math.max(w, h);
 
     const light = new THREE.SpotLight(this.props.spotLightColor, 2.0);
-    light.position.set(-mw / 2, mw / 2, mw * 2);
+    light.position.set(-t / 2, t / 2, t * 3);
     light.target.position.set(0, 0, 0);
-    light.distance = mw * 5;
+    light.distance = t * 5;
     light.castShadow = true;
-    light.shadow.camera.near = mw / 10;
-    light.shadow.camera.far = mw * 5;
-    light.shadow.camera.fov = 50;
-    light.shadow.bias = 0.001;
-    light.shadow.mapSize.width = 1024;
-    light.shadow.mapSize.height = 1024;
+    light.shadow.camera.near = t / 10;
+    light.shadow.camera.far = t * 5;
+    light.shadow.camera.fov = 20;
+    light.shadow.bias = 0.002;
+    light.shadow.mapSize.width = 515;
+    light.shadow.mapSize.height = 512;
 
     return light;
   }
@@ -159,13 +179,13 @@ export default class Scene extends Component {
     return camera;
   }
 
-  createDesk() {
-    this.log(`Creating new desk for rect ${JSON.stringify(this.rect)}...`);
+  createPlane() {
+    this.log(`Creating new plane for rect ${JSON.stringify(this.rect)}...`);
 
-    const desk = new THREE.Mesh(new THREE.PlaneGeometry(this.rect.width, this.rect.height, 1, 1), new THREE.MeshPhongMaterial({ color: this.props.deskColor }));
-    desk.receiveShadow = true;
+    const plane = new THREE.Mesh(new THREE.PlaneGeometry(this.rect.width, this.rect.height, 1, 1), new THREE.MeshPhongMaterial({ color: this.props.planeColor }));
+    plane.receiveShadow = true;
 
-    return desk;
+    return plane;
   }
 
   createDie({ position, velocity, angle, axis }) {
@@ -282,9 +302,9 @@ export default class Scene extends Component {
     this.light = this.createLight();
     this.scene.add(this.light);
 
-    if (this.desk) this.scene.remove(this.desk);
-    this.desk = this.createDesk();
-    this.scene.add(this.desk);
+    if (this.plane) this.scene.remove(this.plane);
+    this.plane = this.createPlane();
+    this.scene.add(this.plane);
 
     this.renderer.render(this.scene, this.camera);
   }
@@ -378,6 +398,7 @@ export default class Scene extends Component {
   onRollComplete() {
     const result = this.getDiceValues();
     this.log(`Done rolling, showing result:`, result);
+    dispatchEvent(new Event(`complete`));
   }
 
   playGameboy(die, value, result) {

@@ -10,7 +10,7 @@ module.exports = {
     scale: 60,
     ambientLightColor: 0xf0f5fb,
     spotLightColor: 0xefdfd5,
-    deskColor: 0xdfdfdf
+    planeColor: 0xdfdfdf
   },
 
   // HTML metadata.
