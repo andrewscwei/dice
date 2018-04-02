@@ -7,7 +7,14 @@ module.exports = {
   preferences: {
     // Default dice type.
     defaultDiceType: `d6`,
+
+    // Default number of dice.
     defaultDiceCount: 5,
+
+    // Default roll method.
+    defaultRollMethod: `tapAndShake`,
+
+    // Maximum number of dice allowed.
     maxDiceCount: 23
   },
 

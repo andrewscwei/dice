@@ -7,5 +7,9 @@
   "d10": "D10",
   "d12": "D12",
   "d20": "D20",
-  "done": "Done"
+  "done": "Done",
+  "tap": "Tap Only",
+  "shake": "Shake Only",
+  "tapAndShake": "Tap & Shake",
+  "how-to-roll": "Roll By"
 }

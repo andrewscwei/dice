@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import styles from './Settings.pcss';
 import DiceType from '@/enums/DiceType';
 import PropTypes from 'prop-types';
+import RollMethod from '@/enums/RollMethod';
 import React, { Component } from 'react';
 
 export default class Settings extends Component {
@@ -13,7 +14,8 @@ export default class Settings extends Component {
     onChange: PropTypes.func,
     maxDiceCount: PropTypes.number.isRequired,
     defaultDiceType: PropTypes.string.isRequired,
-    defaultDiceCount: PropTypes.number.isRequired
+    defaultDiceCount: PropTypes.number.isRequired,
+    defaultRollMethod: PropTypes.string.isRequired
   }
 
   constructor(props) {
@@ -21,7 +23,8 @@ export default class Settings extends Component {
 
     this.state = {
       diceType: this.props.defaultDiceType,
-      diceCount: this.props.defaultDiceCount
+      diceCount: this.props.defaultDiceCount,
+      rollMethod: this.props.defaultRollMethod
     };
   }
 
@@ -35,6 +38,10 @@ export default class Settings extends Component {
 
   onDiceCountChange = (event) => {
     this.setState({ diceCount: Number(event.target.value) });
+  }
+
+  onRollMethodChange = (event) => {
+    this.setState({ rollMethod: event.target.value });
   }
 
   render() {
@@ -55,8 +62,17 @@ export default class Settings extends Component {
           <div className={styles[`row`]}>
             <h2 className={styles[`option`]}>{t(`dice-count`)}</h2>
             <select className={styles[`select`]} onChange={this.onDiceCountChange} value={this.state.diceCount}>
+              <option value={0} key={0}>{0}</option>
               { Array.apply(null, { length: maxDiceCount }).map((v, i) => (
-                <option value={i+1} key={i}>{i+1}</option>
+                <option value={i+1} key={i+1}>{i+1}</option>
+              ))}
+            </select>
+          </div>
+          <div className={styles[`row`]}>
+            <h2 className={styles[`option`]}>{t(`how-to-roll`)}</h2>
+            <select className={styles[`select`]} onChange={this.onRollMethodChange} value={this.state.rollMethod}>
+              { Object.keys(RollMethod).map(v => (
+                <option value={RollMethod[v]} key={v}>{t(RollMethod[v])}</option>
               ))}
             </select>
           </div>

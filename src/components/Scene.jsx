@@ -111,7 +111,7 @@ export default class Scene extends Component {
     this._world.broadphase = new CANNON.NaiveBroadphase();
     this._world.solver.step = 20;
 
-    this._world.addContactMaterial(new CANNON.ContactMaterial(this.planeMaterial, this.diceMaterial, 0, 0.5));
+    this._world.addContactMaterial(new CANNON.ContactMaterial(this.planeMaterial, this.diceMaterial, 0, 1.0));
     this._world.addContactMaterial(new CANNON.ContactMaterial(this.wallMaterial, this.diceMaterial, 0, 1.0));
     this._world.addContactMaterial(new CANNON.ContactMaterial(this.diceMaterial, this.diceMaterial, 0, 0.5));
     this._world.add(new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.planeMaterial }));

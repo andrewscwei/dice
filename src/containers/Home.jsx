@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import Hammer from 'hammerjs';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import RollMethod from '@/enums/RollMethod';
 import Scene from '@/components/Scene';
 import Settings from '@/components/Settings';
 import Shake from 'shake.js';
@@ -22,13 +23,14 @@ export default class Home extends PureComponent {
     this.state = {
       areSettingsVisible: false,
       diceType: $APP_CONFIG.preferences.defaultDiceType,
-      diceCount: $APP_CONFIG.preferences.defaultDiceCount
+      diceCount: $APP_CONFIG.preferences.defaultDiceCount,
+      rollMethod: $APP_CONFIG.preferences.defaultRollMethod
     };
   }
 
   componentDidMount() {
     this.touchHandler = new Hammer(this.scene.rootNode);
-    this.touchHandler.on(`tap`, this.rollDice);
+    this.touchHandler.on(`tap`, this.onTap);
 
     this.shakeHandler = new Shake({
       threshold: 5,
@@ -39,12 +41,12 @@ export default class Home extends PureComponent {
 
     document.body.addEventListener(`touchmove`, this.onTouchMove);
     window.addEventListener(`resize`, this.onResize);
-    window.addEventListener(`shake`, this.rollDice);
+    window.addEventListener(`shake`, this.onShake);
   }
 
   componentWillUnmount() {
     document.body.removeEventListener(`touchmove`, this.onTouchMove);
-    window.removeEventListener(`shake`, this.rollDice);
+    window.removeEventListener(`shake`, this.onShake);
     window.removeEventListener(`resize`, this.onResize);
 
     this.shakeHandler.stop();
@@ -67,13 +69,9 @@ export default class Home extends PureComponent {
 
     this.setState({
       diceType: this.settings.state.diceType,
-      diceCount: this.settings.state.diceCount
+      diceCount: this.settings.state.diceCount,
+      rollMethod: this.settings.state.rollMethod
     });
-  }
-
-  rollDice = () => {
-    if (this.state.areSettingsVisible === true) return;
-    this.scene.roll(undefined, undefined, window.__GAMEBOY__);
   }
 
   onResize = (event) => {
@@ -82,6 +80,18 @@ export default class Home extends PureComponent {
 
   onTouchMove = (event) => {
     event.preventDefault();
+  }
+
+  onShake = (event) => {
+    if (this.state.areSettingsVisible === true) return;
+    if (this.state.rollMethod === RollMethod.TAP) return;
+    this.scene.roll(undefined, undefined, window.__GAMEBOY__);
+  }
+
+  onTap = (event) => {
+    if (this.state.areSettingsVisible === true) return;
+    if (this.state.rollMethod === RollMethod.SHAKE) return;
+    this.scene.roll(undefined, undefined, window.__GAMEBOY__);
   }
 
   render() {
@@ -100,7 +110,7 @@ export default class Home extends PureComponent {
           diceLabelColor={0xffffff}
           diceType={this.state.diceType}
           diceCount={this.state.diceCount}
-          shakeIntensity={200}
+          shakeIntensity={150}
           ref={el => this.scene = el}
         />
         <Footer className={styles[`footer`]} onSettingsButtonClick={this.openSettings} t={t} i18n={i18n}/>
@@ -110,6 +120,7 @@ export default class Home extends PureComponent {
           onChange={this.updateSettings}
           defaultDiceType={$APP_CONFIG.preferences.defaultDiceType}
           defaultDiceCount={$APP_CONFIG.preferences.defaultDiceCount}
+          defaultRollMethod={$APP_CONFIG.preferences.defaultRollMethod}
           maxDiceCount={$APP_CONFIG.preferences.maxDiceCount}
           ref={el => this.settings = el}
           t={t}
