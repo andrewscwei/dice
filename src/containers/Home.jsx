@@ -90,14 +90,14 @@ export default class Home extends PureComponent {
       <div className={styles[`root`]} ref={el => this.rootNode = el}>
         <Scene
           className={styles[`scene`]}
-          frameRate={1/60}
+          frameRate={60}
           ambientLightColor={0xf0f5fb}
           spotLightColor={0xefdfd5}
           planeColor={0x111111}
-          diceType={this.state.diceType}
           diceScale={54}
           diceColor={0x202020}
           diceLabelColor={0xffffff}
+          diceType={this.state.diceType}
           diceCount={this.state.diceCount}
           ref={el => this.scene = el}
         />

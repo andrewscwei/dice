@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import classNames from 'classnames';
 import logging from '@/decorators/logging';
 import styles from './Scene.pcss';
-import Cannon from 'cannon';
+import CANNON from 'cannon';
 import DiceType from '@/enums/DiceType';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -77,45 +77,63 @@ export default class Scene extends Component {
     return this._scene;
   }
 
+  get timeStep() {
+    return 1 / this.props.frameRate;
+  }
+
+  get planeMaterial() {
+    if (this._planeMaterial) return this._planeMaterial;
+    this._planeMaterial = new CANNON.Material();
+    return this._planeMaterial;
+  }
+
+  get wallMaterial() {
+    if (this._wallMaterial) return this._wallMaterial;
+    this._wallMaterial = new CANNON.Material();
+    return this._wallMaterial;
+  }
+
+  get diceMaterial() {
+    if (this._diceMaterial) return this._diceMaterial;
+    this._diceMaterial = new CANNON.Material();
+    return this._diceMaterial;
+  }
+
   get world() {
     if (this._world) return this._world;
 
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
 
-    const planeBodyMaterial = new Cannon.Material();
-    const barrierBodyMaterial = new Cannon.Material();
-    const diceBodyMaterial = new Cannon.Material();
+    this._world = new CANNON.World();
+    this._world.gravity.set(0, 0, -9.82 * 1000);
+    this._world.broadphase = new CANNON.NaiveBroadphase();
+    this._world.solver.iterations = 20;
 
-    this._world = new Cannon.World();
-    this._world.gravity.set(0, 0, -9.8 * 800);
-    this._world.broadphase = new Cannon.NaiveBroadphase();
-    this._world.solver.iterations = 16;
+    this._world.addContactMaterial(new CANNON.ContactMaterial(this.planeMaterial, this.diceMaterial, 0, 0.5));
+    this._world.addContactMaterial(new CANNON.ContactMaterial(this.wallMaterial, this.diceMaterial, 0, 1.0));
+    this._world.addContactMaterial(new CANNON.ContactMaterial(this.diceMaterial, this.diceMaterial, 0, 0.5));
+    this._world.add(new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.planeMaterial }));
 
-    this._world.addContactMaterial(new Cannon.ContactMaterial(planeBodyMaterial, diceBodyMaterial, 0, 0.5));
-    this._world.addContactMaterial(new Cannon.ContactMaterial(barrierBodyMaterial, diceBodyMaterial, 0, 1.0));
-    this._world.addContactMaterial(new Cannon.ContactMaterial(diceBodyMaterial, diceBodyMaterial, 0, 0.5));
-    this._world.add(new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: planeBodyMaterial }));
+    const southWall = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
+    southWall.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
+    southWall.position.set(0, h * BOUNDS_SCALE_Y, 0);
+    this._world.add(southWall);
 
-    const b1 = new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: barrierBodyMaterial });
-    b1.quaternion.setFromAxisAngle(new Cannon.Vec3(1, 0, 0), Math.PI / 2);
-    b1.position.set(0, h * BOUNDS_SCALE_Y, 0);
-    this._world.add(b1);
+    const northWall = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
+    northWall.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+    northWall.position.set(0, -h * BOUNDS_SCALE_Y, 0);
+    this._world.add(northWall);
 
-    const b2 = new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: barrierBodyMaterial });
-    b2.quaternion.setFromAxisAngle(new Cannon.Vec3(1, 0, 0), -Math.PI / 2);
-    b2.position.set(0, -h * BOUNDS_SCALE_Y, 0);
-    this._world.add(b2);
+    const eastWall = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
+    eastWall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI / 2);
+    eastWall.position.set(w * BOUNDS_SCALE_X, 0, 0);
+    this._world.add(eastWall);
 
-    const b3 = new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: barrierBodyMaterial });
-    b3.quaternion.setFromAxisAngle(new Cannon.Vec3(0, 1, 0), -Math.PI / 2);
-    b3.position.set(w * BOUNDS_SCALE_X, 0, 0);
-    this._world.add(b3);
-
-    const b4 = new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: barrierBodyMaterial });
-    b4.quaternion.setFromAxisAngle(new Cannon.Vec3(0, 1, 0), Math.PI / 2);
-    b4.position.set(-w * BOUNDS_SCALE_X, 0, 0);
-    this._world.add(b4);
+    const westWall = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
+    westWall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI / 2);
+    westWall.position.set(-w * BOUNDS_SCALE_X, 0, 0);
+    this._world.add(westWall);
 
     return this._world;
   }
@@ -133,7 +151,7 @@ export default class Scene extends Component {
     super(props);
 
     this.state = {
-      timestep: 0
+      iterations: 0
     };
   }
 
@@ -195,18 +213,18 @@ export default class Scene extends Component {
   }
 
   createDie({ position, velocity, angle, axis }) {
-    const dice = createDiceByType(this.props.diceType, this.props.diceScale, this.props.diceColor, this.props.diceLabelColor);
-    dice.castShadow = true;
-    dice.body = new Cannon.Body({ mass: DICE_MASS[this.props.diceType], shape: dice.geometry.cannonShape, material: new Cannon.Material() });
-    dice.body.position.set(position.x, position.y, position.z);
-    dice.body.quaternion.setFromAxisAngle(new Cannon.Vec3(axis.x, axis.y, axis.z), axis.a * Math.PI * 2);
-    dice.body.angularVelocity.set(angle.x, angle.y, angle.z);
-    dice.body.velocity.set(velocity.x, velocity.y, velocity.z);
-    dice.body.linearDamping = 0.1;
-    dice.body.angularDamping = 0.1;
-    this.diceCollection.push(dice);
-    this.scene.add(dice);
-    this.world.add(dice.body);
+    const die = createDiceByType(this.props.diceType, this.props.diceScale, this.props.diceColor, this.props.diceLabelColor);
+    die.castShadow = true;
+    die.body = new CANNON.Body({ mass: DICE_MASS[this.props.diceType], shape: die.geometry.cannonShape, material: this.diceMaterial });
+    die.body.position.set(position.x, position.y, position.z);
+    die.body.quaternion.setFromAxisAngle(new CANNON.Vec3(axis.x, axis.y, axis.z), axis.a * Math.PI * 2);
+    die.body.angularVelocity.set(angle.x, angle.y, angle.z);
+    die.body.velocity.set(velocity.x, velocity.y, velocity.z);
+    die.body.linearDamping = 0.1;
+    die.body.angularDamping = 0.1;
+    this.diceCollection.push(die);
+    this.scene.add(die);
+    this.world.add(die.body);
   }
 
   createDice(diceProps) {
@@ -317,7 +335,7 @@ export default class Scene extends Component {
 
   clear() {
     this.setState({
-      timestep: 0
+      iterations: 0
     });
 
     let die;
@@ -335,8 +353,8 @@ export default class Scene extends Component {
 
   simulateRoll() {
     while (this.isRolling()) {
-      this.setState({ timestep: this.state.timestep + 1 });
-      this.world.step(this.props.frameRate);
+      this.setState({ iterations: this.state.iterations + 1 });
+      this.world.step(this.timeStep);
     }
 
     return this.getDiceValues();
@@ -369,30 +387,30 @@ export default class Scene extends Component {
   isRolling() {
     let e = 6;
 
-    if (this.state.timestep < 10 / this.props.frameRate) {
+    if (this.state.iterations < 10 / this.timeStep) {
       for (let i = 0, n = this.diceCollection.length; i < n; i++) {
         const die = this.diceCollection[i];
 
-        if (die.timestep === -1) continue;
+        if (die.iterations === -1) continue;
 
         const a = die.body.angularVelocity;
         const v = die.body.velocity;
 
         if (Math.abs(a.x) < e && Math.abs(a.y) < e && Math.abs(a.z) < e && Math.abs(v.x) < e && Math.abs(v.y) < e && Math.abs(v.z) < e) {
-          if (die.timestep > 0) {
-            if (this.state.timestep - die.timestep > 3) {
-              die.timestep = -1;
+          if (die.iterations > 0) {
+            if (this.state.iterations - die.iterations > 3) {
+              die.iterations = -1;
               continue;
             }
           }
           else {
-            die.timestep = this.state.timestep;
+            die.iterations = this.state.iterations;
           }
 
           return true;
         }
         else {
-          die.timestep = 0;
+          die.iterations = 0;
           return true;
         }
       }
@@ -431,10 +449,10 @@ export default class Scene extends Component {
     const newTimestamp = this.createTimestamp();
 
     let delta = (newTimestamp - timestamp) / 1000;
-    if (delta > 3) delta = this.props.frameRate;
+    if (delta > 3) delta = this.timeStep;
 
-    this.setState({ timestep: this.state.timestep + 1 });
-    this.world.step(this.props.frameRate);
+    this.setState({ iterations: this.state.iterations + 1 });
+    this.world.step(this.timeStep);
 
     for (let i in this.scene.children) {
       const child = this.scene.children[i];
@@ -451,10 +469,10 @@ export default class Scene extends Component {
       this.onRollComplete();
     }
     else {
-      if (delta < this.props.frameRate) {
+      if (delta < (this.timeStep)) {
         setTimeout(() => {
           window.requestAnimationFrame(() => this.animate(newTimestamp));
-        }, (this.props.frameRate - delta) * 1000);
+        }, (this.timeStep - delta) * 1000);
       }
       else {
         window.requestAnimationFrame(() => this.animate(newTimestamp));
