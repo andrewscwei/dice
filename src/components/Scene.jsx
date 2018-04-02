@@ -10,8 +10,8 @@ import React, { Component } from 'react';
 import { createDiceByType } from '@/engine/mesh';
 import { rng, randomVectorFromVector } from '@/utils/random';
 
-const BOUNDS_SCALE_X = 1.0;
-const BOUNDS_SCALE_Y = 0.8;
+const BOUNDS_SCALE_X = 0.93;
+const BOUNDS_SCALE_Y = 0.93;
 
 const DICE_FACE_RANGE = {
   [DiceType.D6]: [1, 6],

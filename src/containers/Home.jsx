@@ -72,7 +72,7 @@ export default class Home extends PureComponent {
 
   rollDice = () => {
     if (this.state.areSettingsVisible === true) return;
-    this.scene.roll();
+    this.scene.roll(undefined, undefined, window.__GAMEBOY__);
   }
 
   onResize = (event) => {
