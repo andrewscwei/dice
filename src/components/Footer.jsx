@@ -19,7 +19,7 @@ export default class Footer extends PureComponent {
         <a className={styles[`monogram`]} href='https://www.andr.mu' dangerouslySetInnerHTML={{ __html: require(`!raw-loader!@/assets/images/mu.svg`) }}/>
         <nav className={styles[`nav`]}>
           <button className={styles[`button`]} onClick={(event) => onSettingsButtonClick() } dangerouslySetInnerHTML={{ __html: require(`!raw-loader!@/assets/images/settings-icon.svg`) }}/>
-          {/* <a className={styles[`button`]} dangerouslySetInnerHTML={{ __html: require(`!raw-loader!@/assets/images/github-icon.svg`) }} href='https://github.com/andrewscwei/dice'/> */}
+          <a className={styles[`button`]} dangerouslySetInnerHTML={{ __html: require(`!raw-loader!@/assets/images/github-icon.svg`) }} href='https://github.com/andrewscwei/dice'/>
         </nav>
       </footer>
     );

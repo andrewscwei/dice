@@ -384,7 +384,7 @@ export default class Scene extends Component {
         const { x: vx, y: vy, z: vz } = die.body.velocity;
         const { x: avx, y: avy, z: avz } = die.body.angularVelocity;
         die.body.velocity = new CANNON.Vec3(vx + intensity * rng(false), vy + intensity * rng(false), vz + intensity * rng(false));
-        die.body.angularVelocity = new CANNON.Vec3(avx + intensity * rng(false), avy + intensity * rng(false), avz + intensity * rng(false));
+        die.body.angularVelocity = new CANNON.Vec3(avx + intensity / 2 * rng(false), avy + intensity / 2 * rng(false), avz + intensity / 2 * rng(false));
       }
 
       return;
@@ -410,7 +410,7 @@ export default class Scene extends Component {
   }
 
   isRolling() {
-    const threshold = 6;
+    const threshold = 3;
 
     for (let i = 0, n = this.diceCollection.length; i < n; i++) {
       const die = this.diceCollection[i];
@@ -420,9 +420,9 @@ export default class Scene extends Component {
       const a = die.body.angularVelocity;
       const v = die.body.velocity;
 
-      if (Math.abs(a.x) < threshold && Math.abs(a.y) < threshold && Math.abs(a.z) < threshold && Math.abs(v.x) < threshold && Math.abs(v.y) < threshold && Math.abs(v.z) < threshold) {
+      if (Math.abs(a.x) <= threshold && Math.abs(a.y) <= threshold && Math.abs(a.z) <= threshold && Math.abs(v.x) <= threshold && Math.abs(v.y) <= threshold && Math.abs(v.z) <= threshold) {
         if (die.step > 0) {
-          if (this.state.step - die.step > threshold) {
+          if (this.state.step - die.step > 0) {
             die.step = -1;
             continue;
           }
