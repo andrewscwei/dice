@@ -116,7 +116,6 @@ export default class Scene extends Component {
 
     this.state = {
       isRolling: false,
-      timestamp: 0,
       step: 0
     };
   }
@@ -124,7 +123,6 @@ export default class Scene extends Component {
   componentDidMount() {
     this.rootNode.appendChild(this.renderer.domElement);
 
-    this.lastTime = 0;
     this.reset();
   }
 
@@ -259,9 +257,9 @@ export default class Scene extends Component {
     return this.getDiceValues();
   }
 
-  animate(timestamp) {
+  animate(timestamp = (new Date()).getTime(), callback) {
     let time = (new Date()).getTime();
-    let timeDiff = (time - this.lastTime) / 1000;
+    let timeDiff = (time - timestamp) / 1000;
     if (timeDiff > 3) timeDiff = this.props.frameRate;
 
     this.setState({ step: this.state.step + 1 });
@@ -288,28 +286,26 @@ export default class Scene extends Component {
     }
 
     this.renderer.render(this.scene, this.camera);
-    this.lastTime = this.lastTime ? time : (new Date()).getTime();
+    const t = timestamp > 0 ? time : (new Date()).getTime();
 
-    if ((this.state.timestamp === timestamp) && this.isRollingComplete()) {
-      this.setState({ timestamp: false });
-      if (this.callback) this.callback.call(this, this.getDiceValues());
+    if (this.isRollingComplete()) {
+      if (callback) callback(this.getDiceValues());
     }
-
-    if (this.state.timestamp === timestamp) {
+    else {
       if (!this.useAdaptiveTimestep && timeDiff < this.props.frameRate) {
         setTimeout(() => {
-          window.requestAnimationFrame(() => this.animate(timestamp));
+          window.requestAnimationFrame(() => this.animate(t, callback));
         }, (this.props.frameRate - timeDiff) * 1000);
       }
       else {
-        window.requestAnimationFrame(() => this.animate(timestamp));
+        window.requestAnimationFrame(() => this.animate(t, callback));
       }
     }
+
   }
 
   clear() {
     this.setState({
-      timestamp: 0,
       step: 0
     });
 
@@ -361,15 +357,11 @@ export default class Scene extends Component {
       }
     }
 
-    this.setState({ timestamp: (new Date()).getTime() });
-    this.lastTime = 0;
-    this.animate(this.state.timestamp);
-
-    this.callback = (result) => {
+    this.animate(undefined, result => {
       this.log(`Done rolling, showing result:`, result);
       this.setState({ isRolling: false });
       this.useAdaptiveTimestep = uat;
-    };
+    });
   }
 
   playGameboy(dice, value, result) {
