@@ -5,6 +5,7 @@ import Hammer from 'hammerjs';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Scene from '@/components/Scene';
+import Shake from 'shake.js';
 import { translate } from 'react-i18next';
 
 @translate()
@@ -18,17 +19,29 @@ export default class Home extends PureComponent {
     this.hammer = new Hammer(this.scene.rootNode);
     this.hammer.on(`tap`, this.onTap);
 
+    this.shake = new Shake();
+    this.shake.start();
+
     window.addEventListener(`resize`, this.onResize);
+    window.addEventListener(`shake`, this.onShake);
   }
 
   componentWillUnmount() {
+    window.removeEventListener(`shake`, this.onShake);
+    window.removeEventListener(`resize`, this.onResize);
+
+    this.shake.stop();
+    this.shake = undefined;
+
     this.hammer.remove(`tap`);
     this.hammer = undefined;
-
-    window.removeEventListener(`resize`, this.onResize);
   }
 
   onTap = (event) => {
+    this.scene.roll();
+  }
+
+  onShake = (event) => {
     this.scene.roll();
   }
 
