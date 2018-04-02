@@ -65,6 +65,9 @@ export default class Scene extends Component {
   // References to all generated dice.
   diceCollection = [];
 
+  // References to all walls.
+  walls = [];
+
   get rect() {
     if (!this.rootNode) return new FOV.Rect();
     return FOV.getRect(this.rootNode);
@@ -102,38 +105,15 @@ export default class Scene extends Component {
   get world() {
     if (this._world) return this._world;
 
-    const w = this.rect.width / 2;
-    const h = this.rect.height / 2;
-
     this._world = new CANNON.World();
     this._world.gravity.set(0, 0, -9.82 * 1000);
     this._world.broadphase = new CANNON.NaiveBroadphase();
-    this._world.solver.iterations = 20;
+    this._world.solver.step = 20;
 
     this._world.addContactMaterial(new CANNON.ContactMaterial(this.planeMaterial, this.diceMaterial, 0, 0.5));
     this._world.addContactMaterial(new CANNON.ContactMaterial(this.wallMaterial, this.diceMaterial, 0, 1.0));
     this._world.addContactMaterial(new CANNON.ContactMaterial(this.diceMaterial, this.diceMaterial, 0, 0.5));
     this._world.add(new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.planeMaterial }));
-
-    const southWall = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
-    southWall.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
-    southWall.position.set(0, h * BOUNDS_SCALE_Y, 0);
-    this._world.add(southWall);
-
-    const northWall = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
-    northWall.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-    northWall.position.set(0, -h * BOUNDS_SCALE_Y, 0);
-    this._world.add(northWall);
-
-    const eastWall = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
-    eastWall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI / 2);
-    eastWall.position.set(w * BOUNDS_SCALE_X, 0, 0);
-    this._world.add(eastWall);
-
-    const westWall = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
-    westWall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI / 2);
-    westWall.position.set(-w * BOUNDS_SCALE_X, 0, 0);
-    this._world.add(westWall);
 
     return this._world;
   }
@@ -151,7 +131,7 @@ export default class Scene extends Component {
     super(props);
 
     this.state = {
-      iterations: 0
+      step: 0
     };
   }
 
@@ -304,7 +284,7 @@ export default class Scene extends Component {
     return materialIndex;
   }
 
-  getDiceValues() {
+  getResult() {
     let values = [];
 
     for (let i = 0, n = this.diceCollection.length; i < n; i++) {
@@ -316,6 +296,9 @@ export default class Scene extends Component {
 
   reset() {
     this.log(`Resetting the scene...`);
+
+    const w = this.rect.width;
+    const h = this.rect.height;
 
     this.renderer.setSize(this.rect.width, this.rect.height);
 
@@ -330,12 +313,41 @@ export default class Scene extends Component {
     this.plane = this.createPlane();
     this.scene.add(this.plane);
 
+    while (this.walls.length > 0) {
+      const wall = this.walls.pop();
+      this.world.remove(wall);
+    }
+
+    const w1 = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
+    w1.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
+    w1.position.set(0, h/2 * BOUNDS_SCALE_Y, 0);
+    this.world.add(w1);
+    this.walls.push(w1);
+
+    const w2 = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
+    w2.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+    w2.position.set(0, -h/2 * BOUNDS_SCALE_Y, 0);
+    this.world.add(w2);
+    this.walls.push(w2);
+
+    const w3 = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
+    w3.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI / 2);
+    w3.position.set(w/2 * BOUNDS_SCALE_X, 0, 0);
+    this.world.add(w3);
+    this.walls.push(w3);
+
+    const w4 = new CANNON.Body({ mass: 0, shape: new CANNON.Plane(), material: this.wallMaterial });
+    w4.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI / 2);
+    w4.position.set(-w/2 * BOUNDS_SCALE_X, 0, 0);
+    this.world.add(w4);
+    this.walls.push(w4);
+
     this.renderer.render(this.scene, this.camera);
   }
 
   clear() {
     this.setState({
-      iterations: 0
+      step: 0
     });
 
     let die;
@@ -353,11 +365,11 @@ export default class Scene extends Component {
 
   simulateRoll() {
     while (this.isRolling()) {
-      this.setState({ iterations: this.state.iterations + 1 });
+      this.setState({ step: this.state.step + 1 });
       this.world.step(this.timeStep);
     }
 
-    return this.getDiceValues();
+    return this.getResult();
   }
 
   roll(position, acceleration, fixedResults) {
@@ -385,32 +397,33 @@ export default class Scene extends Component {
   }
 
   isRolling() {
-    let e = 6;
+    const threshold = 6;
+    const timeout = 10 / this.timeStep;
 
-    if (this.state.iterations < 10 / this.timeStep) {
+    if (this.state.step < timeout) {
       for (let i = 0, n = this.diceCollection.length; i < n; i++) {
         const die = this.diceCollection[i];
 
-        if (die.iterations === -1) continue;
+        if (die.step === -1) continue;
 
         const a = die.body.angularVelocity;
         const v = die.body.velocity;
 
-        if (Math.abs(a.x) < e && Math.abs(a.y) < e && Math.abs(a.z) < e && Math.abs(v.x) < e && Math.abs(v.y) < e && Math.abs(v.z) < e) {
-          if (die.iterations > 0) {
-            if (this.state.iterations - die.iterations > 3) {
-              die.iterations = -1;
+        if (Math.abs(a.x) < threshold && Math.abs(a.y) < threshold && Math.abs(a.z) < threshold && Math.abs(v.x) < threshold && Math.abs(v.y) < threshold && Math.abs(v.z) < threshold) {
+          if (die.step > 0) {
+            if (this.state.step - die.step > threshold) {
+              die.step = -1;
               continue;
             }
           }
           else {
-            die.iterations = this.state.iterations;
+            die.step = this.state.step;
           }
 
           return true;
         }
         else {
-          die.iterations = 0;
+          die.step = 0;
           return true;
         }
       }
@@ -420,9 +433,8 @@ export default class Scene extends Component {
   }
 
   onRollComplete() {
-    const result = this.getDiceValues();
+    const result = this.getResult();
     this.log(`Done rolling, showing result:`, result);
-    dispatchEvent(new Event(`complete`));
   }
 
   playGameboy(die, value, result) {
@@ -451,7 +463,7 @@ export default class Scene extends Component {
     let delta = (newTimestamp - timestamp) / 1000;
     if (delta > 3) delta = this.timeStep;
 
-    this.setState({ iterations: this.state.iterations + 1 });
+    this.setState({ step: this.state.step + 1 });
     this.world.step(this.timeStep);
 
     for (let i in this.scene.children) {

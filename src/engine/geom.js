@@ -48,34 +48,34 @@ export function makeGeom(vertices, faces, radius, tab, af) {
 }
 
 export function chamferGeom(vectors, faces, chamfer) {
-  let chamfer_vectors = [];
-  let chamfer_faces = [];
-  let corner_faces = new Array(vectors.length);
+  let chamferVectors = [];
+  let chamferFaces = [];
+  let cornerFaces = new Array(vectors.length);
 
   for (let i = 0; i < vectors.length; i++) {
-    corner_faces[i] = [];
+    cornerFaces[i] = [];
   }
 
   for (let i = 0; i < faces.length; i++) {
     const ii = faces[i], fl = ii.length - 1;
-    const center_point = new THREE.Vector3();
+    const centerPoint = new THREE.Vector3();
     const face = new Array(fl);
 
     for (let j = 0; j < fl; j++) {
       const vv = vectors[ii[j]].clone();
-      center_point.add(vv);
-      corner_faces[ii[j]].push(face[j] = chamfer_vectors.push(vv) - 1);
+      centerPoint.add(vv);
+      cornerFaces[ii[j]].push(face[j] = chamferVectors.push(vv) - 1);
     }
 
-    center_point.divideScalar(fl);
+    centerPoint.divideScalar(fl);
 
     for (let j = 0; j < fl; j++) {
-      const vv = chamfer_vectors[face[j]];
-      vv.subVectors(vv, center_point).multiplyScalar(chamfer).addVectors(vv, center_point);
+      const vv = chamferVectors[face[j]];
+      vv.subVectors(vv, centerPoint).multiplyScalar(chamfer).addVectors(vv, centerPoint);
     }
 
     face.push(ii[fl]);
-    chamfer_faces.push(face);
+    chamferFaces.push(face);
   }
 
   for (let i = 0; i < faces.length - 1; i++) {
@@ -100,29 +100,29 @@ export function chamferGeom(vectors, faces, chamfer) {
 
       if (pairs.length != 4) continue;
 
-      chamfer_faces.push([
-        chamfer_faces[pairs[0][0]][pairs[0][1]],
-        chamfer_faces[pairs[1][0]][pairs[1][1]],
-        chamfer_faces[pairs[3][0]][pairs[3][1]],
-        chamfer_faces[pairs[2][0]][pairs[2][1]],
+      chamferFaces.push([
+        chamferFaces[pairs[0][0]][pairs[0][1]],
+        chamferFaces[pairs[1][0]][pairs[1][1]],
+        chamferFaces[pairs[3][0]][pairs[3][1]],
+        chamferFaces[pairs[2][0]][pairs[2][1]],
         -1
       ]);
     }
   }
 
-  for (let i = 0; i < corner_faces.length; i++) {
-    let cf = corner_faces[i];
+  for (let i = 0; i < cornerFaces.length; i++) {
+    let cf = cornerFaces[i];
     let face = [cf[0]];
     let count = cf.length - 1;
 
     while (count) {
-      for (let m = faces.length; m < chamfer_faces.length; m++) {
-        let index = chamfer_faces[m].indexOf(face[face.length - 1]);
+      for (let m = faces.length; m < chamferFaces.length; m++) {
+        let index = chamferFaces[m].indexOf(face[face.length - 1]);
 
         if (index >= 0 && index < 4) {
           if (--index == -1) index = 3;
 
-          let next_vertex = chamfer_faces[m][index];
+          let next_vertex = chamferFaces[m][index];
 
           if (cf.indexOf(next_vertex) >= 0) {
             face.push(next_vertex);
@@ -135,12 +135,12 @@ export function chamferGeom(vectors, faces, chamfer) {
     }
 
     face.push(-1);
-    chamfer_faces.push(face);
+    chamferFaces.push(face);
   }
 
   return {
-    vectors: chamfer_vectors,
-    faces: chamfer_faces
+    vectors: chamferVectors,
+    faces: chamferFaces
   };
 }
 
@@ -188,7 +188,6 @@ export function createD8Geom(radius) {
 
 export function createD10Geom(radius) {
   const a = Math.PI * 2 / 10;
-  const k = Math.cos(a);
   const h = 0.105, v = -1;
 
   let vertices = [];
