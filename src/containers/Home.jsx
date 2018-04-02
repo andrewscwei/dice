@@ -31,7 +31,8 @@ export default class Home extends PureComponent {
     this.touchHandler.on(`tap`, this.rollDice);
 
     this.shakeHandler = new Shake({
-      threshold: 5
+      threshold: 5,
+      timeout: 200
     });
 
     this.shakeHandler.start();
@@ -99,6 +100,7 @@ export default class Home extends PureComponent {
           diceLabelColor={0xffffff}
           diceType={this.state.diceType}
           diceCount={this.state.diceCount}
+          shakeIntensity={200}
           ref={el => this.scene = el}
         />
         <Footer className={styles[`footer`]} onSettingsButtonClick={this.openSettings} t={t} i18n={i18n}/>

@@ -48,6 +48,7 @@ export default class Scene extends Component {
     diceCount: PropTypes.number.isRequired,
     diceColor: PropTypes.number.isRequired,
     diceLabelColor: PropTypes.number.isRequired,
+    shakeIntensity: PropTypes.number.isRequired,
     ambientLightColor: PropTypes.number.isRequired,
     spotLightColor: PropTypes.number.isRequired,
     planeColor: PropTypes.number.isRequired
@@ -220,10 +221,7 @@ export default class Scene extends Component {
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
 
-    if (!position) position = { x: (rng() * 2 - 1) * w, y: -(rng() * 2 - 1) * h };
-    if (!acceleration) acceleration = (rng() + 3);
-
-    this.log(`Generating ending positions with ${JSON.stringify(position)} and acceleration ${acceleration}`);
+    this.log(`Generating dice props with ${JSON.stringify(position)} and acceleration ${acceleration}`);
 
     const vector = Object.assign({}, position);
     const distance = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
@@ -371,8 +369,24 @@ export default class Scene extends Component {
   }
 
   roll(position, acceleration, fixedResults) {
+    const w = this.rect.width / 2;
+    const h = this.rect.height / 2;
+
+    if (!position) position = { x: (rng() * 2 - 1) * w, y: -(rng() * 2 - 1) * h };
+    if (!acceleration) acceleration = (rng() + 3);
+
     if (this.isRolling()) {
       this.log(`Dice is already rolling...`);
+
+      for (let i = 0, n = this.diceCollection.length; i < n; i++) {
+        const die = this.diceCollection[i];
+        const intensity = acceleration * this.props.shakeIntensity;
+        const { x: vx, y: vy, z: vz } = die.body.velocity;
+        const { x: avx, y: avy, z: avz } = die.body.angularVelocity;
+        die.body.velocity = new CANNON.Vec3(vx + intensity * rng(false), vy + intensity * rng(false), vz + intensity * rng(false));
+        die.body.angularVelocity = new CANNON.Vec3(avx + intensity * rng(false), avy + intensity * rng(false), avz + intensity * rng(false));
+      }
+
       return;
     }
 
@@ -397,34 +411,31 @@ export default class Scene extends Component {
 
   isRolling() {
     const threshold = 6;
-    const timeout = 10 / this.timeStep;
 
-    if (this.state.step < timeout) {
-      for (let i = 0, n = this.diceCollection.length; i < n; i++) {
-        const die = this.diceCollection[i];
+    for (let i = 0, n = this.diceCollection.length; i < n; i++) {
+      const die = this.diceCollection[i];
 
-        if (die.step === -1) continue;
+      if (die.step === -1) continue;
 
-        const a = die.body.angularVelocity;
-        const v = die.body.velocity;
+      const a = die.body.angularVelocity;
+      const v = die.body.velocity;
 
-        if (Math.abs(a.x) < threshold && Math.abs(a.y) < threshold && Math.abs(a.z) < threshold && Math.abs(v.x) < threshold && Math.abs(v.y) < threshold && Math.abs(v.z) < threshold) {
-          if (die.step > 0) {
-            if (this.state.step - die.step > threshold) {
-              die.step = -1;
-              continue;
-            }
+      if (Math.abs(a.x) < threshold && Math.abs(a.y) < threshold && Math.abs(a.z) < threshold && Math.abs(v.x) < threshold && Math.abs(v.y) < threshold && Math.abs(v.z) < threshold) {
+        if (die.step > 0) {
+          if (this.state.step - die.step > threshold) {
+            die.step = -1;
+            continue;
           }
-          else {
-            die.step = this.state.step;
-          }
-
-          return true;
         }
         else {
-          die.step = 0;
-          return true;
+          die.step = this.state.step;
         }
+
+        return true;
+      }
+      else {
+        die.step = 0;
+        return true;
       }
     }
 
