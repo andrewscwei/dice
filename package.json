@@ -12,7 +12,7 @@
     "clean": "rimraf build",
     "build": "npm run clean && NODE_ENV=production webpack --colors --profile --config config/build.conf.js --display-error-details",
     "test": "echo \"No tests yet\"",
-    "dev": "NODE_ENV=development webpack-serve --open --config config/build.conf.js",
+    "dev": "NODE_ENV=development webpack-serve --open --host 0.0.0.0 --config config/build.conf.js",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:fix": "npm run lint:js:fix && npm run lint:css:fix",
     "lint:js": "eslint . -f node_modules/eslint-friendly-formatter --ignore-path .gitignore --ext .jsx --ext .js",

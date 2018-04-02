@@ -19,7 +19,10 @@ export default class Home extends PureComponent {
     this.hammer = new Hammer(this.scene.rootNode);
     this.hammer.on(`tap`, this.onTap);
 
-    this.shake = new Shake();
+    this.shake = new Shake({
+      threshold: 6
+    });
+
     this.shake.start();
 
     window.addEventListener(`resize`, this.onResize);
