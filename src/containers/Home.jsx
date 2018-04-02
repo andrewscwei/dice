@@ -1,9 +1,10 @@
 import styles from '@/containers/Home.pcss';
-import Hammer from 'hammerjs';
+import DiceType from '@/enums/DiceType';
 import Footer from '@/components/Footer';
-import Scene from '@/components/Scene';
+import Hammer from 'hammerjs';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import Scene from '@/components/Scene';
 import { translate } from 'react-i18next';
 
 @translate()
@@ -46,9 +47,7 @@ export default class Home extends PureComponent {
           ambientLightColor={0xf0f5fb}
           spotLightColor={0xefdfd5}
           deskColor={0x111111}
-          diceMass={{ d6: 300, d8: 340, d10: 350, d12: 350, d20: 400 }}
-          diceInertia={{ d6: 13, d8: 10, d10: 9, d12: 8, d20: 6 }}
-          diceType={`d6`}
+          diceType={DiceType.D6}
           diceCount={5}
           ref={el => this.scene = el}
         />

@@ -4,10 +4,15 @@ import classNames from 'classnames';
 import logging from '@/decorators/logging';
 import styles from './Scene.pcss';
 import Cannon from 'cannon';
+import DiceType from '@/enums/DiceType';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { createDiceByType } from '@/engine/mesh';
 import { rng, randomVectorFromVector } from '@/utils/random';
+
+const DICE_FACE_RANGE = { [DiceType.D6]: [1, 6], [DiceType.D8]: [1, 8], [DiceType.D10]: [0, 9], [DiceType.D12]: [1, 12], [DiceType.D20]: [1, 20] };
+const DICE_MASS = { [DiceType.D6]: 300, [DiceType.D8]: 340, [DiceType.D10]: 350, [DiceType.D12]: 350, [DiceType.D20]: 400 };
+const DICE_INERTIA= { [DiceType.D6]: 13, [DiceType.D8]: 10, [DiceType.D10]: 9, [DiceType.D12]: 8, [DiceType.D20]: 6 };
 
 @logging(`Scene`)
 export default class Scene extends Component {
@@ -15,8 +20,6 @@ export default class Scene extends Component {
     className: PropTypes.string,
     style: PropTypes.object,
     frameRate: PropTypes.number.isRequired,
-    diceMass: PropTypes.object.isRequired,
-    diceInertia: PropTypes.object.isRequired,
     diceType: PropTypes.string.isRequired,
     diceCount: PropTypes.number.isRequired,
     ambientLightColor: PropTypes.number.isRequired,
@@ -36,10 +39,6 @@ export default class Scene extends Component {
   // References to all generated dice.
   diceCollection = [];
 
-  useAdaptiveTimestep = true;
-
-  get diceBodyMaterial() { return new Cannon.Material(); }
-
   get rect() {
     if (!this.rootNode) return new FOV.Rect();
     return FOV.getRect(this.rootNode);
@@ -52,14 +51,6 @@ export default class Scene extends Component {
     return this._scene;
   }
 
-  get scale() {
-    const w = this.rect.width / 2;
-    const h = this.rect.height / 2;
-    return Math.sqrt(w * w + h * h) / 13;
-  }
-
-  get aspectRatio() { return 1; }
-
   get world() {
     if (this._world) return this._world;
 
@@ -68,16 +59,17 @@ export default class Scene extends Component {
 
     const deskBodyMaterial = new Cannon.Material();
     const barrierBodyMaterial = new Cannon.Material();
+    const diceBodyMaterial = new Cannon.Material();
 
     this._world = new Cannon.World();
     this._world.gravity.set(0, 0, -9.8 * 800);
     this._world.broadphase = new Cannon.NaiveBroadphase();
     this._world.solver.iterations = 16;
 
-    this._world.addContactMaterial(new Cannon.ContactMaterial(deskBodyMaterial, this.diceBodyMaterial, 0, 0.5));
-    this._world.addContactMaterial(new Cannon.ContactMaterial(barrierBodyMaterial, this.diceBodyMaterial, 0, 1.0));
-    this._world.addContactMaterial(new Cannon.ContactMaterial(this.diceBodyMaterial, this.diceBodyMaterial, 0, 0.5));
-    this._world.add(new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: this.deskBodyMaterial }));
+    this._world.addContactMaterial(new Cannon.ContactMaterial(deskBodyMaterial, diceBodyMaterial, 0, 0.5));
+    this._world.addContactMaterial(new Cannon.ContactMaterial(barrierBodyMaterial, diceBodyMaterial, 0, 1.0));
+    this._world.addContactMaterial(new Cannon.ContactMaterial(diceBodyMaterial, diceBodyMaterial, 0, 0.5));
+    this._world.add(new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: deskBodyMaterial }));
 
     const b1 = new Cannon.Body({ mass: 0, shape: new Cannon.Plane(), material: barrierBodyMaterial });
     b1.quaternion.setFromAxisAngle(new Cannon.Vec3(1, 0, 0), Math.PI / 2);
@@ -115,19 +107,21 @@ export default class Scene extends Component {
     super(props);
 
     this.state = {
-      isRolling: false,
-      step: 0
+      timestep: 0
     };
   }
 
   componentDidMount() {
     this.rootNode.appendChild(this.renderer.domElement);
-
     this.reset();
   }
 
   componentWillUpdate(nextProps, nextState) {
     return false;
+  }
+
+  createTimestamp() {
+    return (new Date()).getTime();
   }
 
   createLight() {
@@ -157,7 +151,7 @@ export default class Scene extends Component {
 
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
-    const wh = h / this.aspectRatio / Math.tan(10 * Math.PI / 180);
+    const wh = h / Math.tan(10 * Math.PI / 180);
 
     const camera = new THREE.PerspectiveCamera(20, w / h, 1, wh * 1.3);
     camera.position.z = wh;
@@ -174,33 +168,10 @@ export default class Scene extends Component {
     return desk;
   }
 
-  reset() {
-    if (!this.rootNode) return;
-
-    this.log(`Resetting the scene...`);
-
-    this.renderer.setSize(this.rect.width, this.rect.height);
-
-    if (this.camera) this.scene.remove(this.camera);
-    this.camera = this.createCamera();
-
-    if (this.light) this.scene.remove(this.light);
-    this.light = this.createLight();
-    this.scene.add(this.light);
-
-    if (this.desk) this.scene.remove(this.desk);
-    this.desk = this.createDesk();
-    this.scene.add(this.desk);
-
-    this.log(`Rerender scene`);
-
-    this.renderer.render(this.scene, this.camera);
-  }
-
-  createDice(position, velocity, angle, axis) {
+  createDie({ position, velocity, angle, axis }) {
     const dice = createDiceByType(this.props.diceType);
     dice.castShadow = true;
-    dice.body = new Cannon.Body({ mass: this.props.diceMass[this.props.diceType], shape: dice.geometry.cannonShape, material: new Cannon.Material() });
+    dice.body = new Cannon.Body({ mass: DICE_MASS[this.props.diceType], shape: dice.geometry.cannonShape, material: new Cannon.Material() });
     dice.body.position.set(position.x, position.y, position.z);
     dice.body.quaternion.setFromAxisAngle(new Cannon.Vec3(axis.x, axis.y, axis.z), axis.a * Math.PI * 2);
     dice.body.angularVelocity.set(angle.x, angle.y, angle.z);
@@ -212,178 +183,31 @@ export default class Scene extends Component {
     this.world.add(dice.body);
   }
 
-  isRollingComplete() {
-    let res = true;
-    let e = 6;
-
-    if (this.state.step < 10 / this.props.frameRate) {
-      for (let i = 0, n = this.diceCollection.length; i < n; i++) {
-        const die = this.diceCollection[i];
-
-        if (die.isStopped === true) continue;
-
-        const a = die.body.angularVelocity;
-        const v = die.body.velocity;
-
-        if (Math.abs(a.x) < e && Math.abs(a.y) < e && Math.abs(a.z) < e && Math.abs(v.x) < e && Math.abs(v.y) < e && Math.abs(v.z) < e) {
-          if (die.isStopped) {
-            if (this.state.step - die.isStopped > 3) {
-              die.isStopped = true;
-              continue;
-            }
-          }
-          else {
-            die.isStopped = this.state.step;
-          }
-
-          res = false;
-        }
-        else {
-          die.isStopped = undefined;
-          res = false;
-        }
-      }
-    }
-
-    return res;
-  }
-
-  simulateThrow() {
-    while (!this.isRollingComplete()) {
-      this.setState({ step: this.state.step + 1 });
-      this.world.step(this.props.frameRate);
-    }
-
-    return this.getDiceValues();
-  }
-
-  animate(timestamp = (new Date()).getTime(), callback) {
-    let time = (new Date()).getTime();
-    let timeDiff = (time - timestamp) / 1000;
-    if (timeDiff > 3) timeDiff = this.props.frameRate;
-
-    this.setState({ step: this.state.step + 1 });
-
-    if (this.useAdaptiveTimestep) {
-      while (timeDiff > this.props.frameRate * 1.1) {
-        this.world.step(this.props.frameRate);
-        timeDiff -= this.props.frameRate;
-      }
-
-      this.world.step(timeDiff);
-    }
-    else {
-      this.world.step(this.props.frameRate);
-    }
-
-    for (let i in this.scene.children) {
-      let child = this.scene.children[i];
-
-      if (child.body) {
-        child.position.copy(child.body.position);
-        child.quaternion.copy(child.body.quaternion);
-      }
-    }
-
-    this.renderer.render(this.scene, this.camera);
-    const t = timestamp > 0 ? time : (new Date()).getTime();
-
-    if (this.isRollingComplete()) {
-      if (callback) callback(this.getDiceValues());
-    }
-    else {
-      if (!this.useAdaptiveTimestep && timeDiff < this.props.frameRate) {
-        setTimeout(() => {
-          window.requestAnimationFrame(() => this.animate(t, callback));
-        }, (this.props.frameRate - timeDiff) * 1000);
-      }
-      else {
-        window.requestAnimationFrame(() => this.animate(t, callback));
-      }
-    }
-
-  }
-
-  clear() {
-    this.setState({
-      step: 0
-    });
-
-    let die;
-
-    while (this.diceCollection.length > 0) {
-      die = this.diceCollection.pop();
-      this.scene.remove(die);
-      if (die.body) this.world.remove(die.body);
-    }
-
-    if (this.pane) this.scene.remove(this.pane);
-
-    this.renderer.render(this.scene, this.camera);
-
-    setTimeout(() => { this.renderer.render(this.scene, this.camera); }, 100);
-  }
-
-  setupDice(positions) {
+  createDice(diceProps) {
     this.clear();
 
-    for (let i in positions) {
-      const p = positions[i];
-      this.createDice(p.position, p.velocity, p.angle, p.axis);
+    for (let i in diceProps) {
+      const diceProp = diceProps[i];
+      this.createDie(diceProp);
     }
   }
 
-  roll(startingPosition, acceleration, fixedResults = [1, 2, 3, 4, 5]) {
-    if (this.state.isRolling) {
-      this.log(`Dice is in the middle of rolling...`);
-      return;
-    }
-
-    this.log(`Rolling dice...`);
-
-    const uat = this.useAdaptiveTimestep;
-    const endingPositions = this.generateEndingPositions(startingPosition, acceleration);
-
-    this.setState({ isRolling: true });
-    this.setupDice(endingPositions);
-
-    if (fixedResults && (fixedResults.length === this.props.diceCount)) {
-      this.useAdaptiveTimestep = false;
-      const res = this.simulateThrow();
-      this.setupDice(endingPositions);
-
-      for (let i in res) {
-        this.playGameboy(this.diceCollection[i], fixedResults[i], res[i]);
-      }
-    }
-
-    this.animate(undefined, result => {
-      this.log(`Done rolling, showing result:`, result);
-      this.setState({ isRolling: false });
-      this.useAdaptiveTimestep = uat;
-    });
-  }
-
-  playGameboy(dice, value, result) {
-
-  }
-
-  generateEndingPositions(startingPosition, acceleration) {
+  generateDiceProps(position, acceleration) {
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
 
-    if (!startingPosition) startingPosition = { x: (rng() * 2 - 1) * w, y: -(rng() * 2 - 1) * h };
+    if (!position) position = { x: (rng() * 2 - 1) * w, y: -(rng() * 2 - 1) * h };
     if (!acceleration) acceleration = (rng() + 3);
 
-    this.log(`Generating ending positions with ${JSON.stringify(startingPosition)} and acceleration ${acceleration}`);
+    this.log(`Generating ending positions with ${JSON.stringify(position)} and acceleration ${acceleration}`);
 
-    const vector = Object.assign({}, startingPosition);
+    const vector = Object.assign({}, position);
     const distance = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
     acceleration *= distance;
     vector.x /= distance;
     vector.y /= distance;
 
-    let endingPositions = [];
+    let o = [];
 
     for (let i = 0; i < this.props.diceCount; i++) {
       const v1 = randomVectorFromVector(vector);
@@ -404,27 +228,27 @@ export default class Scene extends Component {
 
       const v2 = randomVectorFromVector(vector);
       const velocity = { x: v2.x * acceleration, y: v2.y * acceleration, z: -10 };
-      const inertia = this.props.diceInertia[this.props.diceType];
+      const inertia = DICE_INERTIA[this.props.diceType];
       const angle = { x: -(rng() * v1.y * 5 + inertia * v1.y), y: rng() * v1.x * 5 + inertia * v1.x, z: 0 };
       const axis = { x: rng(), y: rng(), z: rng(), a: rng() };
 
-      endingPositions.push({ position, velocity, angle, axis });
+      o.push({ position, velocity, angle, axis });
     }
 
-    return endingPositions;
+    return o;
   }
 
-  getDiceValue(dice) {
+  getDieValue(die) {
     let vector = new THREE.Vector3(0, 0, 1);
     let closestFace = null;
     let closestAngle = Math.PI * 2;
 
-    for (let i = 0, n = dice.geometry.faces.length; i < n; i++) {
-      const face = dice.geometry.faces[i];
+    for (let i = 0, n = die.geometry.faces.length; i < n; i++) {
+      const face = die.geometry.faces[i];
 
       if (face.materialIndex === 0) continue;
 
-      const angle = face.normal.clone().applyQuaternion(dice.body.quaternion).angleTo(vector);
+      const angle = face.normal.clone().applyQuaternion(die.body.quaternion).angleTo(vector);
 
       if (angle < closestAngle) {
         closestAngle = angle;
@@ -440,10 +264,175 @@ export default class Scene extends Component {
     let values = [];
 
     for (let i = 0, n = this.diceCollection.length; i < n; i++) {
-      values.push(this.getDiceValue(this.diceCollection[i]));
+      values.push(this.getDieValue(this.diceCollection[i]));
     }
 
     return values;
+  }
+
+  reset() {
+    this.log(`Resetting the scene...`);
+
+    this.renderer.setSize(this.rect.width, this.rect.height);
+
+    if (this.camera) this.scene.remove(this.camera);
+    this.camera = this.createCamera();
+
+    if (this.light) this.scene.remove(this.light);
+    this.light = this.createLight();
+    this.scene.add(this.light);
+
+    if (this.desk) this.scene.remove(this.desk);
+    this.desk = this.createDesk();
+    this.scene.add(this.desk);
+
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  clear() {
+    this.setState({
+      timestep: 0
+    });
+
+    let die;
+
+    while (this.diceCollection.length > 0) {
+      die = this.diceCollection.pop();
+      this.scene.remove(die);
+      if (die.body) this.world.remove(die.body);
+    }
+
+    if (this.pane) this.scene.remove(this.pane);
+
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  simulateRoll() {
+    while (this.isRolling()) {
+      this.setState({ timestep: this.state.timestep + 1 });
+      this.world.step(this.props.frameRate);
+    }
+
+    return this.getDiceValues();
+  }
+
+  roll(position, acceleration, fixedResults) {
+    if (this.isRolling()) {
+      this.log(`Dice is already rolling...`);
+      return;
+    }
+
+    this.log(`Rolling dice...`);
+
+    const diceProps = this.generateDiceProps(position, acceleration);
+
+    this.createDice(diceProps);
+
+    if (fixedResults && (fixedResults.length === this.props.diceCount)) {
+      const res = this.simulateRoll();
+      this.createDice(diceProps);
+
+      for (let i in res) {
+        this.playGameboy(this.diceCollection[i], fixedResults[i], res[i]);
+      }
+    }
+
+    this.animate(this.createTimestamp());
+  }
+
+  isRolling() {
+    let e = 6;
+
+    if (this.state.timestep < 10 / this.props.frameRate) {
+      for (let i = 0, n = this.diceCollection.length; i < n; i++) {
+        const die = this.diceCollection[i];
+
+        if (die.timestep === -1) continue;
+
+        const a = die.body.angularVelocity;
+        const v = die.body.velocity;
+
+        if (Math.abs(a.x) < e && Math.abs(a.y) < e && Math.abs(a.z) < e && Math.abs(v.x) < e && Math.abs(v.y) < e && Math.abs(v.z) < e) {
+          if (die.timestep > 0) {
+            if (this.state.timestep - die.timestep > 3) {
+              die.timestep = -1;
+              continue;
+            }
+          }
+          else {
+            die.timestep = this.state.timestep;
+          }
+
+          return true;
+        }
+        else {
+          die.timestep = 0;
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  onRollComplete() {
+    const result = this.getDiceValues();
+    this.log(`Done rolling, showing result:`, result);
+  }
+
+  playGameboy(die, value, result) {
+    const range = DICE_FACE_RANGE[this.props.diceType];
+
+    if (!(value >= range[0] && value <= range[1])) return;
+
+    const num = value - result;
+    const geom = die.geometry.clone();
+
+    for (let i = 0, n = geom.faces.length; i < n; i++) {
+      let materialIndex = geom.faces[i].materialIndex;
+      if (materialIndex === 0) continue;
+      materialIndex += num - 1;
+      while (materialIndex > range[1]) materialIndex -= range[1];
+      while (materialIndex < range[0]) materialIndex += range[1];
+      geom.faces[i].materialIndex = materialIndex + 1;
+    }
+
+    die.geometry = geom;
+  }
+
+  animate(timestamp = this.createTimestamp()) {
+    const newTimestamp = this.createTimestamp();
+
+    let delta = (newTimestamp - timestamp) / 1000;
+    if (delta > 3) delta = this.props.frameRate;
+
+    this.setState({ timestep: this.state.timestep + 1 });
+    this.world.step(this.props.frameRate);
+
+    for (let i in this.scene.children) {
+      const child = this.scene.children[i];
+
+      if (child.body) {
+        child.position.copy(child.body.position);
+        child.quaternion.copy(child.body.quaternion);
+      }
+    }
+
+    this.renderer.render(this.scene, this.camera);
+
+    if (!this.isRolling()) {
+      this.onRollComplete();
+    }
+    else {
+      if (delta < this.props.frameRate) {
+        setTimeout(() => {
+          window.requestAnimationFrame(() => this.animate(newTimestamp));
+        }, (this.props.frameRate - delta) * 1000);
+      }
+      else {
+        window.requestAnimationFrame(() => this.animate(newTimestamp));
+      }
+    }
   }
 
   render() {

@@ -19,9 +19,9 @@ export function createTextTexture(size, margin, text, color, backColor) {
   context.fillStyle = color;
   context.fillText(text, canvas.width / 2, canvas.height / 2);
 
-  if (text === `6` || text === `9`) {
-    context.fillText(`  .`, canvas.width / 2, canvas.height / 2);
-  }
+  // if (text === `6` || text === `9`) {
+  //   context.fillText(`  .`, canvas.width / 2, canvas.height / 2);
+  // }
 
   const texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
