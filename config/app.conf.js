@@ -3,16 +3,6 @@
  */
 
 module.exports = {
-  // App preferences.
-  preferences: {
-    labelColor: 0xaaaaaa,
-    diceColor: 0x202020,
-    scale: 60,
-    ambientLightColor: 0xf0f5fb,
-    spotLightColor: 0xefdfd5,
-    planeColor: 0xdfdfdf
-  },
-
   // HTML metadata.
   meta: {
     // Title of the app.

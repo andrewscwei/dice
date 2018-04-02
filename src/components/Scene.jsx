@@ -41,7 +41,10 @@ export default class Scene extends Component {
     style: PropTypes.object,
     frameRate: PropTypes.number.isRequired,
     diceType: PropTypes.string.isRequired,
+    diceScale: PropTypes.number.isRequired,
     diceCount: PropTypes.number.isRequired,
+    diceColor: PropTypes.number.isRequired,
+    diceLabelColor: PropTypes.number.isRequired,
     ambientLightColor: PropTypes.number.isRequired,
     spotLightColor: PropTypes.number.isRequired,
     planeColor: PropTypes.number.isRequired
@@ -189,7 +192,7 @@ export default class Scene extends Component {
   }
 
   createDie({ position, velocity, angle, axis }) {
-    const dice = createDiceByType(this.props.diceType);
+    const dice = createDiceByType(this.props.diceType, this.props.diceScale, this.props.diceColor, this.props.diceLabelColor);
     dice.castShadow = true;
     dice.body = new Cannon.Body({ mass: DICE_MASS[this.props.diceType], shape: dice.geometry.cannonShape, material: new Cannon.Material() });
     dice.body.position.set(position.x, position.y, position.z);

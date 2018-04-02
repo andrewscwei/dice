@@ -47,7 +47,10 @@ export default class Home extends PureComponent {
           ambientLightColor={0xf0f5fb}
           spotLightColor={0xefdfd5}
           planeColor={0x111111}
+          diceScale={54}
           diceType={DiceType.D6}
+          diceColor={0x202020}
+          diceLabelColor={0xffffff}
           diceCount={5}
           ref={el => this.scene = el}
         />
