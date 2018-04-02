@@ -284,7 +284,7 @@ export default class Scene extends Component {
     return materialIndex;
   }
 
-  getResult() {
+  getResults() {
     let values = [];
 
     for (let i = 0, n = this.diceCollection.length; i < n; i++) {
@@ -368,8 +368,6 @@ export default class Scene extends Component {
       this.setState({ step: this.state.step + 1 });
       this.world.step(this.timeStep);
     }
-
-    return this.getResult();
   }
 
   roll(position, acceleration, fixedResults) {
@@ -385,11 +383,12 @@ export default class Scene extends Component {
     this.createDice(diceProps);
 
     if (fixedResults && (fixedResults.length === this.props.diceCount)) {
-      const res = this.simulateRoll();
+      this.simulateRoll();
+      const expectedResults = this.getResults();
       this.createDice(diceProps);
 
-      for (let i in res) {
-        this.playGameboy(this.diceCollection[i], fixedResults[i], res[i]);
+      for (let i in expectedResults) {
+        this.playGameboy(this.diceCollection[i], expectedResults[i], fixedResults[i]);
       }
     }
 
@@ -433,22 +432,22 @@ export default class Scene extends Component {
   }
 
   onRollComplete() {
-    const result = this.getResult();
+    const result = this.getResults();
     this.log(`Done rolling, showing result:`, result);
   }
 
-  playGameboy(die, value, result) {
+  playGameboy(die, oldValue, newValue) {
     const range = DICE_FACE_RANGE[this.props.diceType];
 
-    if (!(value >= range[0] && value <= range[1])) return;
+    if (!(newValue >= range[0] && newValue <= range[1])) return;
 
-    const num = value - result;
+    const diff = newValue - oldValue;
     const geom = die.geometry.clone();
 
     for (let i = 0, n = geom.faces.length; i < n; i++) {
       let materialIndex = geom.faces[i].materialIndex;
       if (materialIndex === 0) continue;
-      materialIndex += num - 1;
+      materialIndex += diff - 1;
       while (materialIndex > range[1]) materialIndex -= range[1];
       while (materialIndex < range[0]) materialIndex += range[1];
       geom.faces[i].materialIndex = materialIndex + 1;
