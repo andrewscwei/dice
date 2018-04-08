@@ -2952,10 +2952,6 @@ forwarded@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
 
-fov@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/fov/-/fov-0.2.0.tgz#34dabcca1109c1226ba4fd77e9bda4bf7e791cbb"
-
 fragment-cache@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/fragment-cache/-/fragment-cache-0.2.1.tgz#4290fad27f13e89be7f33799c6bc5a0abfff0d19"
@@ -6926,6 +6922,10 @@ source-map@0.5.x, source-map@^0.5.0, source-map@^0.5.3, source-map@^0.5.6, sourc
 source-map@^0.6.1, source-map@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
+
+spase@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/spase/-/spase-0.4.1.tgz#dfcff80fc9c89479755e4f49773e2d1d459b75ae"
 
 spdx-correct@^3.0.0:
   version "3.0.0"

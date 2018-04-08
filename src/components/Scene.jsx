@@ -1,4 +1,4 @@
-import * as FOV from 'fov';
+import * as Spase from 'spase';
 import * as THREE from 'three';
 import classNames from 'classnames';
 import logging from '@/decorators/logging';
@@ -70,8 +70,8 @@ export default class Scene extends Component {
   walls = [];
 
   get rect() {
-    if (!this.rootNode) return new FOV.Rect();
-    return FOV.getRect(this.rootNode);
+    if (!this.rootNode) return new Spase.Rect();
+    return Spase.getRect(this.rootNode);
   }
 
   get scene() {
@@ -163,7 +163,7 @@ export default class Scene extends Component {
     light.castShadow = true;
     light.shadow.camera.near = t / 10;
     light.shadow.camera.far = t * 5;
-    light.shadow.camera.fov = 20;
+    light.shadow.camera.spase = 20;
     light.shadow.bias = 0.002;
     light.shadow.mapSize.width = 512;
     light.shadow.mapSize.height = 512;
