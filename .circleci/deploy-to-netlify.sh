@@ -31,7 +31,7 @@ if [[ $SITE_ID == "" ]]; then
   echo "No netlify file detected or site is not found, creating a new site on Netlify..."
   echo
 
-  RESULT=$(curl -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_KEY" --data-binary "@build/$PACKAGE_FILE" $NETLIFY_API/sites)
+  RESULT=$(curl -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_KEY" --data-binary "@build/$PACKAGE_FILE.zip" $NETLIFY_API/sites)
   SITE_ID=$(echo $RESULT | jq -r ".id")
   SITE_NAME=$(echo $RESULT | jq -r ".subdomain")
   SITE_URL=https://$SITE_NAME.netlify.com
@@ -51,7 +51,7 @@ else
   echo "Deploying to site ${SITE_ID}..."
   echo
 
-  RESULT=$(curl -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_KEY" --data-binary "@build/$PACKAGE_FILE" $NETLIFY_API/sites/$SITE_ID/deploys)
+  RESULT=$(curl -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_KEY" --data-binary "@build/$PACKAGE_FILE.zip" $NETLIFY_API/sites/$SITE_ID/deploys)
   SITE_URL=$(echo $RESULT | jq -r ".url")
 
   echo

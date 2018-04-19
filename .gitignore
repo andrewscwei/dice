@@ -52,12 +52,17 @@ dump.rdb
 
 # Generated static files
 public
-build
+package
 dist
+build
 uploads
 docs
 lib
 .publish
+
+# CMS files
+.prismic
+.contentful
 
 # Secrets
 *.pem
