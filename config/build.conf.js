@@ -19,7 +19,7 @@ const { EnvironmentPlugin, DefinePlugin, IgnorePlugin } = require(`webpack`);
 const isDev = process.env.NODE_ENV === `development`;
 const cwd = path.join(__dirname, `../`);
 const inputDir = path.join(cwd, `src`);
-const outputDir = path.join(cwd, `build`);
+const outputDir = path.join(cwd, `public`);
 const translations = fs.readdirSync(path.join(cwd, `config/locales`))
   .filter(v => !(/(^|\/)\.[^/.]/g).test(v))
   .map(val => path.basename(val, `.json`))

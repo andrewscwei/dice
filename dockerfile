@@ -14,7 +14,7 @@ WORKDIR /var/repo
 RUN yarn
 
 # Clone built files
-ADD build /var/repo/build
+ADD public /var/repo/public
 
 # Run
 CMD npm start

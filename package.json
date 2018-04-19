@@ -1,6 +1,6 @@
 {
   "name": "dice",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Web-based dice rolling app supporting 5 different dice types including D6, D8, D10, D12 and D20",
   "private": true,
   "keywords": [
@@ -14,7 +14,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf build",
+    "clean": "rimraf public",
     "build": "npm run clean && NODE_ENV=production webpack --colors --profile --config config/build.conf.js --display-error-details",
     "test": "echo \"No tests yet\"",
     "dev": "NODE_ENV=development webpack-serve --open --host 0.0.0.0 --config config/build.conf.js",
