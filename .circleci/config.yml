@@ -30,7 +30,7 @@ jobs:
           command: npm test
       - run:
           name: Pack
-          command: bash .circleci/pack.sh
+          command: .circleci/pack.sh
       - store_artifacts:
           path: ~/repo/public
       - store_artifacts:
@@ -66,14 +66,14 @@ jobs:
           command: npm test
       - run:
           name: Pack
-          command: bash .circleci/pack.sh
+          command: .circleci/pack.sh
       - store_artifacts:
           path: ~/repo/public
       - store_artifacts:
           path: ~/repo/build
       - deploy:
           name: Deploy
-          command: bash .circleci/deploy-to-netlify.sh
+          command: .circleci/deploy-to-netlify.sh
 
 workflows:
   version: 2

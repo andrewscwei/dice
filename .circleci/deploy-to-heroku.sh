@@ -36,4 +36,5 @@ git add -fA
 git commit --allow-empty -m "[Skip CI] $(git log -1 --pretty=%B)"
 git push -f git@heroku.com:$PACKAGE_NAME.git ${CIRCLE_BRANCH}:master
 
-echo -e "\nSuccessfuly deployed to Heroku"
+echo
+echo "Successfuly deployed to Heroku"

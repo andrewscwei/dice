@@ -25,4 +25,5 @@ git add -fA
 git commit --allow-empty -m "[Skip CI] $(git log -1 --pretty=%B)"
 git push -f $GIT_ORIGIN_URL gh-pages
 
-echo -e "\nSuccessfuly deployed to GitHub pages"
+echo
+echo -e "Successfuly deployed to GitHub pages"
