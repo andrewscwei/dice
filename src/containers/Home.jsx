@@ -42,6 +42,8 @@ export default class Home extends PureComponent {
     document.body.addEventListener(`touchmove`, this.onTouchMove);
     window.addEventListener(`resize`, this.onResize);
     window.addEventListener(`shake`, this.onShake);
+
+    this.scene.roll(undefined, undefined, window.__GAMEBOY__);
   }
 
   componentWillUnmount() {
