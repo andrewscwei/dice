@@ -42,7 +42,7 @@ else
   echo "Deploying to site ${SITE_ID}..."
 
   TITLE=$(git log --oneline --format=%B -n 1 HEAD | head -n 1)
-  RESULT=$(curl -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_KEY" --data-binary "@build/$PACKAGE_FILE" $NETLIFY_API/sites/$SITE_ID/deploys?title=$TITLE)
+  RESULT=$(curl -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_KEY" --data-binary "@build/$PACKAGE_FILE" $NETLIFY_API/sites/$SITE_ID/deploys\?title=$TITLE)
   SITE_URL=$(echo $RESULT | jq -r ".url")
 
   echo $RESULT
