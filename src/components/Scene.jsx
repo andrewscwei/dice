@@ -10,8 +10,8 @@ import React, { Component } from 'react';
 import { createDiceByType } from '@/engine/mesh';
 import { rng, randomVectorFromVector } from '@/utils/random';
 
-const BOUNDS_SCALE_X = 0.93;
-const BOUNDS_SCALE_Y = 0.93;
+const BOUNDS_SCALE_X = 1.0;
+const BOUNDS_SCALE_Y = 1.0;
 
 const DICE_FACE_RANGE = {
   [DiceType.D6]: [1, 6],
@@ -30,8 +30,8 @@ const DICE_MASS = {
 };
 
 const DICE_INERTIA = {
-  [DiceType.D6]: 13,
-  [DiceType.D8]: 10,
+  [DiceType.D6]: 6,
+  [DiceType.D8]: 6,
   [DiceType.D10]: 9,
   [DiceType.D12]: 8,
   [DiceType.D20]: 6
@@ -156,14 +156,14 @@ export default class Scene extends Component {
     const h = this.rect.height / 2;
     const t = Math.max(w, h);
 
-    const light = new THREE.SpotLight(this.props.spotLightColor, 2.0);
+    const light = new THREE.SpotLight(this.props.spotLightColor, 1.5);
     light.position.set(-t / 2, t / 2, t * 3);
     light.target.position.set(0, 0, 0);
     light.distance = t * 5;
     light.castShadow = true;
     light.shadow.camera.near = t / 10;
     light.shadow.camera.far = t * 5;
-    light.shadow.camera.spase = 20;
+    light.shadow.camera.space = 20;
     light.shadow.bias = 0.002;
     light.shadow.mapSize.width = 512;
     light.shadow.mapSize.height = 512;
@@ -410,7 +410,7 @@ export default class Scene extends Component {
   }
 
   isRolling() {
-    const threshold = 3;
+    const threshold = 1;
 
     for (let i = 0, n = this.diceCollection.length; i < n; i++) {
       const die = this.diceCollection[i];
@@ -487,17 +487,19 @@ export default class Scene extends Component {
 
     this.renderer.render(this.scene, this.camera);
 
+    const t = timestamp > 0 ? newTimestamp : this.createTimestamp();
+
     if (!this.isRolling()) {
       this.onRollComplete();
     }
     else {
       if (delta < (this.timeStep)) {
         setTimeout(() => {
-          window.requestAnimationFrame(() => this.animate(newTimestamp));
+          window.requestAnimationFrame(() => this.animate(t));
         }, (this.timeStep - delta) * 1000);
       }
       else {
-        window.requestAnimationFrame(() => this.animate(newTimestamp));
+        window.requestAnimationFrame(() => this.animate(t));
       }
     }
   }
