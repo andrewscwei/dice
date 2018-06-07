@@ -1,14 +1,14 @@
+import logging from '@/decorators/logging';
+import { createDiceByType } from '@/engine/mesh';
+import DiceType from '@/enums/DiceType';
+import { randomVectorFromVector, rng } from '@/utils/random';
+import CANNON from 'cannon';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import * as Spase from 'spase';
 import * as THREE from 'three';
-import classNames from 'classnames';
-import logging from '@/decorators/logging';
 import styles from './Scene.pcss';
-import CANNON from 'cannon';
-import DiceType from '@/enums/DiceType';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import { createDiceByType } from '@/engine/mesh';
-import { rng, randomVectorFromVector } from '@/utils/random';
 
 const BOUNDS_SCALE_X = 1.0;
 const BOUNDS_SCALE_Y = 1.0;
@@ -38,7 +38,7 @@ const DICE_INERTIA = {
 };
 
 @logging(`Scene`)
-export default class Scene extends Component {
+export default class Scene extends PureComponent {
   static propTypes = {
     className: PropTypes.string,
     style: PropTypes.object,
@@ -139,10 +139,6 @@ export default class Scene extends Component {
   componentDidMount() {
     this.rootNode.appendChild(this.renderer.domElement);
     this.reset();
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    return false;
   }
 
   createTimestamp() {
@@ -492,15 +488,13 @@ export default class Scene extends Component {
     if (!this.isRolling()) {
       this.onRollComplete();
     }
-    else {
-      if (delta < (this.timeStep)) {
-        setTimeout(() => {
-          window.requestAnimationFrame(() => this.animate(t));
-        }, (this.timeStep - delta) * 1000);
-      }
-      else {
+    else if (delta < (this.timeStep)) {
+      setTimeout(() => {
         window.requestAnimationFrame(() => this.animate(t));
-      }
+      }, (this.timeStep - delta) * 1000);
+    }
+    else {
+      window.requestAnimationFrame(() => this.animate(t));
     }
   }
 

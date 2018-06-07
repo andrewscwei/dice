@@ -148,7 +148,7 @@ export function createGeom(vertices, faces, radius, tab, af, chamfer) {
   let vectors = new Array(vertices.length);
 
   for (let i = 0; i < vertices.length; i++) {
-    vectors[i] = (new THREE.Vector3).fromArray(vertices[i]).normalize();
+    vectors[i] = (new THREE.Vector3()).fromArray(vertices[i]).normalize();
   }
 
   let cg = chamferGeom(vectors, faces, chamfer);

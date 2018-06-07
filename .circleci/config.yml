@@ -34,7 +34,7 @@ jobs:
       - store_artifacts:
           path: ~/repo/public
       - store_artifacts:
-          path: ~/repo/build
+          path: ~/repo/package
 
   build-test-and-deploy:
     working_directory: ~/repo
@@ -70,7 +70,7 @@ jobs:
       - store_artifacts:
           path: ~/repo/public
       - store_artifacts:
-          path: ~/repo/build
+          path: ~/repo/package
       - deploy:
           name: Deploy
           command: .circleci/deploy-to-netlify.sh
