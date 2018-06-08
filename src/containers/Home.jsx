@@ -9,8 +9,10 @@ import Scene from '@/components/Scene';
 import Settings from '@/components/Settings';
 import Shake from 'shake.js';
 import { translate } from 'react-i18next';
+import logging from '@/decorators/logging';
 
 @translate()
+@logging(`Home`)
 export default class Home extends PureComponent {
   static propTypes = {
     t: PropTypes.func.isRequired,
@@ -56,6 +58,14 @@ export default class Home extends PureComponent {
 
     this.touchHandler.remove(`tap`);
     this.touchHandler = undefined;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.diceType !== prevState.diceType || this.state.diceCount !== prevState.diceCount) {
+      this.log(`Dice changed`);
+      this.scene.clear();
+      this.scene.roll(undefined, undefined, window.__GAMEBOY__);
+    }
   }
 
   openSettings = () => {
@@ -112,7 +122,7 @@ export default class Home extends PureComponent {
           diceLabelColor={0xffffff}
           diceType={this.state.diceType}
           diceCount={this.state.diceCount}
-          shakeIntensity={150}
+          shakeIntensity={200}
           ref={el => this.scene = el}
         />
         <Footer className={styles[`footer`]} onSettingsButtonClick={this.openSettings} t={t} i18n={i18n}/>

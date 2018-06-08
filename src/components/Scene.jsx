@@ -23,7 +23,7 @@ const DICE_FACE_RANGE = {
 
 const DICE_MASS = {
   [DiceType.D6]: 300,
-  [DiceType.D8]: 340,
+  [DiceType.D8]: 350,
   [DiceType.D10]: 350,
   [DiceType.D12]: 350,
   [DiceType.D20]: 400
@@ -53,6 +53,9 @@ export default class Scene extends PureComponent {
     spotLightColor: PropTypes.number.isRequired,
     planeColor: PropTypes.number.isRequired
   }
+
+  // Timeout object for animation loop.
+  animateTimeout = null;
 
   // Light instance.
   light = null;
@@ -132,8 +135,8 @@ export default class Scene extends PureComponent {
     super(props);
 
     this.state = {
-      step: 0
-    };
+      isRolling: false,
+    }
   }
 
   componentDidMount() {
@@ -146,8 +149,6 @@ export default class Scene extends PureComponent {
   }
 
   createLight() {
-    this.log(`Creating new light for rect ${JSON.stringify(this.rect)}...`);
-
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
     const t = Math.max(w, h);
@@ -168,8 +169,6 @@ export default class Scene extends PureComponent {
   }
 
   createCamera() {
-    this.log(`Creating new camera for rect ${JSON.stringify(this.rect)}...`);
-
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
     const wh = h / Math.tan(10 * Math.PI / 180);
@@ -181,8 +180,6 @@ export default class Scene extends PureComponent {
   }
 
   createPlane() {
-    this.log(`Creating new plane for rect ${JSON.stringify(this.rect)}...`);
-
     const plane = new THREE.Mesh(new THREE.PlaneGeometry(this.rect.width, this.rect.height, 1, 1), new THREE.MeshPhongMaterial({ color: this.props.planeColor }));
     plane.receiveShadow = true;
 
@@ -205,19 +202,21 @@ export default class Scene extends PureComponent {
   }
 
   createDice(diceProps) {
-    this.clear();
-
     for (let i in diceProps) {
       const diceProp = diceProps[i];
       this.createDie(diceProp);
     }
   }
 
+  hasDice() {
+    return this.diceCollection.length > 0;
+  }
+
   generateDiceProps(position, acceleration) {
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
 
-    this.log(`Generating dice props with ${JSON.stringify(position)} and acceleration ${acceleration}`);
+    // this.log(`Generating dice props with ${JSON.stringify(position)} and acceleration ${acceleration}`);
 
     const vector = Object.assign({}, position);
     const distance = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
@@ -340,9 +339,10 @@ export default class Scene extends PureComponent {
   }
 
   clear() {
-    this.setState({
-      step: 0
-    });
+    this.log(`Clearing the scene`);
+
+    clearTimeout(this.animateTimeout);
+    this.animateTimeout = null;
 
     let die;
 
@@ -358,8 +358,9 @@ export default class Scene extends PureComponent {
   }
 
   simulateRoll() {
+    this.log(`Simulating dice roll...`);
+
     while (this.isRolling()) {
-      this.setState({ step: this.state.step + 1 });
       this.world.step(this.timeStep);
     }
   }
@@ -371,9 +372,9 @@ export default class Scene extends PureComponent {
     if (!position) position = { x: (rng() * 2 - 1) * w, y: -(rng() * 2 - 1) * h };
     if (!acceleration) acceleration = (rng() + 3);
 
-    if (this.isRolling()) {
-      this.log(`Dice is already rolling...`);
+    this.setState({ isRolling: true });
 
+    if (this.hasDice()) {
       for (let i = 0, n = this.diceCollection.length; i < n; i++) {
         const die = this.diceCollection[i];
         const intensity = acceleration * this.props.shakeIntensity;
@@ -386,17 +387,18 @@ export default class Scene extends PureComponent {
       return;
     }
 
-    this.log(`Rolling dice...`);
-
     const diceProps = this.generateDiceProps(position, acceleration);
 
+    this.clear();
     this.createDice(diceProps);
+
+    this.log(`Rolling dice...`);
 
     if (fixedResults && (fixedResults.length === this.props.diceCount)) {
       this.simulateRoll();
       const expectedResults = this.getResults();
+      this.clear();
       this.createDice(diceProps);
-
       for (let i in expectedResults) {
         this.playGameboy(this.diceCollection[i], expectedResults[i], fixedResults[i]);
       }
@@ -406,33 +408,18 @@ export default class Scene extends PureComponent {
   }
 
   isRolling() {
-    const threshold = 1;
-
     for (let i = 0, n = this.diceCollection.length; i < n; i++) {
+      const threshold = 1;
       const die = this.diceCollection[i];
-
-      if (die.step === -1) continue;
-
       const a = die.body.angularVelocity;
       const v = die.body.velocity;
 
-      if (Math.abs(a.x) <= threshold && Math.abs(a.y) <= threshold && Math.abs(a.z) <= threshold && Math.abs(v.x) <= threshold && Math.abs(v.y) <= threshold && Math.abs(v.z) <= threshold) {
-        if (die.step > 0) {
-          if (this.state.step - die.step > 0) {
-            die.step = -1;
-            continue;
-          }
-        }
-        else {
-          die.step = this.state.step;
-        }
-
-        return true;
-      }
-      else {
-        die.step = 0;
-        return true;
-      }
+      if (Math.abs(a.x) > threshold) return true;
+      if (Math.abs(a.y) > threshold) return true;
+      if (Math.abs(a.z) > threshold) return true;
+      if (Math.abs(v.x) > threshold) return true;
+      if (Math.abs(v.y) > threshold) return true;
+      if (Math.abs(v.z) > threshold) return true;
     }
 
     return false;
@@ -441,6 +428,7 @@ export default class Scene extends PureComponent {
   onRollComplete() {
     const result = this.getResults();
     this.log(`Done rolling, showing result:`, result);
+    this.setState({ isRolling: false });
   }
 
   playGameboy(die, oldValue, newValue) {
@@ -465,11 +453,8 @@ export default class Scene extends PureComponent {
 
   animate(timestamp = this.createTimestamp()) {
     const newTimestamp = this.createTimestamp();
+    const delta = (newTimestamp - timestamp) / 1000;
 
-    let delta = (newTimestamp - timestamp) / 1000;
-    if (delta > 3) delta = this.timeStep;
-
-    this.setState({ step: this.state.step + 1 });
     this.world.step(this.timeStep);
 
     for (let i in this.scene.children) {
@@ -483,19 +468,13 @@ export default class Scene extends PureComponent {
 
     this.renderer.render(this.scene, this.camera);
 
-    const t = timestamp > 0 ? newTimestamp : this.createTimestamp();
+    if (!this.isRolling() && this.state.isRolling) this.onRollComplete();
 
-    if (!this.isRolling()) {
-      this.onRollComplete();
-    }
-    else if (delta < (this.timeStep)) {
-      setTimeout(() => {
-        window.requestAnimationFrame(() => this.animate(t));
-      }, (this.timeStep - delta) * 1000);
-    }
-    else {
-      window.requestAnimationFrame(() => this.animate(t));
-    }
+    this.animateTimeout = setTimeout(() => {
+      window.requestAnimationFrame(() => this.animate(timestamp > 0 ? newTimestamp : this.createTimestamp()));
+      clearTimeout(this.animateTimeout);
+      this.animateTimeout = null;
+    }, (delta < (this.timeStep)) ? (this.timeStep - delta) * 1000 : 0);
   }
 
   render() {
