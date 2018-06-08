@@ -136,7 +136,7 @@ export default class Scene extends PureComponent {
 
     this.state = {
       isRolling: false,
-    }
+    };
   }
 
   componentDidMount() {
