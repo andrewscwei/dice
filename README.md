@@ -20,7 +20,3 @@ See `scripts` in `package.json` for additional commands.
 ## Credits
 
 Based on http://a.teall.info/dice/ by Anton Natarov.
-
-## License
-
-This software is released under the [MIT License](http://opensource.org/licenses/MIT).
