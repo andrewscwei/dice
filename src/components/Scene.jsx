@@ -18,7 +18,7 @@ const DICE_FACE_RANGE = {
   [DiceType.D8]: [1, 8],
   [DiceType.D10]: [0, 9],
   [DiceType.D12]: [1, 12],
-  [DiceType.D20]: [1, 20]
+  [DiceType.D20]: [1, 20],
 };
 
 const DICE_MASS = {
@@ -26,7 +26,7 @@ const DICE_MASS = {
   [DiceType.D8]: 350,
   [DiceType.D10]: 350,
   [DiceType.D12]: 350,
-  [DiceType.D20]: 400
+  [DiceType.D20]: 400,
 };
 
 const DICE_INERTIA = {
@@ -34,10 +34,10 @@ const DICE_INERTIA = {
   [DiceType.D8]: 6,
   [DiceType.D10]: 9,
   [DiceType.D12]: 8,
-  [DiceType.D20]: 6
+  [DiceType.D20]: 6,
 };
 
-@logging(`Scene`)
+@logging('Scene')
 export default class Scene extends PureComponent {
   static propTypes = {
     className: PropTypes.string,
@@ -51,7 +51,7 @@ export default class Scene extends PureComponent {
     shakeIntensity: PropTypes.number.isRequired,
     ambientLightColor: PropTypes.number.isRequired,
     spotLightColor: PropTypes.number.isRequired,
-    planeColor: PropTypes.number.isRequired
+    planeColor: PropTypes.number.isRequired,
   }
 
   // Timeout object for animation loop.
@@ -231,7 +231,7 @@ export default class Scene extends PureComponent {
       const position = {
         x: w * (v1.x > 0 ? -1 : 1) * 0.9,
         y: h * (v1.y > 0 ? -1 : 1) * 0.9,
-        z: rng() * 200 + 200
+        z: rng() * 200 + 200,
       };
 
       const projector = Math.abs(v1.x / v1.y);
@@ -288,10 +288,10 @@ export default class Scene extends PureComponent {
   }
 
   reset() {
-    this.log(`Resetting the scene...`);
-
     const w = this.rect.width;
     const h = this.rect.height;
+
+    this.log('Resetting the scene...', w, h);
 
     this.renderer.setSize(this.rect.width, this.rect.height);
 
@@ -339,7 +339,7 @@ export default class Scene extends PureComponent {
   }
 
   clear() {
-    this.log(`Clearing the scene`);
+    this.log('Clearing the scene');
 
     clearTimeout(this.animateTimeout);
     this.animateTimeout = null;
@@ -358,7 +358,7 @@ export default class Scene extends PureComponent {
   }
 
   simulateRoll() {
-    this.log(`Simulating dice roll...`);
+    this.log('Simulating dice roll...');
 
     while (this.isRolling()) {
       this.world.step(this.timeStep);
@@ -392,7 +392,7 @@ export default class Scene extends PureComponent {
     this.clear();
     this.createDice(diceProps);
 
-    this.log(`Rolling dice...`);
+    this.log('Rolling dice...');
 
     if (fixedResults && (fixedResults.length === this.props.diceCount)) {
       this.simulateRoll();
@@ -427,7 +427,7 @@ export default class Scene extends PureComponent {
 
   onRollComplete() {
     const result = this.getResults();
-    this.log(`Done rolling, showing result:`, result);
+    this.log('Done rolling, showing result:', result);
     this.setState({ isRolling: false });
   }
 
@@ -481,7 +481,7 @@ export default class Scene extends PureComponent {
     const { className, style } = this.props;
 
     return (
-      <div className={classNames(styles[`root`], className)} style={{ ...style || {} }} ref={el => this.rootNode = el}/>
+      <div className={classNames(styles['root'], className)} style={{ ...style || {} }} ref={el => this.rootNode = el}/>
     );
   }
 }

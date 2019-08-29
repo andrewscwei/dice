@@ -1,13 +1,26 @@
-import classNames from 'classnames';
-import styles from './Settings.pcss';
 import DiceType from '@/enums/DiceType';
-import PropTypes from 'prop-types';
 import RollMethod from '@/enums/RollMethod';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import styles from './Settings.pcss';
+
+const DICE_TYPE = {
+  d6: 'D6',
+  d8: 'D8',
+  d10: 'D10',
+  d12: 'D12',
+  d20: 'D20',
+};
+
+const ROLL_METHOD = {
+  tap: 'Tap Only',
+  shake: 'Shake Only',
+  tapAndShake: 'Tap & Shake',
+};
 
 export default class Settings extends Component {
   static propTypes = {
-    t: PropTypes.func.isRequired,
     className: PropTypes.string,
     style: PropTypes.object,
     onSave: PropTypes.func.isRequired,
@@ -15,7 +28,7 @@ export default class Settings extends Component {
     maxDiceCount: PropTypes.number.isRequired,
     defaultDiceType: PropTypes.string.isRequired,
     defaultDiceCount: PropTypes.number.isRequired,
-    defaultRollMethod: PropTypes.string.isRequired
+    defaultRollMethod: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -24,7 +37,7 @@ export default class Settings extends Component {
     this.state = {
       diceType: this.props.defaultDiceType,
       diceCount: this.props.defaultDiceCount,
-      rollMethod: this.props.defaultRollMethod
+      rollMethod: this.props.defaultRollMethod,
     };
   }
 
@@ -45,39 +58,39 @@ export default class Settings extends Component {
   }
 
   render() {
-    const { t, className, style, onSave, maxDiceCount } = this.props;
+    const { className, style, onSave, maxDiceCount } = this.props;
 
     return (
-      <div className={classNames(styles[`root`], className)} style={{ ...style || {} }}>
+      <div className={classNames(styles['root'], className)} style={{ ...style || {} }}>
         <main>
-          <h1 className={styles[`title`]}>{t(`settings`)}</h1>
-          <div className={styles[`row`]}>
-            <h2 className={styles[`option`]}>{t(`dice-type`)}</h2>
-            <select className={styles[`select`]} onChange={this.onDiceTypeChange} value={this.state.diceType}>
+          <h1 className={styles['title']}>Settings</h1>
+          <div className={styles['row']}>
+            <h2 className={styles['option']}>Dice type</h2>
+            <select className={styles['select']} onChange={this.onDiceTypeChange} value={this.state.diceType}>
               { Object.keys(DiceType).map(v => (
-                <option value={DiceType[v]} key={v}>{t(DiceType[v])}</option>
+                <option value={DiceType[v]} key={v}>{DICE_TYPE[DiceType[v]]}</option>
               ))}
             </select>
           </div>
-          <div className={styles[`row`]}>
-            <h2 className={styles[`option`]}>{t(`dice-count`)}</h2>
-            <select className={styles[`select`]} onChange={this.onDiceCountChange} value={this.state.diceCount}>
+          <div className={styles['row']}>
+            <h2 className={styles['option']}>Number of dice</h2>
+            <select className={styles['select']} onChange={this.onDiceCountChange} value={this.state.diceCount}>
               <option value={0} key={0}>{0}</option>
               { Array.apply(null, { length: maxDiceCount }).map((v, i) => (
                 <option value={i+1} key={i+1}>{i+1}</option>
               ))}
             </select>
           </div>
-          <div className={styles[`row`]}>
-            <h2 className={styles[`option`]}>{t(`how-to-roll`)}</h2>
-            <select className={styles[`select`]} onChange={this.onRollMethodChange} value={this.state.rollMethod}>
+          <div className={styles['row']}>
+            <h2 className={styles['option']}>Roll By</h2>
+            <select className={styles['select']} onChange={this.onRollMethodChange} value={this.state.rollMethod}>
               { Object.keys(RollMethod).map(v => (
-                <option value={RollMethod[v]} key={v}>{t(RollMethod[v])}</option>
+                <option value={RollMethod[v]} key={v}>{ROLL_METHOD[RollMethod[v]]}</option>
               ))}
             </select>
           </div>
-          <div className={styles[`actions`]}>
-            <button className={styles[`done-button`]} onClick={(event) => onSave()}>{t(`done`)}</button>
+          <div className={styles['actions']}>
+            <button className={styles['done-button']} onClick={(event) => onSave()}>Done</button>
           </div>
         </main>
       </div>

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { toWebHexString } from '@/utils/palette';
 
-const FACE_LABELS = [` `, `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `10`, `11`, `12`, `13`, `14`, `15`, `16`, `17`, `18`, `19`, `20`];
+const FACE_LABELS = [' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
 
 export function createDiceNumberedMaterials(scale, diceColor, labelColor) {
   let materials = [];
@@ -10,7 +10,7 @@ export function createDiceNumberedMaterials(scale, diceColor, labelColor) {
     materials.push(new THREE.MeshPhongMaterial({
       map: createTextTexture(scale, FACE_LABELS[i], diceColor, labelColor),
       shininess: 6,
-      flatShading: true
+      flatShading: true,
     }));
   }
 
@@ -24,7 +24,7 @@ export function createD6Materials(scale, diceColor, labelColor) {
     materials.push(new THREE.MeshPhongMaterial({
       map: createDotTexture(scale, i-1, diceColor, labelColor),
       shininess: 6,
-      flatShading: true
+      flatShading: true,
     }));
   }
 
@@ -38,23 +38,23 @@ export function calculateTextureSize(approx) {
 export function createTextTexture(scale, text, diceColor, labelColor) {
   if (text === undefined) return null;
 
-  const canvas = document.createElement(`canvas`);
-  const ctx = canvas.getContext(`2d`);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
   const s = calculateTextureSize(scale + scale * 2) * 2;
 
   canvas.width = s;
   canvas.height = s;
 
-  ctx.font = s / (1 + 2) + `pt Roboto`;
+  ctx.font = s / (1 + 2) + 'pt Roboto';
   ctx.fillStyle = toWebHexString(diceColor);
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.textAlign = `center`;
-  ctx.textBaseline = `middle`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
   ctx.fillStyle = toWebHexString(labelColor);
   ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 
-  if (text === `6` || text === `9`) {
-    ctx.fillText(`  .`, canvas.width / 2, canvas.height / 2);
+  if (text === '6' || text === '9') {
+    ctx.fillText('  .', canvas.width / 2, canvas.height / 2);
   }
 
   const texture = new THREE.Texture(canvas);
@@ -64,8 +64,8 @@ export function createTextTexture(scale, text, diceColor, labelColor) {
 }
 
 export function createDotTexture(scale, value, diceColor, labelColor) {
-  const canvas = document.createElement(`canvas`);
-  const ctx = canvas.getContext(`2d`);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
   const s = calculateTextureSize(scale + scale * 2) * 2;
   const r = scale * 0.25;
   const p = scale * 1.3;

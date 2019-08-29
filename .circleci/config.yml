@@ -3,7 +3,7 @@ jobs:
   build-and-test:
     working_directory: ~/repo
     docker:
-      - image: node:8.9.4
+      - image: node:10.16.3
     steps:
       - checkout
       - run:
@@ -39,7 +39,7 @@ jobs:
   build-test-and-deploy:
     working_directory: ~/repo
     docker:
-      - image: node:8.9.4
+      - image: node:10.16.3
     steps:
       - checkout
       - run:

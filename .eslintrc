@@ -9,10 +9,12 @@
     "sourceType": "module",
     "ecmaVersion": 2017,
     "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
+      "experimentalObjectRestSpread": true,
+      "legacyDecorators": true
     }
   },
   "env": {
+    "browser": true,
     "es6": true,
     "node": true
   },
@@ -25,6 +27,7 @@
         "allowSingleLine": true
       }
     ],
+    "comma-dangle": ["error", "always-multiline"],
     "comma-spacing": [
       "error",
       {
@@ -99,7 +102,11 @@
     ],
     "space-before-function-paren": [
       "error",
-      "never"
+      {
+        "anonymous": "never",
+        "named": "never",
+        "asyncArrow": "always"
+      }
     ],
     "spaced-comment": [
       "error",
@@ -112,7 +119,7 @@
     ],
     "quotes": [
       "error",
-      "backtick"
+      "single"
     ]
   }
 }

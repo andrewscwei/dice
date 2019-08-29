@@ -4,8 +4,8 @@ import Home from '@/containers/Home';
 export default [{
   component: App,
   routes: [{
-    path: `/`,
+    path: '/',
     exact: true,
-    component: Home
-  }]
+    component: Home,
+  }],
 }];

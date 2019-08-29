@@ -4,6 +4,5 @@
   },
   "globals": {
     "$APP_CONFIG": true,
-    "$TRANSLATIONS": true
   }
 }

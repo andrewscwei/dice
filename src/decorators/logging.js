@@ -9,8 +9,8 @@ export default function logging(label) {
   return function(constructor) {
     return class extends constructor {
       log() {
-        if (process.env.NODE_ENV === `development`) {
-          const debug = require(`debug`);
+        if (process.env.NODE_ENV === 'development') {
+          const debug = require('debug');
           debug(label).apply(undefined, arguments);
         }
       }
