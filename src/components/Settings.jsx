@@ -29,6 +29,7 @@ export default class Settings extends Component {
     defaultDiceType: PropTypes.string.isRequired,
     defaultDiceCount: PropTypes.number.isRequired,
     defaultRollMethod: PropTypes.string.isRequired,
+    defaultSoundEnabled: PropTypes.bool.isRequired,
   }
 
   constructor(props) {
@@ -38,6 +39,7 @@ export default class Settings extends Component {
       diceType: this.props.defaultDiceType,
       diceCount: this.props.defaultDiceCount,
       rollMethod: this.props.defaultRollMethod,
+      soundEnabled: this.props.defaultSoundEnabled,
     };
   }
 
@@ -55,6 +57,10 @@ export default class Settings extends Component {
 
   onRollMethodChange = (event) => {
     this.setState({ rollMethod: event.target.value });
+  }
+
+  onSoundChange = (event) => {
+    this.setState({ soundEnabled: event.target.value === 'Yes' ? true : false });
   }
 
   render() {
@@ -87,6 +93,13 @@ export default class Settings extends Component {
               { Object.keys(RollMethod).map(v => (
                 <option value={RollMethod[v]} key={v}>{ROLL_METHOD[RollMethod[v]]}</option>
               ))}
+            </select>
+          </div>
+          <div className={styles['row']}>
+            <h2 className={styles['option']}>Sound</h2>
+            <select className={styles['select']} onChange={this.onSoundChange} value={this.state.soundEnabled ? 'Yes' : 'No'}>
+              <option value='Yes'>Yes</option>
+              <option value='No'>No</option>
             </select>
           </div>
           <div className={styles['actions']}>

@@ -22,6 +22,7 @@ export default class Home extends PureComponent {
       diceType: $APP_CONFIG.preferences.defaultDiceType,
       diceCount: $APP_CONFIG.preferences.defaultDiceCount,
       rollMethod: $APP_CONFIG.preferences.defaultRollMethod,
+      soundEnabled: $APP_CONFIG.preferences.defaultSoundEnabled,
     };
   }
 
@@ -78,6 +79,7 @@ export default class Home extends PureComponent {
       diceType: this.settings.state.diceType,
       diceCount: this.settings.state.diceCount,
       rollMethod: this.settings.state.rollMethod,
+      soundEnabled: this.settings.state.soundEnabled,
     });
   }
 
@@ -115,6 +117,7 @@ export default class Home extends PureComponent {
           diceLabelColor={0xffffff}
           diceType={this.state.diceType}
           diceCount={this.state.diceCount}
+          soundEnabled={this.state.soundEnabled}
           shakeIntensity={200}
           ref={el => this.scene = el}
         />
@@ -126,6 +129,7 @@ export default class Home extends PureComponent {
           defaultDiceType={$APP_CONFIG.preferences.defaultDiceType}
           defaultDiceCount={$APP_CONFIG.preferences.defaultDiceCount}
           defaultRollMethod={$APP_CONFIG.preferences.defaultRollMethod}
+          defaultSoundEnabled={$APP_CONFIG.preferences.defaultSoundEnabled}
           maxDiceCount={$APP_CONFIG.preferences.maxDiceCount}
           ref={el => this.settings = el}
         />

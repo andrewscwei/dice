@@ -14,6 +14,9 @@ module.exports = {
     // Default roll method.
     defaultRollMethod: 'tapAndShake',
 
+    // Default sound enabled.
+    defaultSoundEnabled: true,
+
     // Maximum number of dice allowed.
     maxDiceCount: 23,
   },

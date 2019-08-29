@@ -47,6 +47,7 @@ export default class Scene extends PureComponent {
     diceScale: PropTypes.number.isRequired,
     diceCount: PropTypes.number.isRequired,
     diceColor: PropTypes.number.isRequired,
+    soundEnabled: PropTypes.bool.isRequired,
     diceLabelColor: PropTypes.number.isRequired,
     shakeIntensity: PropTypes.number.isRequired,
     ambientLightColor: PropTypes.number.isRequired,
@@ -71,6 +72,12 @@ export default class Scene extends PureComponent {
 
   // References to all walls.
   walls = [];
+
+  get audio() {
+    if (this._audio) return this._audio;
+    this._audio = new Audio(require('@/assets/audio/shake.mp3'));
+    return this._audio;
+  }
 
   get rect() {
     if (!this.rootNode) return new Spase.Rect();
@@ -365,6 +372,16 @@ export default class Scene extends PureComponent {
     }
   }
 
+  playSound() {
+    if (!this.props.soundEnabled) {
+      this.audio.pause();
+      return;
+    }
+
+    this.audio.currentTime = 0;
+    this.audio.play();
+  }
+
   roll(position, acceleration, fixedResults) {
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
@@ -374,7 +391,11 @@ export default class Scene extends PureComponent {
 
     this.setState({ isRolling: true });
 
+    this.playSound();
+
     if (this.hasDice()) {
+      this.log('Shake shake shake...');
+
       for (let i = 0, n = this.diceCollection.length; i < n; i++) {
         const die = this.diceCollection[i];
         const intensity = acceleration * this.props.shakeIntensity;
