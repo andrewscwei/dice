@@ -141,6 +141,9 @@ export default class Scene extends PureComponent {
   constructor(props) {
     super(props);
 
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    this._audioContext = new AudioContext();
+
     this.state = {
       isRolling: false,
     };
