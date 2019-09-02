@@ -1,3 +1,5 @@
+import $$GitHubIcon from '!!raw-loader!@/assets/images/github-icon.svg';
+import $$Logo from '!!raw-loader!@/assets/images/mu.svg';
 import DiceType from '@/enums/DiceType';
 import RollMethod from '@/enums/RollMethod';
 import classNames from 'classnames';
@@ -79,7 +81,7 @@ export default class Settings extends Component {
             </select>
           </div>
           <div className={styles['row']}>
-            <h2 className={styles['option']}>Number of dice</h2>
+            <h2 className={styles['option']}>No. of dice</h2>
             <select className={styles['select']} onChange={this.onDiceCountChange} value={this.state.diceCount}>
               <option value={0} key={0}>{0}</option>
               { Array.apply(null, { length: maxDiceCount }).map((v, i) => (
@@ -106,6 +108,10 @@ export default class Settings extends Component {
             <button className={styles['done-button']} onClick={(event) => onSave()}>Done</button>
           </div>
         </main>
+        <div className={styles['footer']}>
+          <a className={styles['monogram']} href='https://www.andr.mu' dangerouslySetInnerHTML={{ __html: $$Logo }}/>
+          <a className={styles['button']} dangerouslySetInnerHTML={{ __html: $$GitHubIcon }} href='https://github.com/andrewscwei/dice'/>
+        </div>
       </div>
     );
   }
