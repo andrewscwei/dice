@@ -17,7 +17,7 @@
     "clean": "rimraf public",
     "build": "npm run clean && NODE_ENV=production webpack --colors --profile --config config/build.conf.js --display-error-details",
     "test": "echo \"No tests yet\"",
-    "dev": "NODE_ENV=development webpack-serve --host 0.0.0.0 --port 8080 --config config/build.conf.js",
+    "dev": "NODE_ENV=development webpack-serve --host 0.0.0.0 --port 8080 --config config/build.conf.js --static public",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:fix": "npm run lint:js:fix && npm run lint:css:fix",
     "lint:js": "eslint . -f node_modules/eslint-friendly-formatter --ignore-path .gitignore --ext .jsx --ext .js",
@@ -69,7 +69,7 @@
     "webpack": "^4.42.0",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.11",
-    "webpack-serve": "^1.0.3"
+    "webpack-serve": "^3.2.0"
   },
   "dependencies": {
     "cannon": "^0.6.2",
