@@ -6,7 +6,7 @@ This is a web-based dice rolling app that uses React, Three and Cannon. Demo is 
 
 ```sh
 # Install dependencies
-$ yarn
+$ npm install
 
 # Run in dev
 $ npm run dev
