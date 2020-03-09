@@ -88,13 +88,13 @@ module.exports = {
       })(),
     }, {
       test: /\.(jpe?g|png|gif|svg|ico)(\?.*)?$/,
-      use: `url-loader?limit=10000&name=assets/images/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
+      use: `url-loader?limit=10000&esModule=false&name=assets/images/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
     }, {
       test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-      use: `url-loader?limit=10000&name=assets/media/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
+      use: `url-loader?limit=10000&esModule=false&name=assets/media/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
     }, {
       test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-      use: `url-loader?limit=10000&name=assets/fonts/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
+      use: `url-loader?limit=10000&esModule=false&name=assets/fonts/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
     }]
       .concat((isDev ? config.dev.linter : config.build.linter) ? [{
         test: /\.jsx?$/,

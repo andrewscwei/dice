@@ -1,4 +1,4 @@
-# dice [![CircleCI](https://circleci.com/gh/andrewscwei/dice.svg?style=svg&circle-token=2c1542f86f0dcc7f1f426e6849fc8d4e512ccce3)](https://circleci.com/gh/andrewscwei/dice)
+# dice [![CircleCI](https://img.shields.io/circleci/build/gh/andrewscwei/dice.svg)](https://circleci.com/gh/andrewscwei/dice)
 
 This is a web-based dice rolling app that uses React, Three and Cannon. Demo is available [here](http://dice.andr.mu).
 

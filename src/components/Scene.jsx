@@ -6,7 +6,7 @@ import CANNON from 'cannon';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import * as Spase from 'spase';
+import { Rect } from 'spase';
 import * as THREE from 'three';
 import styles from './Scene.pcss';
 
@@ -80,8 +80,8 @@ export default class Scene extends PureComponent {
   }
 
   get rect() {
-    if (!this.rootNode) return new Spase.Rect();
-    return Spase.getRect(this.rootNode);
+    if (!this.rootNode) return new Rect();
+    return Rect.from(this.rootNode);
   }
 
   get scene() {

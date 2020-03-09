@@ -1,4 +1,4 @@
-FROM node:10.16.3-alpine
+FROM node:13.7.0-alpine
 
 # Set environment variables
 ARG NODE_ENV=production
