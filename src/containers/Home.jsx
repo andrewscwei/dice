@@ -5,14 +5,18 @@ import logging from '@/decorators/logging';
 import RollMethod from '@/enums/RollMethod';
 import classNames from 'classnames';
 import Hammer from 'hammerjs';
-import React, { PureComponent } from 'react';
+import React, { createRef, PureComponent } from 'react';
 import Shake from 'shake.js';
 import styles from './Home.pcss';
 
 @logging('Home')
 export default class Home extends PureComponent {
-  static propTypes = {
-  }
+  static propTypes = {}
+
+  nodeRefs = {
+    scene: createRef(),
+    settings: createRef(),
+  };
 
   constructor(props) {
     super(props);
@@ -27,7 +31,7 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    this.touchHandler = new Hammer(this.scene.rootNode);
+    this.touchHandler = new Hammer(this.nodeRefs.scene.current?.nodeRefs.root.current);
     this.touchHandler.on('tap', this.onTap);
 
     this.shakeHandler = new Shake({
@@ -41,7 +45,7 @@ export default class Home extends PureComponent {
     window.addEventListener('resize', this.onResize);
     window.addEventListener('shake', this.onShake);
 
-    this.scene.roll(undefined, undefined, window.__GAMEBOY__);
+    this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
   }
 
   componentWillUnmount() {
@@ -59,8 +63,8 @@ export default class Home extends PureComponent {
   componentDidUpdate(prevProps, prevState) {
     if (this.state.diceType !== prevState.diceType || this.state.diceCount !== prevState.diceCount) {
       this.log('Dice changed');
-      this.scene.clear();
-      this.scene.roll(undefined, undefined, window.__GAMEBOY__);
+      this.nodeRefs.scene.current?.clear();
+      this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
     }
   }
 
@@ -73,18 +77,18 @@ export default class Home extends PureComponent {
   }
 
   updateSettings = () => {
-    if (!this.settings) return;
+    if (!this.nodeRefs.settings.current) return;
 
     this.setState({
-      diceType: this.settings.state.diceType,
-      diceCount: this.settings.state.diceCount,
-      rollMethod: this.settings.state.rollMethod,
-      soundEnabled: this.settings.state.soundEnabled,
+      diceType: this.nodeRefs.settings.current.state.diceType,
+      diceCount: this.nodeRefs.settings.current.state.diceCount,
+      rollMethod: this.nodeRefs.settings.current.state.rollMethod,
+      soundEnabled: this.nodeRefs.settings.current.state.soundEnabled,
     });
   }
 
   onResize = (event) => {
-    this.scene.reset();
+    this.nodeRefs.scene.current?.reset();
   }
 
   onTouchMove = (event) => {
@@ -94,18 +98,18 @@ export default class Home extends PureComponent {
   onShake = (event) => {
     if (this.state.areSettingsVisible === true) return;
     if (this.state.rollMethod === RollMethod.TAP) return;
-    this.scene.roll(undefined, undefined, window.__GAMEBOY__);
+    this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
   }
 
   onTap = (event) => {
     if (this.state.areSettingsVisible === true) return;
     if (this.state.rollMethod === RollMethod.SHAKE) return;
-    this.scene.roll(undefined, undefined, window.__GAMEBOY__);
+    this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
   }
 
   render() {
     return (
-      <div className={styles['root']} ref={el => this.rootNode = el}>
+      <div className={styles['root']}>
         <Scene
           className={styles['scene']}
           frameRate={60}
@@ -119,7 +123,7 @@ export default class Home extends PureComponent {
           diceCount={this.state.diceCount}
           soundEnabled={this.state.soundEnabled}
           shakeIntensity={200}
-          ref={el => this.scene = el}
+          ref={this.nodeRefs.scene}
         />
         <Footer className={styles['footer']} onSettingsButtonClick={this.openSettings}/>
         <Settings
@@ -131,7 +135,7 @@ export default class Home extends PureComponent {
           defaultRollMethod={$APP_CONFIG.preferences.defaultRollMethod}
           defaultSoundEnabled={$APP_CONFIG.preferences.defaultSoundEnabled}
           maxDiceCount={$APP_CONFIG.preferences.maxDiceCount}
-          ref={el => this.settings = el}
+          ref={this.nodeRefs.settings}
         />
       </div>
     );
