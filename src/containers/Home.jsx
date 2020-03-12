@@ -122,7 +122,7 @@ export default class Home extends PureComponent {
           diceType={this.state.diceType}
           diceCount={this.state.diceCount}
           soundEnabled={this.state.soundEnabled}
-          shakeIntensity={200}
+          shakeIntensity={500}
           ref={this.nodeRefs.scene}
         />
         <Footer className={styles['footer']} onSettingsButtonClick={this.openSettings}/>

@@ -408,8 +408,8 @@ export default class Scene extends PureComponent {
         const intensity = acceleration * this.props.shakeIntensity;
         const { x: vx, y: vy, z: vz } = die.body.velocity;
         const { x: avx, y: avy, z: avz } = die.body.angularVelocity;
-        die.body.velocity = new CANNON.Vec3(vx + intensity * rng(false), vy + intensity * rng(false), vz + intensity * rng(false));
-        die.body.angularVelocity = new CANNON.Vec3(avx + intensity / 2 * rng(false), avy + intensity / 2 * rng(false), avz + intensity / 2 * rng(false));
+        die.body.velocity = new CANNON.Vec3(vx, vy, vz);
+        die.body.angularVelocity = new CANNON.Vec3(avx + 300 + intensity / 2 * rng(false), avy + 300 + intensity / 2 * rng(false), avz + 400 + intensity / 2 * rng(false));
       }
 
       return;
