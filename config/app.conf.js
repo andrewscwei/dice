@@ -12,7 +12,7 @@ module.exports = {
     defaultDiceCount: 5,
 
     // Default roll method.
-    defaultRollMethod: 'tapAndShake',
+    defaultRollMethod: 'tap',
 
     // Default sound enabled.
     defaultSoundEnabled: true,

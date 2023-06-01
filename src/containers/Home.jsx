@@ -34,21 +34,16 @@ export default class Home extends PureComponent {
     this.touchHandler = new Hammer(this.nodeRefs.scene.current?.nodeRefs.root.current);
     this.touchHandler.on('tap', this.onTap);
 
-    if (typeof DeviceMotionEvent.requestPermission === 'function') {
-      DeviceMotionEvent.requestPermission().then(() => {
-        this.shakeHandler = new Shake({
-          threshold: 5,
-          timeout: 200,
-        });
+    this.shakeHandler = new Shake({
+      threshold: 5,
+      timeout: 200,
+    });
 
-        this.shakeHandler.start();
-
-        window.addEventListener('shake', this.onShake);
-      });
-    }
+    this.shakeHandler.start();
 
     document.body.addEventListener('touchmove', this.onTouchMove);
     window.addEventListener('resize', this.onResize);
+    window.addEventListener('shake', this.onShake);
 
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
   }

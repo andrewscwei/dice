@@ -58,6 +58,12 @@ export default class Settings extends Component {
   }
 
   onRollMethodChange = (event) => {
+    if (event.target.value === RollMethod.SHAKE || event.target.value === RollMethod.TAP_AND_SHAKE) {
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission();
+      }
+    }
+
     this.setState({ rollMethod: event.target.value });
   }
 
