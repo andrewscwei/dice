@@ -17,7 +17,6 @@ export function createShape(vertices, faces, radius) {
   return new CANNON.ConvexPolyhedron(cv, cf);
 }
 
-
 export function makeGeom(vertices, faces, radius, tab, af) {
   const geom = new THREE.Geometry();
 

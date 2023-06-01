@@ -34,16 +34,21 @@ export default class Home extends PureComponent {
     this.touchHandler = new Hammer(this.nodeRefs.scene.current?.nodeRefs.root.current);
     this.touchHandler.on('tap', this.onTap);
 
-    this.shakeHandler = new Shake({
-      threshold: 5,
-      timeout: 200,
-    });
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission().then(() => {
+        this.shakeHandler = new Shake({
+          threshold: 5,
+          timeout: 200,
+        });
 
-    this.shakeHandler.start();
+        this.shakeHandler.start();
+
+        window.addEventListener('shake', this.onShake);
+      });
+    }
 
     document.body.addEventListener('touchmove', this.onTouchMove);
     window.addEventListener('resize', this.onResize);
-    window.addEventListener('shake', this.onShake);
 
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
   }
@@ -53,7 +58,7 @@ export default class Home extends PureComponent {
     window.removeEventListener('shake', this.onShake);
     window.removeEventListener('resize', this.onResize);
 
-    this.shakeHandler.stop();
+    this.shakeHandler?.stop();
     this.shakeHandler = undefined;
 
     this.touchHandler.remove('tap');
