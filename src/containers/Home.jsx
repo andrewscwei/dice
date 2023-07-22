@@ -42,7 +42,10 @@ export default class Home extends PureComponent {
     this.shakeHandler.start();
 
     document.body.addEventListener('touchmove', this.onTouchMove);
-    window.addEventListener('resize', this.onResize);
+
+    this.resizeObserver = new ResizeObserver(() => this.onResize());
+    this.resizeObserver.observe(document.documentElement);
+
     window.addEventListener('shake', this.onShake);
 
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
@@ -51,7 +54,9 @@ export default class Home extends PureComponent {
   componentWillUnmount() {
     document.body.removeEventListener('touchmove', this.onTouchMove);
     window.removeEventListener('shake', this.onShake);
-    window.removeEventListener('resize', this.onResize);
+
+    this.resizeObserver.unobserve(document.documentElement);
+    this.resizeObserver = undefined;
 
     this.shakeHandler?.stop();
     this.shakeHandler = undefined;
