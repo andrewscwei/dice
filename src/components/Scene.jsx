@@ -60,6 +60,12 @@ export default class Scene extends PureComponent {
     root: createRef(),
   };
 
+  audioContext = new AudioContext();
+
+  audioSource = null;
+
+  audioBuffer = null;
+
   // Timeout object for animation loop.
   animateTimeout = null;
 
@@ -77,12 +83,6 @@ export default class Scene extends PureComponent {
 
   // References to all walls.
   walls = [];
-
-  get audio() {
-    if (this._audio) return this._audio;
-    this._audio = new Audio($$ShakeSound);
-    return this._audio;
-  }
 
   get rect() {
     if (!this.nodeRefs.root.current) return new Rect();
@@ -153,11 +153,18 @@ export default class Scene extends PureComponent {
 
   componentDidMount() {
     this.nodeRefs.root.current?.appendChild(this.renderer.domElement);
+    this.prepareSound();
     this.reset();
   }
 
   createTimestamp() {
     return (new Date()).getTime();
+  }
+
+  async prepareSound() {
+    if (this.audioBuffer) return;
+
+    this.audioBuffer = await fetch($$ShakeSound).then(t => t.arrayBuffer()).then(t => this.audioContext.decodeAudioData(t));
   }
 
   createLight() {
@@ -378,13 +385,17 @@ export default class Scene extends PureComponent {
   }
 
   playSound() {
-    if (!this.props.soundEnabled) {
-      this.audio.pause();
-      return;
-    }
+    if (!this.audioBuffer) return;
 
-    this.audio.currentTime = 0;
-    this.audio.play();
+    this.audioSource?.stop();
+
+    const source = this.audioContext.createBufferSource();
+    source.buffer = this.audioBuffer;
+    source.connect(this.audioContext.destination);
+    source.start();
+    source.onended = () => (this.audioSource = undefined);
+
+    this.audioSource = source;
   }
 
   roll(position, acceleration, fixedResults, soundEnabled = false) {
@@ -396,7 +407,7 @@ export default class Scene extends PureComponent {
 
     this.setState({ isRolling: true });
 
-    if (soundEnabled) {
+    if (soundEnabled && this.props.soundEnabled) {
       this.playSound();
     }
 
