@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent, createRef } from 'react';
 import { Rect } from 'spase';
 import * as THREE from 'three';
-import $$Shake from '../assets/media/shake.mp3';
+import $$ShakeSound from '../assets/media/shake.mp3';
 import logging from '../decorators/logging';
 import { createDiceByType } from '../engine/mesh';
 import DiceType from '../enums/DiceType';
@@ -80,7 +80,7 @@ export default class Scene extends PureComponent {
 
   get audio() {
     if (this._audio) return this._audio;
-    this._audio = new Audio($$Shake);
+    this._audio = new Audio($$ShakeSound);
     return this._audio;
   }
 
