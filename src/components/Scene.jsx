@@ -146,9 +146,6 @@ export default class Scene extends PureComponent {
   constructor(props) {
     super(props);
 
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    this._audioContext = new AudioContext();
-
     this.state = {
       isRolling: false,
     };
@@ -387,10 +384,10 @@ export default class Scene extends PureComponent {
     }
 
     this.audio.currentTime = 0;
-    // this.audio.play();
+    this.audio.play();
   }
 
-  roll(position, acceleration, fixedResults) {
+  roll(position, acceleration, fixedResults, soundEnabled = false) {
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
 
@@ -399,7 +396,9 @@ export default class Scene extends PureComponent {
 
     this.setState({ isRolling: true });
 
-    this.playSound();
+    if (soundEnabled) {
+      this.playSound();
+    }
 
     if (this.hasDice()) {
       this.log('Shake shake shake...');

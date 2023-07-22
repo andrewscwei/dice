@@ -103,13 +103,13 @@ export default class App extends PureComponent {
   onShake = (event) => {
     if (this.state.areSettingsVisible === true) return;
     if (this.state.rollMethod === RollMethod.TAP) return;
-    this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
+    this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__, true);
   };
 
   onTap = (event) => {
     if (this.state.areSettingsVisible === true) return;
     if (this.state.rollMethod === RollMethod.SHAKE) return;
-    this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
+    this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__, true);
   };
 
   render() {
