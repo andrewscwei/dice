@@ -15,7 +15,6 @@ export default class App extends PureComponent {
 
   nodeRefs = {
     scene: createRef(),
-    settings: createRef(),
   };
 
   constructor(props) {
