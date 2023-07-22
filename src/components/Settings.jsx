@@ -72,37 +72,43 @@ export default class Settings extends Component {
       <div className={classNames(styles['root'], className)} style={{ ...style || {} }}>
         <main>
           <h1 className={styles['title']}>Settings</h1>
-          <div className={styles['row']}>
-            <h2 className={styles['option']}>Dice type</h2>
-            <select className={styles['select']} onChange={this.onDiceTypeChange} value={this.state.diceType}>
-              { Object.keys(DiceType).map(v => (
-                <option value={DiceType[v]} key={v}>{DICE_TYPE[DiceType[v]]}</option>
-              ))}
-            </select>
-          </div>
-          <div className={styles['row']}>
-            <h2 className={styles['option']}>No. of dice</h2>
-            <select className={styles['select']} onChange={this.onDiceCountChange} value={this.state.diceCount}>
-              <option value={0} key={0}>{0}</option>
-              { Array.apply(null, { length: maxDiceCount }).map((v, i) => (
-                <option value={i+1} key={i+1}>{i+1}</option>
-              ))}
-            </select>
-          </div>
-          <div className={styles['row']}>
-            <h2 className={styles['option']}>Roll By</h2>
-            <select className={styles['select']} onChange={this.onRollMethodChange} value={this.state.rollMethod}>
-              { Object.keys(RollMethod).map(v => (
-                <option value={RollMethod[v]} key={v}>{ROLL_METHOD[RollMethod[v]]}</option>
-              ))}
-            </select>
-          </div>
-          <div className={styles['row']}>
-            <h2 className={styles['option']}>Sound</h2>
-            <select className={styles['select']} onChange={this.onSoundChange} value={this.state.soundEnabled ? 'Yes' : 'No'}>
-              <option value='Yes'>Yes</option>
-              <option value='No'>No</option>
-            </select>
+          <div className={styles['columns']}>
+            <div>
+              <div className={styles['row']}>
+                <h2 className={styles['option']}>Dice type</h2>
+                <select className={styles['select']} onChange={this.onDiceTypeChange} value={this.state.diceType}>
+                  { Object.keys(DiceType).map(v => (
+                    <option value={DiceType[v]} key={v}>{DICE_TYPE[DiceType[v]]}</option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles['row']}>
+                <h2 className={styles['option']}>No. of dice</h2>
+                <select className={styles['select']} onChange={this.onDiceCountChange} value={this.state.diceCount}>
+                  <option value={0} key={0}>{0}</option>
+                  { Array.apply(null, { length: maxDiceCount }).map((v, i) => (
+                    <option value={i+1} key={i+1}>{i+1}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div>
+              <div className={styles['row']}>
+                <h2 className={styles['option']}>Roll By</h2>
+                <select className={styles['select']} onChange={this.onRollMethodChange} value={this.state.rollMethod}>
+                  { Object.keys(RollMethod).map(v => (
+                    <option value={RollMethod[v]} key={v}>{ROLL_METHOD[RollMethod[v]]}</option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles['row']}>
+                <h2 className={styles['option']}>Sound</h2>
+                <select className={styles['select']} onChange={this.onSoundChange} value={this.state.soundEnabled ? 'Yes' : 'No'}>
+                  <option value='Yes'>Yes</option>
+                  <option value='No'>No</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div className={styles['actions']}>
             <button className={styles['done-button']} onClick={(event) => onSave()}>Done</button>
