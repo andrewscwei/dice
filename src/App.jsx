@@ -2,12 +2,12 @@ import classNames from 'classnames';
 import Hammer from 'hammerjs';
 import React, { createRef, PureComponent } from 'react';
 import Shake from 'shake.js';
-import Footer from '../components/Footer';
-import Scene from '../components/Scene';
-import Settings from '../components/Settings';
-import logging from '../decorators/logging';
-import RollMethod from '../enums/RollMethod';
 import styles from './App.pcss';
+import Footer from './components/Footer';
+import Scene from './components/Scene';
+import Settings from './components/Settings';
+import logging from './decorators/logging';
+import RollMethod from './enums/RollMethod';
 
 @logging('App')
 export default class App extends PureComponent {
