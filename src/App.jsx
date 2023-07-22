@@ -83,22 +83,20 @@ export default class App extends PureComponent {
     }
   }
 
-  openSettings = () => {
+  onOpenSettings = () => {
     this.setState({ areSettingsVisible: true });
   };
 
-  closeSettings = () => {
+  onDismissSettings = () => {
     this.setState({ areSettingsVisible: false });
   };
 
-  updateSettings = () => {
-    if (!this.nodeRefs.settings.current) return;
-
+  onChangeSettings = ({ diceType, diceCount, rollMethod, soundEnabled }) => {
     this.setState({
-      diceType: this.nodeRefs.settings.current.state.diceType,
-      diceCount: this.nodeRefs.settings.current.state.diceCount,
-      rollMethod: this.nodeRefs.settings.current.state.rollMethod,
-      soundEnabled: this.nodeRefs.settings.current.state.soundEnabled,
+      diceType,
+      diceCount,
+      rollMethod,
+      soundEnabled,
     });
   };
 
@@ -140,17 +138,19 @@ export default class App extends PureComponent {
           shakeIntensity={500}
           ref={this.nodeRefs.scene}
         />
-        <Footer className={styles['footer']} onSettingsButtonClick={this.openSettings}/>
+        <Footer
+          className={styles['footer']}
+          onOpenSettings={this.onOpenSettings}
+        />
         <Settings
           className={classNames(styles['settings'], { active: this.state.areSettingsVisible })}
-          onSave={this.closeSettings}
-          onChange={this.updateSettings}
-          defaultDiceType={$APP_CONFIG.preferences.defaultDiceType}
           defaultDiceCount={$APP_CONFIG.preferences.defaultDiceCount}
+          defaultDiceType={$APP_CONFIG.preferences.defaultDiceType}
           defaultRollMethod={$APP_CONFIG.preferences.defaultRollMethod}
           defaultSoundEnabled={$APP_CONFIG.preferences.defaultSoundEnabled}
           maxDiceCount={$APP_CONFIG.preferences.maxDiceCount}
-          ref={this.nodeRefs.settings}
+          onChange={this.onChangeSettings}
+          onDismiss={this.onDismissSettings}
         />
       </div>
     );

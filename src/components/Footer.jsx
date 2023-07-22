@@ -4,17 +4,17 @@ import React from 'react';
 import $$SettingsIcon from '../assets/svgs/settings-icon.svg';
 import styles from './Footer.pcss';
 
-export default function Footer({ className, onSettingsButtonClick }) {
+export default function Footer({ className, onOpenSettings }) {
   return (
     <footer className={classNames(styles['root'], className)}>
       <nav className={styles['nav']}>
-        <button className={styles['button']} onClick={(event) => onSettingsButtonClick() } dangerouslySetInnerHTML={{ __html: $$SettingsIcon }}/>
+        <button className={styles['button']} onClick={(event) => onOpenSettings() } dangerouslySetInnerHTML={{ __html: $$SettingsIcon }}/>
       </nav>
     </footer>
-  )
+  );
 }
 
 Footer.propTypes = {
   className: PropTypes.string,
-  onSettingsButtonClick: PropTypes.func.isRequired,
+  onOpenSettings: PropTypes.func.isRequired,
 };
