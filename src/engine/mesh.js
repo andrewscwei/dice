@@ -1,7 +1,7 @@
-import * as geom from '@/engine/geom';
-import * as material from '@/engine/material';
 import * as THREE from 'three';
-import DiceType from '@/enums/DiceType';
+import * as geom from '../engine/geom';
+import * as material from '../engine/material';
+import DiceType from '../enums/DiceType';
 
 export function createDiceByType(type, scale, diceColor = 0x202020, labelColor = 0xffffff) {
   switch (type) {

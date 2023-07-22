@@ -16,24 +16,11 @@ const inputDir = path.join(cwd, 'src');
 const outputDir = path.join(cwd, 'public');
 
 module.exports = {
-  mode: isDev ? 'development' : 'production',
-  target: 'web',
   devtool: isDev ? 'source-map' : false,
-  stats: {
-    colors: true,
-    modules: true,
-    reasons: true,
-    errorDetails: true,
-  },
   entry: {
     bundle: path.join(inputDir, 'index.jsx'),
   },
-  output: {
-    path: outputDir,
-    publicPath: config.build.publicPath,
-    filename: isDev ? '[name].js' : '[name].[chunkhash].js',
-    sourceMapFilename: '[file].map',
-  },
+  mode: isDev ? 'development' : 'production',
   module: {
     rules: [{
       test: /\.jsx?$/,
@@ -83,11 +70,14 @@ module.exports = {
       use: `url-loader?limit=10000&esModule=false&name=assets/fonts/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
     }]
   },
+  output: {
+    filename: isDev ? '[name].js' : '[name].[chunkhash].js',
+    path: outputDir,
+    publicPath: config.build.publicPath,
+    sourceMapFilename: '[file].map',
+  },
   resolve: {
     extensions: ['.js', '.jsx'],
-    alias: {
-      '@': inputDir,
-    },
   },
   plugins: [
     new CopyPlugin({
@@ -114,7 +104,9 @@ module.exports = {
       },
     }),
     ...isDev ? [] : [
-      new IgnorePlugin(/^.*\/config\/.*$/),
+      new IgnorePlugin({
+        resourceRegExp: /^.*\/config\/.*$/,
+      }),
       new MiniCSSExtractPlugin({
         filename: 'bundle.[chunkhash:8].css',
       }),
@@ -140,4 +132,5 @@ module.exports = {
       },
     },
   } : {},
+  target: 'web',
 };

@@ -15,7 +15,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "rimraf public",
-    "build": "npm run clean && NODE_ENV=production webpack --colors --profile --config config/build.conf.js --display-error-details",
+    "build": "npm run clean && BUILD_NUMBER=$(git rev-parse --short HEAD) webpack --profile --config config/build.conf.js",
     "test": "echo \"No tests yet\"",
     "dev": "cross-env NODE_ENV=development webpack-cli serve --mode development --config config/build.conf.js",
     "lint": "npm run lint:js && npm run lint:css",
@@ -27,10 +27,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
-    "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-decorators": "^7.22.7",
-    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
-    "@babel/plugin-syntax-object-rest-spread": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.22.9",
     "@babel/preset-env": "^7.22.9",
     "@babel/preset-react": "^7.8.3",

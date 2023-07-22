@@ -1,4 +1,4 @@
-import $$SettingsIcon from '!!raw-loader!@/assets/images/settings-icon.svg';
+import $$SettingsIcon from '!!raw-loader!../assets/images/settings-icon.svg';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
