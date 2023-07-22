@@ -54,17 +54,19 @@ module.exports = {
         }, {
           loader: 'postcss-loader',
           options: {
-            ident: 'postcss',
-            sourceMap: isDev ? true : config.build.sourceMap,
-            plugins: () => [
-              require('postcss-import')(),
-              require('precss')(),
-              require('postcss-hexrgba')(),
-              require('postcss-calc')(),
-              require('postlude')(),
-              require('autoprefixer')(),
-              require('cssnano')(),
-            ],
+            postcssOptions: {
+              ident: 'postcss',
+              sourceMap: isDev ? true : config.build.sourceMap,
+              plugins: () => [
+                require('postcss-import')(),
+                require('precss')(),
+                require('postcss-hexrgba')(),
+                require('postcss-calc')(),
+                require('postlude')(),
+                require('autoprefixer')(),
+                require('cssnano')(),
+              ],
+            },
           },
         }];
 
