@@ -1,3 +1,4 @@
+import $$Shake from '@/assets/audio/shake.mp3';
 import logging from '@/decorators/logging';
 import { createDiceByType } from '@/engine/mesh';
 import DiceType from '@/enums/DiceType';
@@ -5,7 +6,7 @@ import { randomVectorFromVector, rng } from '@/utils/random';
 import CANNON from 'cannon';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { createRef, PureComponent } from 'react';
+import React, { PureComponent, createRef } from 'react';
 import { Rect } from 'spase';
 import * as THREE from 'three';
 import styles from './Scene.pcss';
@@ -79,7 +80,7 @@ export default class Scene extends PureComponent {
 
   get audio() {
     if (this._audio) return this._audio;
-    this._audio = new Audio(require('@/assets/audio/shake.mp3'));
+    this._audio = new Audio($$Shake);
     return this._audio;
   }
 

@@ -45,6 +45,8 @@ export default class Home extends PureComponent {
     window.addEventListener('resize', this.onResize);
     window.addEventListener('shake', this.onShake);
 
+    this.onResize();
+
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
   }
 
