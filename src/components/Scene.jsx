@@ -60,9 +60,11 @@ export default class Scene extends PureComponent {
     root: createRef(),
   };
 
-  audioContext = new AudioContext();
+  audioContext = null;
 
   audioSource = null;
+
+  audioData = null;
 
   audioBuffer = null;
 
@@ -162,9 +164,9 @@ export default class Scene extends PureComponent {
   }
 
   async prepareSound() {
-    if (this.audioBuffer) return;
+    if (this.audioData) return;
 
-    this.audioBuffer = await fetch($$ShakeSound).then(t => t.arrayBuffer()).then(t => this.audioContext.decodeAudioData(t));
+    this.audioData = await fetch($$ShakeSound).then(t => t.arrayBuffer());
   }
 
   createLight() {
@@ -384,10 +386,13 @@ export default class Scene extends PureComponent {
     }
   }
 
-  playSound() {
-    if (!this.audioBuffer) return;
+  async playSound() {
+    if (!this.audioData) return;
 
     this.audioSource?.stop();
+
+    if (!this.audioContext) this.audioContext = new AudioContext();
+    if (!this.audioBuffer) this.audioBuffer = await this.audioContext.decodeAudioData(this.audioData);
 
     const source = this.audioContext.createBufferSource();
     source.buffer = this.audioBuffer;

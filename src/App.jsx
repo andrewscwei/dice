@@ -69,7 +69,7 @@ export default class App extends PureComponent {
   }
 
   async initShakeGesture() {
-    if (typeof DeviceMotionEvent === 'undefined') return;
+    if (typeof DeviceMotionEvent.requestPermission !== 'function') return;
 
     const res = await DeviceMotionEvent.requestPermission();
 

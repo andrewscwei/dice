@@ -40,13 +40,13 @@ module.exports = {
             modules: {
               localIdentName: '[hash:6]',
             },
-            sourceMap: isDev ? true : config.build.sourceMap,
+            sourceMap: isDev,
             importLoaders: 1,
           },
         }, {
           loader: 'postcss-loader',
           options: {
-            sourceMap: isDev ? true : config.build.sourceMap,
+            sourceMap: isDev,
             postcssOptions: {
               ident: 'postcss',
               plugins: [
