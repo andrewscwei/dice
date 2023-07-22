@@ -5,14 +5,9 @@
 
 const config = require('./app.conf');
 const path = require('path');
-const CachedInputFileSystem = require('enhanced-resolve/lib/CachedInputFileSystem');
 const CopyPlugin = require('copy-webpack-plugin');
 const HTMLPlugin = require('html-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
-const NodeJsInputFileSystem = require('enhanced-resolve/lib/NodeJsInputFileSystem');
-const ResolverFactory = require('enhanced-resolve/lib/ResolverFactory');
-const StyleLintPlugin = require('stylelint-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const { EnvironmentPlugin, DefinePlugin, IgnorePlugin } = require('webpack');
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -35,7 +30,7 @@ module.exports = {
   },
   output: {
     path: outputDir,
-    publicPath: isDev ? '/' : config.build.publicPath,
+    publicPath: config.build.publicPath,
     filename: isDev ? '[name].js' : '[name].[chunkhash].js',
     sourceMapFilename: '[file].map',
   },
@@ -62,18 +57,7 @@ module.exports = {
             ident: 'postcss',
             sourceMap: isDev ? true : config.build.sourceMap,
             plugins: () => [
-              require('postcss-import')({
-                resolve(id, basedir) {
-                  return ResolverFactory.createResolver({
-                    alias: {
-                      '@': inputDir,
-                    },
-                    extensions: ['.css', '.pcss'],
-                    useSyncFileSystemCalls: true,
-                    fileSystem: new CachedInputFileSystem(new NodeJsInputFileSystem(), 60000),
-                  }).resolveSync({}, basedir, id);
-                },
-              }),
+              require('postcss-import')(),
               require('precss')(),
               require('postcss-hexrgba')(),
               require('postcss-calc')(),
@@ -96,17 +80,6 @@ module.exports = {
       test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
       use: `url-loader?limit=10000&esModule=false&name=assets/fonts/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
     }]
-      .concat((isDev ? config.dev.linter : config.build.linter) ? [{
-        test: /\.jsx?$/,
-        include: [inputDir],
-        enforce: 'pre',
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter'),
-          },
-        },
-      }] : []),
   },
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -115,11 +88,12 @@ module.exports = {
     },
   },
   plugins: [
-    new CopyPlugin([{
-      from: path.join(inputDir, 'static'),
-      to: outputDir,
-      ignore: ['.*'],
-    }]),
+    new CopyPlugin({
+      patterns: [{
+        from: path.join(inputDir, 'static'),
+        to: outputDir,
+      }],
+    }),
     new EnvironmentPlugin({
       NODE_ENV: 'production',
     }),
@@ -137,21 +111,31 @@ module.exports = {
         removeAttributeQuotes: true,
       },
     }),
-  ]
-    .concat(isDev ? [] : [
+    ...isDev ? [] : [
       new IgnorePlugin(/^.*\/config\/.*$/),
       new MiniCSSExtractPlugin({
         filename: 'bundle.[chunkhash:8].css',
       }),
-    ])
-    .concat((isDev && config.dev.linter) || (!isDev && config.build.linter) ? [
-      new StyleLintPlugin({
-        files: ['**/*.css', '**/*.pcss'],
-        failOnError: false,
-        quiet: false,
-      }),
-    ] : [])
-    .concat((!isDev && config.build.analyzer) ? [
-      new BundleAnalyzerPlugin(),
-    ] : []),
+    ],
+  ],
+  ...isDev ? {
+    devServer: {
+      client: {
+        logging: 'error',
+      },
+      headers: {
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Request-With',
+        'Access-Control-Allow-Methods': 'GET,OPTIONS,HEAD,PUT,POST,DELETE,PATCH',
+        'Access-Control-Allow-Origin': `http://localhost:${config.build.port}`,
+      },
+      historyApiFallback: true,
+      host: '0.0.0.0',
+      hot: true,
+      port: config.build.port,
+      static: {
+        publicPath: config.build.publicPath,
+      },
+    },
+  } : {},
 };

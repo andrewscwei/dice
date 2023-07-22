@@ -47,20 +47,14 @@ module.exports = {
     // Public path of all loaded assets.
     publicPath: process.env.PUBLIC_PATH || '/',
 
-    // Specifies whether the linter should run.
-    linter: true,
-
     // Specifies whether JavaScript and CSS source maps should be generated.
     sourceMap: true,
 
     // Specifies whether a bundle analyzer report should be generated at the end
     // of the build process.
     analyzer: process.env.ANALYZE_BUNDLE === 'true' ? true : false,
-  },
 
-  // Config options specific to the `dev` task.
-  dev: {
-    // Specifies whether the linter should run.
-    linter: false,
+    // Dev server port.
+    port: process.env.PORT || '8080',
   },
 };
