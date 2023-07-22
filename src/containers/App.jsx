@@ -11,7 +11,7 @@ import styles from './App.pcss';
 
 @logging('App')
 export default class App extends PureComponent {
-  static propTypes = {}
+  static propTypes = {};
 
   nodeRefs = {
     scene: createRef(),
@@ -75,11 +75,11 @@ export default class App extends PureComponent {
 
   openSettings = () => {
     this.setState({ areSettingsVisible: true });
-  }
+  };
 
   closeSettings = () => {
     this.setState({ areSettingsVisible: false });
-  }
+  };
 
   updateSettings = () => {
     if (!this.nodeRefs.settings.current) return;
@@ -90,27 +90,27 @@ export default class App extends PureComponent {
       rollMethod: this.nodeRefs.settings.current.state.rollMethod,
       soundEnabled: this.nodeRefs.settings.current.state.soundEnabled,
     });
-  }
+  };
 
   onResize = () => {
     this.nodeRefs.scene.current?.reset();
-  }
+  };
 
   onTouchMove = (event) => {
     event.preventDefault();
-  }
+  };
 
   onShake = (event) => {
     if (this.state.areSettingsVisible === true) return;
     if (this.state.rollMethod === RollMethod.TAP) return;
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
-  }
+  };
 
   onTap = (event) => {
     if (this.state.areSettingsVisible === true) return;
     if (this.state.rollMethod === RollMethod.SHAKE) return;
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
-  }
+  };
 
   render() {
     return (

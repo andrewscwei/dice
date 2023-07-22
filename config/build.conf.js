@@ -31,7 +31,7 @@ module.exports = {
       exclude: /node_modules/,
     }, {
       test: /\.p?css$/,
-      use: (function () {
+      use: (function() {
         const t = [{
           loader: 'css-loader',
           options: {

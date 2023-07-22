@@ -32,7 +32,7 @@ export default class Settings extends Component {
     defaultDiceCount: PropTypes.number.isRequired,
     defaultRollMethod: PropTypes.string.isRequired,
     defaultSoundEnabled: PropTypes.bool.isRequired,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -51,19 +51,19 @@ export default class Settings extends Component {
 
   onDiceTypeChange = (event) => {
     this.setState({ diceType: event.target.value });
-  }
+  };
 
   onDiceCountChange = (event) => {
     this.setState({ diceCount: Number(event.target.value) });
-  }
+  };
 
   onRollMethodChange = (event) => {
     this.setState({ rollMethod: event.target.value });
-  }
+  };
 
   onSoundChange = (event) => {
     this.setState({ soundEnabled: event.target.value === 'Yes' ? true : false });
-  }
+  };
 
   render() {
     const { className, style, onSave, maxDiceCount } = this.props;

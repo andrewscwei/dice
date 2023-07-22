@@ -8,7 +8,7 @@ export default class Footer extends PureComponent {
   static propTypes = {
     className: PropTypes.string,
     onSettingsButtonClick: PropTypes.func.isRequired,
-  }
+  };
 
   render() {
     const { className, onSettingsButtonClick } = this.props;

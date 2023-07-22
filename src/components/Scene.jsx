@@ -54,7 +54,7 @@ export default class Scene extends PureComponent {
     ambientLightColor: PropTypes.number.isRequired,
     spotLightColor: PropTypes.number.isRequired,
     planeColor: PropTypes.number.isRequired,
-  }
+  };
 
   nodeRefs = {
     root: createRef(),
