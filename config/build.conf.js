@@ -63,15 +63,31 @@ module.exports = {
         return [isDev ? 'style-loader' : MiniCSSExtractPlugin.loader].concat(t);
       })(),
     }, {
-      test: /\.(jpe?g|png|gif|svg|ico)(\?.*)?$/,
-      use: `url-loader?limit=10000&esModule=false&name=assets/images/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
+      test: /\.svg$/,
+      include: /assets\/svgs/,
+      type: 'asset/source',
+    }, {
+      test: /\.(jpe?g|png|gif|svg)(\?.*)?$/,
+      include: /assets\/images/,
+      type: 'asset',
+      generator: {
+        filename: `assets/images/${isDev ? '[name]' : '[name].[hash:base64]'}[ext]`,
+      },
     }, {
       test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-      use: `url-loader?limit=10000&esModule=false&name=assets/media/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
+      include: /assets\/media/,
+      type: 'asset',
+      generator: {
+        filename: `assets/media/${isDev ? '[name]' : '[name].[hash:base64]'}[ext]`,
+      },
     }, {
       test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-      use: `url-loader?limit=10000&esModule=false&name=assets/fonts/[name]${isDev ? '' : '.[hash:6]'}.[ext]`,
-    }]
+      include: /assets\/fonts/,
+      type: 'asset',
+      generator: {
+        filename: `assets/fonts/${isDev ? '[name]' : '[name].[hash:base64]'}[ext]`,
+      },
+    }],
   },
   output: {
     filename: isDev ? '[name].js' : '[name].[chunkhash].js',

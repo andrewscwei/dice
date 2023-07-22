@@ -1,7 +1,7 @@
-import $$SettingsIcon from '!!raw-loader!../assets/images/settings-icon.svg';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import $$SettingsIcon from '../assets/svgs/settings-icon.svg';
 import styles from './Footer.pcss';
 
 export default class Footer extends PureComponent {

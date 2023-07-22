@@ -1,8 +1,8 @@
-import $$GitHubIcon from '!!raw-loader!../assets/images/github-icon.svg';
-import $$Logo from '!!raw-loader!../assets/images/mu.svg';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import $$GitHubIcon from '../assets/svgs/github-icon.svg';
+import $$Logo from '../assets/svgs/mu.svg';
 import DiceType from '../enums/DiceType';
 import RollMethod from '../enums/RollMethod';
 import styles from './Settings.pcss';

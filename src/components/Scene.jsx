@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent, createRef } from 'react';
 import { Rect } from 'spase';
 import * as THREE from 'three';
-import $$Shake from '../assets/audio/shake.mp3';
+import $$Shake from '../assets/media/shake.mp3';
 import logging from '../decorators/logging';
 import { createDiceByType } from '../engine/mesh';
 import DiceType from '../enums/DiceType';
