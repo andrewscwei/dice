@@ -1,25 +1,16 @@
 .root {
   -post-padding: 24px;
-  -post-box: default left center;
   padding-right: max(24px, env(safe-area-inset-right));
   padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
 .nav {
-  -post-box: default right center;
-  flex-grow: 1;
+  @post flex(right, center);
 }
 
 .button {
   -post-size: 20px;
   -post-transition: all .2s ease-out;
-  -post-space-between: 10px;
-  background: transparent;
-  display: block;
-
-  & svg {
-    -post-size: 100%;
-  }
 
   &:hover {
     opacity: .6;

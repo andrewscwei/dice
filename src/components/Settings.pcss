@@ -1,6 +1,7 @@
 .root {
+  @post flex;
+
   -post-padding: 10%;
-  -post-box: default;
   background: rgba(#111, .9);
 
   & main {
@@ -51,15 +52,16 @@
 }
 
 .columns {
-  -post-box: defaultv left center;
+  @post flex(vertical, left, center);
 
   @media (min-width: 640px) {
-    -post-box: default left center;
+    @post flex(left, center);
   }
 }
 
 .row {
-  -post-box: default left center;
+  @post flex(left, center);
+
   -post-margin: 0 _;
 
   &:not(:first-child) {
@@ -68,7 +70,8 @@
 }
 
 .select {
-  -post-box: default;
+  @post flex;
+
   -post-size: 130px 36px;
   -post-margin: _ _ _ 20px;
   -post-padding: _ 10px;
@@ -86,13 +89,14 @@
 }
 
 .actions {
-  -post-box: default;
+  @post flex;
 }
 
 .footer {
+  @post flex(left, center);
+
   -post-align: bottom left;
   -post-padding: 24px;
-  -post-box: default left center;
   justify-content: space-between;
   width: 100%;
   height: auto;
@@ -102,7 +106,8 @@
 }
 
 .monogram {
-  -post-box: default;
+  @post flex;
+
   -post-size: auto 20px;
   -post-transition: opacity .2s ease-out;
 
@@ -118,7 +123,6 @@
 .button {
   -post-size: 20px;
   -post-transition: all .2s ease-out;
-  -post-space-between: 10px;
   background: transparent;
   display: block;
 

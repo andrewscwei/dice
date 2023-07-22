@@ -387,7 +387,7 @@ export default class Scene extends PureComponent {
     }
 
     this.audio.currentTime = 0;
-    this.audio.play();
+    // this.audio.play();
   }
 
   roll(position, acceleration, fixedResults) {
