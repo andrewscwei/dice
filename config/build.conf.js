@@ -48,10 +48,8 @@ module.exports = {
             postcssOptions: {
               ident: 'postcss',
               plugins: [
-                'postcss-import',
                 'precss',
                 'postcss-hexrgba',
-                'postcss-calc',
                 'postlude',
                 'autoprefixer',
                 'cssnano',
