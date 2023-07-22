@@ -20,6 +20,9 @@ module.exports = {
   entry: {
     bundle: path.join(inputDir, 'index.jsx'),
   },
+  infrastructureLogging: {
+    level: 'error',
+  },
   mode: isDev ? 'development' : 'production',
   module: {
     rules: [{
