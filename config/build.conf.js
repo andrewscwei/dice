@@ -18,7 +18,7 @@ const outputDir = path.join(cwd, 'public');
 module.exports = {
   mode: isDev ? 'development' : 'production',
   target: 'web',
-  devtool: isDev ? 'eval-source-map' : (config.build.sourceMap ? 'source-map' : false),
+  devtool: isDev ? 'source-map' : false,
   stats: {
     colors: true,
     modules: true,
@@ -54,17 +54,17 @@ module.exports = {
         }, {
           loader: 'postcss-loader',
           options: {
+            sourceMap: isDev ? true : config.build.sourceMap,
             postcssOptions: {
               ident: 'postcss',
-              sourceMap: isDev ? true : config.build.sourceMap,
-              plugins: () => [
-                require('postcss-import')(),
-                require('precss')(),
-                require('postcss-hexrgba')(),
-                require('postcss-calc')(),
-                require('postlude')(),
-                require('autoprefixer')(),
-                require('cssnano')(),
+              plugins: [
+                'postcss-import',
+                'precss',
+                'postcss-hexrgba',
+                'postcss-calc',
+                'postlude',
+                'autoprefixer',
+                'cssnano',
               ],
             },
           },

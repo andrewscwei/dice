@@ -12,3 +12,38 @@ body {
 :global(#app) {
   -post-size: 100%;
 }
+
+.root {
+  -post-align: top left;
+  -post-box: defaultv center;
+  -post-size: 100%;
+  cursor: default;
+}
+
+.scene {
+  -post-align: top left;
+  -post-size: 100%;
+  cursor: default;
+}
+
+.settings {
+  -post-size: 100%;
+  -post-align: top left fixed;
+  -post-transition: all .2s ease-out;
+  transform: scale3d(1.4, 1.4, 1.4);
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+
+  &--reveal {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.footer {
+  -post-align: bottom left fixed;
+  -post-size: 100% auto;
+  z-index: 10;
+}
