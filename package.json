@@ -1,17 +1,7 @@
 {
   "name": "dice",
   "version": "0.23.0",
-  "description": "Web-based dice rolling app supporting 5 different dice types including D6, D8, D10, D12 and D20",
   "private": true,
-  "keywords": [
-    "dice",
-    "3d",
-    "d6",
-    "d8",
-    "d10",
-    "d12",
-    "d20"
-  ],
   "license": "MIT",
   "scripts": {
     "start": "http-server public",

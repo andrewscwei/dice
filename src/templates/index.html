@@ -1,53 +1,56 @@
 <!doctype html>
 <html>
   <head>
-    <meta charSet='utf-8'>
-    <meta httpEquiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'>
-    <link rel='icon' href='/favicon.png'>
+    <meta charSet="utf-8">
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <link rel="canonical" href="<%= htmlWebpackPlugin.options.appConfig.meta.url %>"/>
+    <link rel="mask-icon" type="image/svg+xml" href="/pinned-icon.svg"/>
+    <link rel="icon" href="/favicon.svg"/>
 
     <title><%= htmlWebpackPlugin.options.appConfig.meta.title %></title>
-    <meta name='description' content='<%= htmlWebpackPlugin.options.appConfig.meta.description %>'>
-    <meta name='keywords' content='<%= htmlWebpackPlugin.options.appConfig.meta.keywords %>'>
+    <meta name="description" content="<%= htmlWebpackPlugin.options.appConfig.meta.description %>">
+    <meta name="theme-color" content="#000000">
 
-    <meta property='og:url' content='<%= htmlWebpackPlugin.options.appConfig.meta.url %>'>
-    <meta property='og:image' content='/og-image.png'>
-    <meta property='og:title' content='<%= htmlWebpackPlugin.options.appConfig.meta.title %>'>
-    <meta property='og:description' content='<%= htmlWebpackPlugin.options.appConfig.meta.description %>'>
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= htmlWebpackPlugin.options.appConfig.meta.url %>">
+    <meta property="og:image" content="<%= htmlWebpackPlugin.options.appConfig.meta.url %>/og-image.png">
+    <meta property="og:title" content="<%= htmlWebpackPlugin.options.appConfig.meta.title %>">
+    <meta property="og:description" content="<%= htmlWebpackPlugin.options.appConfig.meta.description %>">
+    <meta property="og:image:alt" content="<%= htmlWebpackPlugin.options.appConfig.meta.description %>">
+    <meta property="og:site_name" content="<%= htmlWebpackPlugin.options.appConfig.meta.title %>"/>
 
-    <link rel='' href='/manifest.json'>
-    <meta name='theme-color' content='#000000'>
-    <meta name='mobile-web-app-capable' content='yes'>
-    <meta name='application-name' content='<%= htmlWebpackPlugin.options.appConfig.meta.title %>'>
+    <meta name="twitter:title" content="<%= htmlWebpackPlugin.options.appConfig.meta.title %>"/>
+    <meta name="twitter:description" content="<%= htmlWebpackPlugin.options.appConfig.meta.description %>"/>
+    <meta name="twitter:image" content="<%= htmlWebpackPlugin.options.appConfig.meta.url %>/twitter-card.png"/>
 
-    <meta name='apple-mobile-web-app-capable' content='yes'>
-    <meta name='apple-mobile-web-app-status-bar-style' content='black-translucent'>
-    <meta name='apple-mobile-web-app-title' content='<%= htmlWebpackPlugin.options.appConfig.meta.title %>'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-180x180-precomposed.png' sizes='180x180'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-152x152-precomposed.png' sizes='152x152'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-144x144-precomposed.png' sizes='144x144'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-120x120-precomposed.png' sizes='120x120'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-114x114-precomposed.png' sizes='114x114'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-76x76-precomposed.png' sizes='76x76'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-72x72-precomposed.png' sizes='72x72'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-60x60-precomposed.png' sizes='60x60'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-57x57-precomposed.png' sizes='57x57'>
-    <link rel='apple-touch-icon' href='/apple-touch-icon-precomposed.png'>
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="<%= htmlWebpackPlugin.options.appConfig.meta.title %>"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    <meta name='msapplication-TileImage' content='/apple-touch-icon-144x144-precomposed.png'>
-    <meta name='msapplication-TileColor' content='#000000'>
-    <meta name='msapplication-config' content='/browserconfig.xml'>
-    <meta name='msapplication-navbutton-color' content='#000000'>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo="/>
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-57.png" sizes="57x57" />
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-60.png" sizes="60x60" />
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-72.png" sizes="72x72" />
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-76.png" sizes="76x76" />
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-114.png" sizes="114x114" />
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-120.png" sizes="120x120" />
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-144.png" sizes="144x144" />
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-152.png" sizes="152x152" />
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-180.png" sizes="180x180" />
+    <link rel="apple-touch-icon" type="image/png" href="/app-icon-192.png" sizes="192x192" />
+    <link rel="manifest" href="/manifest.json" />
 
-    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i'>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i">
     <% if (htmlWebpackPlugin.options.appConfig.ga) { %>
       <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', '<%= htmlWebpackPlugin.options.appConfig.ga  %>', 'auto'); ga('send', 'pageview');
+        (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,"script","https://www.google-analytics.com/analytics.js","ga"); ga("create", "<%= htmlWebpackPlugin.options.appConfig.ga  %>", "auto"); ga("send", "pageview");
       </script>
     <% } %>
   </head>
   <body>
-    <div id='app'>
+    <div id="app">
     </div>
   </body>
 </html>

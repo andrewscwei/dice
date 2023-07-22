@@ -27,13 +27,10 @@ module.exports = {
     title: 'Dice',
 
     // Short description of the app.
-    description: require('../package.json').description,
-
-    // Search keywords.
-    keywords: require('../package.json').keywords,
+    description: 'Web-based dice rolling app supporting 5 different dice types including D6, D8, D10, D12 and D20',
 
     // App URL.
-    url: require('../package.json').homepage,
+    url: 'https://dice.andr.mu',
   },
 
   // Google Analytics ID (i.e. UA-XXXXXXXX-1)
