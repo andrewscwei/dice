@@ -92,7 +92,7 @@ export default class Home extends PureComponent {
     });
   }
 
-  onResize = (event) => {
+  onResize = () => {
     this.nodeRefs.scene.current?.reset();
   }
 
