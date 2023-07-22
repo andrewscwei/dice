@@ -34,13 +34,6 @@ export default class App extends PureComponent {
     this.touchHandler = new Hammer(this.nodeRefs.scene.current?.nodeRefs.root.current);
     this.touchHandler.on('tap', this.onTap);
 
-    this.shakeHandler = new Shake({
-      threshold: 5,
-      timeout: 200,
-    });
-
-    this.shakeHandler.start();
-
     document.body.addEventListener('touchmove', this.onTouchMove);
 
     this.resizeObserver = new ResizeObserver(() => this.onResize());
@@ -49,6 +42,8 @@ export default class App extends PureComponent {
     window.addEventListener('shake', this.onShake);
 
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
+
+    this.initShakeGesture();
   }
 
   componentWillUnmount() {
@@ -70,6 +65,21 @@ export default class App extends PureComponent {
       this.log('Dice changed');
       this.nodeRefs.scene.current?.clear();
       this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
+    }
+  }
+
+  async initShakeGesture() {
+    if (typeof DeviceMotionEvent === 'undefined') return;
+
+    const res = await DeviceMotionEvent.requestPermission();
+
+    if (res === 'granted') {
+      this.shakeHandler = new Shake({
+        threshold: 5,
+        timeout: 200,
+      });
+
+      this.shakeHandler.start();
     }
   }
 
