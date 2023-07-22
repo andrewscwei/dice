@@ -23,11 +23,11 @@ const ROLL_METHOD = {
 
 export default function Settings({
   className,
-  defaultDiceCount,
-  defaultDiceType,
-  defaultRollMethod,
-  defaultSoundEnabled,
+  diceCount: defaultDiceCount,
+  diceType: defaultDiceType,
   maxDiceCount,
+  rollMethod: defaultRollMethod,
+  soundEnabled: defaultSoundEnabled,
   onChange,
   onDismiss,
 }) {
@@ -97,12 +97,11 @@ export default function Settings({
 
 Settings.propTypes = {
   className: PropTypes.string,
-  style: PropTypes.object,
-  onDismiss: PropTypes.func.isRequired,
-  onChange: PropTypes.func,
+  diceCount: PropTypes.number.isRequired,
+  diceType: PropTypes.string.isRequired,
   maxDiceCount: PropTypes.number.isRequired,
-  defaultDiceType: PropTypes.string.isRequired,
-  defaultDiceCount: PropTypes.number.isRequired,
-  defaultRollMethod: PropTypes.string.isRequired,
-  defaultSoundEnabled: PropTypes.bool.isRequired,
+  rollMethod: PropTypes.string.isRequired,
+  soundEnabled: PropTypes.bool.isRequired,
+  onChange: PropTypes.func,
+  onDismiss: PropTypes.func.isRequired,
 };

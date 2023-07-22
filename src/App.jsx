@@ -20,12 +20,14 @@ export default class App extends PureComponent {
   constructor(props) {
     super(props);
 
+    const { diceType: defaultDiceType, diceCount: defaultDiceCount, rollMethod: defaultRollMethod, soundEnabled: defaultSoundEnabled } = JSON.parse(localStorage.getItem('settings') ?? {});
+
     this.state = {
       areSettingsVisible: false,
-      diceType: $APP_CONFIG.preferences.defaultDiceType,
-      diceCount: $APP_CONFIG.preferences.defaultDiceCount,
-      rollMethod: $APP_CONFIG.preferences.defaultRollMethod,
-      soundEnabled: $APP_CONFIG.preferences.defaultSoundEnabled,
+      diceType: defaultDiceType ?? $APP_CONFIG.preferences.defaultDiceType,
+      diceCount: defaultDiceCount ?? $APP_CONFIG.preferences.defaultDiceCount,
+      rollMethod: defaultRollMethod ?? $APP_CONFIG.preferences.defaultRollMethod,
+      soundEnabled: defaultSoundEnabled ?? $APP_CONFIG.preferences.defaultSoundEnabled,
     };
   }
 
@@ -91,12 +93,11 @@ export default class App extends PureComponent {
   };
 
   onChangeSettings = ({ diceType, diceCount, rollMethod, soundEnabled }) => {
-    this.setState({
-      diceType,
-      diceCount,
-      rollMethod,
-      soundEnabled,
-    });
+    const newSettings = { diceType, diceCount, rollMethod, soundEnabled };
+
+    localStorage.setItem('settings', JSON.stringify(newSettings));
+
+    this.setState({ ...newSettings });
   };
 
   onResize = () => {
@@ -124,18 +125,18 @@ export default class App extends PureComponent {
       <div className={styles['root']}>
         <Scene
           className={styles['scene']}
-          frameRate={60}
           ambientLightColor={0xf0f5fb}
-          spotLightColor={0xefdfd5}
-          planeColor={0x111111}
-          diceScale={54}
           diceColor={0x202020}
-          diceLabelColor={0xffffff}
-          diceType={this.state.diceType}
           diceCount={this.state.diceCount}
-          soundEnabled={this.state.soundEnabled}
-          shakeIntensity={500}
+          diceLabelColor={0xffffff}
+          diceScale={54}
+          diceType={this.state.diceType}
+          frameRate={60}
+          planeColor={0x111111}
           ref={this.nodeRefs.scene}
+          shakeIntensity={500}
+          soundEnabled={this.state.soundEnabled}
+          spotLightColor={0xefdfd5}
         />
         <Footer
           className={styles['footer']}
@@ -143,11 +144,11 @@ export default class App extends PureComponent {
         />
         <Settings
           className={classNames(styles['settings'], { active: this.state.areSettingsVisible })}
-          defaultDiceCount={$APP_CONFIG.preferences.defaultDiceCount}
-          defaultDiceType={$APP_CONFIG.preferences.defaultDiceType}
-          defaultRollMethod={$APP_CONFIG.preferences.defaultRollMethod}
-          defaultSoundEnabled={$APP_CONFIG.preferences.defaultSoundEnabled}
+          diceCount={this.state.diceCount}
+          diceType={this.state.diceType}
           maxDiceCount={$APP_CONFIG.preferences.maxDiceCount}
+          rollMethod={this.state.rollMethod}
+          soundEnabled={this.state.soundEnabled}
           onChange={this.onChangeSettings}
           onDismiss={this.onDismissSettings}
         />
