@@ -132,7 +132,7 @@ export default class App extends PureComponent {
         />
         <Footer className={styles['footer']} onSettingsButtonClick={this.openSettings}/>
         <Settings
-          className={classNames(styles['settings'], this.state.areSettingsVisible && styles['settings--reveal'] )}
+          className={classNames(styles['settings'], { active: this.state.areSettingsVisible })}
           onSave={this.closeSettings}
           onChange={this.updateSettings}
           defaultDiceType={$APP_CONFIG.preferences.defaultDiceType}

@@ -8,12 +8,14 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const HTMLPlugin = require('html-webpack-plugin');
 const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
+const CSSMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { EnvironmentPlugin, DefinePlugin, IgnorePlugin } = require('webpack');
 
 const isDev = process.env.NODE_ENV === 'development';
 const cwd = path.join(__dirname, '../');
 const inputDir = path.join(cwd, 'src');
 const outputDir = path.join(cwd, 'public');
+
 
 module.exports = {
   devtool: isDev ? 'source-map' : false,
@@ -48,11 +50,12 @@ module.exports = {
             postcssOptions: {
               ident: 'postcss',
               plugins: [
-                'precss',
-                'postcss-hexrgba',
+                ['postcss-preset-env', {
+                  features: {
+                    'nesting-rules': true,
+                  },
+                }],
                 'postlude',
-                'autoprefixer',
-                'cssnano',
               ],
             },
           },
@@ -86,6 +89,9 @@ module.exports = {
         filename: `assets/fonts/${isDev ? '[name]' : '[name].[hash:base64]'}[ext]`,
       },
     }],
+  },
+  optimization: {
+    minimizer: [new CSSMinimizerPlugin()],
   },
   output: {
     filename: isDev ? '[name].js' : '[name].[chunkhash].js',

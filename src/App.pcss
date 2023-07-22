@@ -30,13 +30,13 @@ body {
 .settings {
   -post-align: top left fixed;
   -post-size: 100%;
-  -post-transition: all .2s ease-out;
+  -post-transition: all 100ms ease-out;
   opacity: 0;
   pointer-events: none;
   transform: scale3d(1.4, 1.4, 1.4);
   z-index: 20;
 
-  &--reveal {
+  &:global(.active) {
     opacity: 1;
     pointer-events: auto;
     transform: scale3d(1, 1, 1);

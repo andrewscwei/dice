@@ -2,7 +2,6 @@
   @post flex;
 
   -post-padding: 10%;
-  background: rgba(#111, .9);
 
   & main {
     -post-size: 100% auto;
@@ -10,10 +9,17 @@
   }
 }
 
+.background {
+  -post-align: top left;
+  -post-size: 100%;
+  background: #111;
+  opacity: .8;
+}
+
 .done-button {
   -post-padding: 12px 34px;
   -post-margin: 2em _ _;
-  -post-transition: background .2s ease-out;
+  -post-transition: background 100ms ease-out;
   background: #fff;
   border-radius: 8px;
   color: #000;
@@ -36,7 +42,7 @@
   -post-margin: _ _ 30px;
   font-family: Roboto, sans-serif;
   font-size: 40px;
-  color: rgba(#fff, .4);
+  color: #fff;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
@@ -75,7 +81,7 @@
   -post-size: 130px 36px;
   -post-margin: _ _ _ 20px;
   -post-padding: _ 10px;
-  -post-transition: background .2s ease-out;
+  -post-transition: background 100ms ease-out;
   appearance: none;
   background: #fff;
   border-radius: 8px;
@@ -109,7 +115,7 @@
   @post flex;
 
   -post-size: auto 20px;
-  -post-transition: opacity .2s ease-out;
+  -post-transition: opacity 100ms ease-out;
 
   & svg {
     -post-size: auto 100%;
@@ -122,7 +128,7 @@
 
 .button {
   -post-size: 20px;
-  -post-transition: all .2s ease-out;
+  -post-transition: all 100ms ease-out;
   background: transparent;
   display: block;
 
