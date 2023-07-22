@@ -169,6 +169,23 @@ export default class Scene extends PureComponent {
     this.audioData = await fetch($$ShakeSound).then(t => t.arrayBuffer());
   }
 
+  async playSound() {
+    if (!this.audioData) return;
+
+    this.audioSource?.stop();
+
+    if (!this.audioContext) this.audioContext = new AudioContext();
+    if (!this.audioBuffer) this.audioBuffer = await this.audioContext.decodeAudioData(this.audioData);
+
+    const source = this.audioContext.createBufferSource();
+    source.buffer = this.audioBuffer;
+    source.connect(this.audioContext.destination);
+    source.start();
+    source.onended = () => (this.audioSource = undefined);
+
+    this.audioSource = source;
+  }
+
   createLight() {
     const w = this.rect.width / 2;
     const h = this.rect.height / 2;
@@ -384,23 +401,6 @@ export default class Scene extends PureComponent {
     while (this.isRolling()) {
       this.world.step(this.timeStep);
     }
-  }
-
-  async playSound() {
-    if (!this.audioData) return;
-
-    this.audioSource?.stop();
-
-    if (!this.audioContext) this.audioContext = new AudioContext();
-    if (!this.audioBuffer) this.audioBuffer = await this.audioContext.decodeAudioData(this.audioData);
-
-    const source = this.audioContext.createBufferSource();
-    source.buffer = this.audioBuffer;
-    source.connect(this.audioContext.destination);
-    source.start();
-    source.onended = () => (this.audioSource = undefined);
-
-    this.audioSource = source;
   }
 
   roll(position, acceleration, fixedResults, soundEnabled = false) {
