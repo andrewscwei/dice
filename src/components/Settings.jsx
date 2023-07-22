@@ -70,7 +70,7 @@ export default class Settings extends Component {
 
     return (
       <div className={classNames(styles['root'], className)} style={{ ...style || {} }}>
-        <div className={styles['background']}/>
+        <div className={styles['background']} onClick={() => onSave()}/>
         <main>
           <h1 className={styles['title']}>Settings</h1>
           <div className={styles['columns']}>
