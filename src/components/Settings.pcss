@@ -51,12 +51,20 @@
 }
 
 .columns {
-  -post-box: default left center;
+  -post-box: defaultv left center;
+
+  @media (min-width: 640px) {
+    -post-box: default left center;
+  }
 }
 
 .row {
   -post-box: default left center;
-  -post-margin: 10px _;
+  -post-margin: 0 _;
+
+  &:not(:first-child) {
+    -post-margin: 10px _;
+  }
 }
 
 .select {
