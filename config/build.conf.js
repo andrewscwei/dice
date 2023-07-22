@@ -28,7 +28,7 @@ module.exports = {
       exclude: /node_modules/,
     }, {
       test: /\.p?css$/,
-      use: (function() {
+      use: (function () {
         const t = [{
           loader: 'css-loader',
           options: {
@@ -86,44 +86,27 @@ module.exports = {
         to: outputDir,
       }],
     }),
-    new EnvironmentPlugin({
-      NODE_ENV: 'production',
-    }),
-    new DefinePlugin({
-      $APP_CONFIG: JSON.stringify(config),
-    }),
+    new EnvironmentPlugin({ NODE_ENV: 'production' }),
+    new DefinePlugin({ $APP_CONFIG: JSON.stringify(config) }),
     new HTMLPlugin({
       appConfig: config,
-      template: path.join(inputDir, 'templates', 'index.html'),
       filename: 'index.html',
       inject: true,
       minify: {
-        removeComments: true,
         collapseWhitespace: true,
         removeAttributeQuotes: true,
+        removeComments: true,
       },
+      template: path.join(inputDir, 'templates', 'index.html'),
     }),
     ...isDev ? [] : [
-      new IgnorePlugin({
-        resourceRegExp: /^.*\/config\/.*$/,
-      }),
-      new MiniCSSExtractPlugin({
-        filename: 'bundle.[chunkhash:8].css',
-      }),
+      new IgnorePlugin({ resourceRegExp: /^.*\/config\/.*$/ }),
+      new MiniCSSExtractPlugin({ filename: 'bundle.[chunkhash:8].css' }),
     ],
   ],
+  target: 'web',
   ...isDev ? {
     devServer: {
-      client: {
-        logging: 'error',
-      },
-      headers: {
-        'Access-Control-Allow-Credentials': 'true',
-        'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization, X-Request-With',
-        'Access-Control-Allow-Methods': 'GET,OPTIONS,HEAD,PUT,POST,DELETE,PATCH',
-        'Access-Control-Allow-Origin': `http://localhost:${config.build.port}`,
-      },
-      historyApiFallback: true,
       host: '0.0.0.0',
       hot: true,
       port: config.build.port,
@@ -132,5 +115,4 @@ module.exports = {
       },
     },
   } : {},
-  target: 'web',
 };
