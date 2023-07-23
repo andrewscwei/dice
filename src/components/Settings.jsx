@@ -5,7 +5,7 @@ import $$GitHubIcon from '../assets/svgs/github-icon.svg';
 import $$Logo from '../assets/svgs/mu.svg';
 import DiceType from '../enums/DiceType';
 import RollMethod from '../enums/RollMethod';
-import { getDeviceMotionPermission, requestDeviceMotionPermission } from '../utils/deviceMotion';
+import { getDeviceMotionPermission, needsDeviceMotionPermission, requestDeviceMotionPermission } from '../utils/deviceMotion';
 import styles from './Settings.pcss';
 
 const DICE_TYPE = {
@@ -26,6 +26,7 @@ export default function Settings({
   className,
   diceCount: defaultDiceCount,
   diceType: defaultDiceType,
+  isActive,
   maxDiceCount,
   rollMethod: defaultRollMethod,
   soundEnabled: defaultSoundEnabled,
@@ -42,6 +43,10 @@ export default function Settings({
     onChange?.({ diceType, diceCount, rollMethod, soundEnabled });
   }, [diceType, diceCount, rollMethod, soundEnabled]);
 
+  useEffect(() => {
+    setDeviceMotionStatus(getDeviceMotionPermission());
+  }, [isActive]);
+
   const onReset = () => {
     setDiceType($APP_CONFIG.preferences.defaultDiceType);
     setDiceCount($APP_CONFIG.preferences.defaultDiceCount);
@@ -51,17 +56,20 @@ export default function Settings({
 
   const renderDeviceMotionStatus = () => {
     switch (deviceMotionStatus) {
-    case 'denied': return <p className={styles['request-status']}>You have previously denied access to the device motion, please restart the browser to retry.</p>;
-    case 'notDetermined': return <button className={styles['request-button']} onClick={() => requestDeviceMotionPermission().then(setDeviceMotionStatus)}>Request device motion access</button>;
+    case 'denied': return <p className={styles['request-status']}>⚠ You have previously denied access to the device motion, please restart the browser to retry.</p>;
+    case 'notDetermined': return <button className={styles['request-button']} onClick={() => requestDeviceMotionPermission().then(setDeviceMotionStatus)}>⚠ Request device motion access</button>;
     default: return <></>;
     }
   };
 
   return (
-    <div className={classNames(styles['root'], className)}>
+    <div className={classNames(styles['root'], className, { active: isActive })}>
       <div className={styles['background']} onClick={() => onDismiss()}/>
       <main>
-        <h1 className={styles['title']}>Settings</h1>
+        <div className={styles['title']}>
+          <h1>Settings</h1>
+          <span>{$APP_CONFIG.version}</span>
+        </div>
         <div className={styles['columns']}>
           <div>
             <div className={styles['row']}>
@@ -90,6 +98,7 @@ export default function Settings({
                   <option value={RollMethod[v]} key={v}>{ROLL_METHOD[RollMethod[v]]}</option>
                 )) }
               </select>
+              {needsDeviceMotionPermission() && deviceMotionStatus !== 'granted' && rollMethod !== 'tap' && <figure>⚠</figure>}
             </div>
             <div className={styles['row']}>
               <h2 className={styles['option']}>Sound</h2>
@@ -118,6 +127,7 @@ Settings.propTypes = {
   className: PropTypes.string,
   diceCount: PropTypes.number.isRequired,
   diceType: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
   maxDiceCount: PropTypes.number.isRequired,
   rollMethod: PropTypes.string.isRequired,
   soundEnabled: PropTypes.bool.isRequired,

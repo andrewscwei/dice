@@ -149,7 +149,8 @@ export default class App extends PureComponent {
           onOpenSettings={this.onOpenSettings}
         />
         <Settings
-          className={classNames(styles['settings'], { active: this.state.areSettingsVisible })}
+          className={styles['settings']}
+          isActive={this.state.areSettingsVisible}
           diceCount={this.state.diceCount}
           diceType={this.state.diceType}
           maxDiceCount={$APP_CONFIG.preferences.maxDiceCount}

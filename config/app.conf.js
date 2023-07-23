@@ -3,6 +3,9 @@
  */
 
 module.exports = {
+  // App version.
+  version: `v${require('../package.json').version}+build.${process.env.BUILD_NUMBER || '0'}`,
+
   // App preferences.
   preferences: {
     // Default dice type.
@@ -36,15 +39,15 @@ module.exports = {
   // Google Analytics ID (i.e. UA-XXXXXXXX-1)
   ga: process.env.GOOGLE_ANALYTICS_ID,
 
-  // Port.
-  port: process.env.PORT || 8080,
+  // Config for 'dev' task.
+  dev: {
+    // Dev server port.
+    port: process.env.PORT || 8080,
+  },
 
-  // Config options specific to the `build` task.
+  // Config for `build` task.
   build: {
     // Public path of all loaded assets.
     publicPath: process.env.PUBLIC_PATH || '/',
-
-    // Dev server port.
-    port: process.env.PORT || '8080',
   },
 };

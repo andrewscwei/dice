@@ -132,7 +132,7 @@ module.exports = {
     devServer: {
       host: '0.0.0.0',
       hot: true,
-      port: config.build.port,
+      port: config.dev.port,
       static: {
         publicPath: config.build.publicPath,
       },
