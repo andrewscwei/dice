@@ -4,6 +4,8 @@
   -post-padding: 10%;
 
   & main {
+    @post flex(vertical);
+
     -post-size: 100% auto;
     -post-max-size: 700px _;
   }
@@ -26,7 +28,7 @@
 }
 
 .option {
-  -post-size: 130px auto;
+  -post-size: 100px auto;
   font-size: 18px;
   color: #fff;
   text-align: right;
@@ -35,10 +37,10 @@
 }
 
 .columns {
-  @post flex(vertical, left, center);
+  @post flex(vertical, center);
 
   @media (min-width: 640px) {
-    @post flex(left, center);
+    @post flex(center);
   }
 }
 
