@@ -33,5 +33,5 @@ export function rememberDeviceMotionRequestDate() {
 }
 
 export function hasRequestedDeviceMotionPermission() {
-  return typeof sessionStorage.getItem(CACHE_KEY_DEVICE_MOTION_REQUEST_DATE) !== 'string';
+  return typeof sessionStorage.getItem(CACHE_KEY_DEVICE_MOTION_REQUEST_DATE) === 'string';
 }
