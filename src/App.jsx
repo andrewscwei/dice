@@ -86,7 +86,6 @@ export default class App extends PureComponent {
 
   async requestAccelerometerPermission() {
     if (!this.hasAccelerometer) return;
-    if (this.shakeHandler !== undefined) return;
 
     const res = await DeviceMotionEvent.requestPermission();
 
