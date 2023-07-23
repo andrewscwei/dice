@@ -90,9 +90,9 @@ export default class App extends PureComponent {
       });
 
       this.shakeHandler.start();
-
-      this.setState({ isPermissionModalVisible: false });
     }
+
+    this.setState({ isPermissionModalVisible: false });
   }
 
   onOpenSettings = () => {
