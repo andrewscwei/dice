@@ -11,8 +11,8 @@ import DiceType from '../enums/DiceType';
 import { randomVectorFromVector, rng } from '../utils/random';
 import styles from './Scene.pcss';
 
-const BOUNDS_SCALE_X = 1.0;
-const BOUNDS_SCALE_Y = 1.0;
+const BOUNDS_SCALE_X = 0.95;
+const BOUNDS_SCALE_Y = 0.95;
 
 const DICE_FACE_RANGE = {
   [DiceType.D6]: [1, 6],
