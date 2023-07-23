@@ -4,6 +4,14 @@ export function needsDeviceMotionPermission() {
   return typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function';
 }
 
+export async function checkDeviceMotionPermissionStatus() {
+  const res = await DeviceMotionEvent.requestPermission();
+
+  console.log('STATUS', res);
+
+  return res;
+}
+
 export function hasRequestedDeviceMotionPermission() {
   return typeof localStorage.getItem(CACHE_KEY_DEVICE_MOTION) !== 'string';
 }

@@ -9,7 +9,7 @@ import Scene from './components/Scene';
 import Settings from './components/Settings';
 import logging from './decorators/logging';
 import RollMethod from './enums/RollMethod';
-import { needsDeviceMotionPermission, hasRequestedDeviceMotionPermission, isDeviceMotionPermissionGranted } from './utils/deviceMotion';
+import { needsDeviceMotionPermission, hasRequestedDeviceMotionPermission, isDeviceMotionPermissionGranted, checkDeviceMotionPermissionStatus } from './utils/deviceMotion';
 
 const CACHE_KEY_SETTINGS = 'settings';
 
@@ -29,7 +29,7 @@ export default class App extends PureComponent {
 
     this.state = {
       areSettingsVisible: false,
-      isPermissionModalVisible: needsDeviceMotionPermission() && !hasRequestedDeviceMotionPermission() && !isDeviceMotionPermissionGranted(),
+      isPermissionModalVisible: false, // needsDeviceMotionPermission() && !hasRequestedDeviceMotionPermission() && !isDeviceMotionPermissionGranted(),
       diceType: defaultDiceType ?? $APP_CONFIG.preferences.defaultDiceType,
       diceCount: defaultDiceCount ?? $APP_CONFIG.preferences.defaultDiceCount,
       rollMethod: defaultRollMethod ?? $APP_CONFIG.preferences.defaultRollMethod,
@@ -56,6 +56,8 @@ export default class App extends PureComponent {
     window.addEventListener('shake', this.onShake);
 
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
+
+    checkDeviceMotionPermissionStatus();
   }
 
   componentWillUnmount() {
