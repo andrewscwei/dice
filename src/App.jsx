@@ -48,11 +48,18 @@ export default class App extends PureComponent {
     this.resizeObserver = new ResizeObserver(() => this.onResize());
     this.resizeObserver.observe(document.documentElement);
 
+    this.shakeHandler = new Shake({
+      threshold: 5,
+      timeout: 200,
+    });
+
+    this.shakeHandler.start();
+
     window.addEventListener('shake', this.onShake);
 
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
 
-    this.initShakeGesture();
+    this.requestAccelerometerPermission();
   }
 
   componentWillUnmount() {
@@ -77,19 +84,14 @@ export default class App extends PureComponent {
     }
   }
 
-  async initShakeGesture() {
+  async requestAccelerometerPermission() {
     if (!this.hasAccelerometer) return;
     if (this.shakeHandler !== undefined) return;
 
     const res = await DeviceMotionEvent.requestPermission();
 
     if (res === 'granted') {
-      this.shakeHandler = new Shake({
-        threshold: 5,
-        timeout: 200,
-      });
 
-      this.shakeHandler.start();
     }
 
     this.setState({ isPermissionModalVisible: false });
@@ -114,7 +116,7 @@ export default class App extends PureComponent {
   onRequestPermissionModal = () => {
     sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'true');
 
-    this.initShakeGesture();
+    this.requestAccelerometerPermission();
   };
 
   onDismissPermissionModal = () => {
@@ -173,7 +175,7 @@ export default class App extends PureComponent {
           soundEnabled={this.state.soundEnabled}
           onChange={this.onChangeSettings}
           onDismiss={this.onDismissSettings}
-          onRequestPermission={this.hasAccelerometer ? () => this.initShakeGesture() : undefined}
+          onRequestPermission={this.hasAccelerometer ? () => this.requestAccelerometerPermission() : undefined}
         />
         <PermissionModal
           className={classNames(styles['permission'], { active: this.state.isPermissionModalVisible })}
