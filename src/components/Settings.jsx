@@ -57,6 +57,9 @@ export default function Settings({
       setRollMethod(method);
     }
     else if (isAcclerometerPermissionDenied()) {
+      setRollMethod(RollMethod.TAP);
+    }
+    else {
       requestAccelerometerPermission().then(() => {
         if (isAccelerometerPermissionGranted()) {
           setRollMethod(method);
