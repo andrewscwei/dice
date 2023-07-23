@@ -2,6 +2,7 @@
   -post-padding: 24px;
   padding-right: max(24px, env(safe-area-inset-right));
   padding-bottom: max(24px, env(safe-area-inset-bottom));
+  pointer-events: none;
 }
 
 .nav {
@@ -11,6 +12,7 @@
 .button {
   -post-size: 20px;
   -post-transition: all 160ms ease-out;
+  pointer-events: auto;
 
   &:hover {
     opacity: .8;
