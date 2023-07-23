@@ -4,14 +4,13 @@ import React, { createRef, PureComponent } from 'react';
 import Shake from 'shake.js';
 import styles from './App.pcss';
 import Footer from './components/Footer';
-import PermissionModal from './components/PermissionModal';
 import Scene from './components/Scene';
 import Settings from './components/Settings';
 import logging from './decorators/logging';
 import RollMethod from './enums/RollMethod';
+import { hasAccelerometer, hasRequestedAccelerometerPermission, requestAccelerometerPermission } from './utils/deviceMotion';
 
 const CACHE_KEY_SETTINGS = 'settings';
-const CACHE_KEY_PERMISSION_REQUESTED = 'permission-requested';
 
 @logging('App')
 export default class App extends PureComponent {
@@ -21,8 +20,6 @@ export default class App extends PureComponent {
     scene: createRef(),
   };
 
-  hasAccelerometer = typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function';
-
   constructor(props) {
     super(props);
 
@@ -31,7 +28,7 @@ export default class App extends PureComponent {
 
     this.state = {
       areSettingsVisible: false,
-      isPermissionModalVisible: this.hasAccelerometer && typeof sessionStorage.getItem(CACHE_KEY_PERMISSION_REQUESTED) !== 'string',
+      isPermissionModalVisible: hasAccelerometer() && hasRequestedAccelerometerPermission(),
       diceType: defaultDiceType ?? $APP_CONFIG.preferences.defaultDiceType,
       diceCount: defaultDiceCount ?? $APP_CONFIG.preferences.defaultDiceCount,
       rollMethod: defaultRollMethod ?? $APP_CONFIG.preferences.defaultRollMethod,
@@ -58,8 +55,6 @@ export default class App extends PureComponent {
     window.addEventListener('shake', this.onShake);
 
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
-
-    this.requestAccelerometerPermission();
   }
 
   componentWillUnmount() {
@@ -84,21 +79,6 @@ export default class App extends PureComponent {
     }
   }
 
-  async requestAccelerometerPermission() {
-    if (!this.hasAccelerometer) return;
-
-    const res = await DeviceMotionEvent.requestPermission();
-
-    if (res === 'granted') {
-      sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'granted');
-    }
-    else {
-      sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'denied');
-    }
-
-    this.setState({ isPermissionModalVisible: false });
-  }
-
   onOpenSettings = () => {
     this.setState({ areSettingsVisible: true });
   };
@@ -113,15 +93,6 @@ export default class App extends PureComponent {
     localStorage.setItem(CACHE_KEY_SETTINGS, JSON.stringify(newSettings));
 
     this.setState({ ...newSettings });
-  };
-
-  onRequestPermissionModal = () => {
-    this.requestAccelerometerPermission();
-  };
-
-  onDismissPermissionModal = () => {
-    sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'dismissed');
-    this.setState({ isPermissionModalVisible: false });
   };
 
   onResize = () => {
@@ -175,12 +146,7 @@ export default class App extends PureComponent {
           soundEnabled={this.state.soundEnabled}
           onChange={this.onChangeSettings}
           onDismiss={this.onDismissSettings}
-          onRequestPermission={this.hasAccelerometer ? () => this.requestAccelerometerPermission() : undefined}
-        />
-        <PermissionModal
-          className={classNames(styles['permission'], { active: this.state.isPermissionModalVisible })}
-          onRequest={this.onRequestPermissionModal}
-          onDismiss={this.onDismissPermissionModal}
+          onRequestPermission={hasAccelerometer() ? () => requestAccelerometerPermission() : undefined}
         />
       </div>
     );

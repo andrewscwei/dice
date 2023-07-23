@@ -5,6 +5,7 @@ import $$GitHubIcon from '../assets/svgs/github-icon.svg';
 import $$Logo from '../assets/svgs/mu.svg';
 import DiceType from '../enums/DiceType';
 import RollMethod from '../enums/RollMethod';
+import { hasAccelerometer, isAccelerometerPermissionGranted, isAcclerometerPermissionDenied, requestAccelerometerPermission } from '../utils/deviceMotion';
 import styles from './Settings.pcss';
 
 const DICE_TYPE = {
@@ -48,7 +49,35 @@ export default function Settings({
     setSoundEnabled($APP_CONFIG.preferences.defaultSoundEnabled);
   };
 
-  const permissionRequestStatus = sessionStorage.getItem('permission-requested');
+  const onSetRollMethod = (method) => {
+    if (method === RollMethod.TAP) {
+      setRollMethod(method);
+    }
+    else if (isAccelerometerPermissionGranted()) {
+      setRollMethod(method);
+    }
+    else if (isAcclerometerPermissionDenied()) {
+      requestAccelerometerPermission().then(() => {
+        if (isAccelerometerPermissionGranted()) {
+          setRollMethod(method);
+        }
+        else {
+          setRollMethod(RollMethod.TAP);
+        }
+      });
+    }
+  };
+
+  const renderDeviceMotionStatus = () => {
+    if (!onRequestPermission || !hasAccelerometer() || isAccelerometerPermissionGranted()) return (<></>);
+
+    if (isAcclerometerPermissionDenied()) {
+      return (<p className={styles['request-status']}>You have previously denied access to the accelerometer, please restart the browser to retry.</p>);
+    }
+    else {
+      return (<button className={styles['request-button']} onClick={() => onRequestPermission()}>Request Accelerometer Access</button>);
+    }
+  };
 
   return (
     <div className={classNames(styles['root'], className)}>
@@ -78,10 +107,17 @@ export default function Settings({
           <div>
             <div className={styles['row']}>
               <h2 className={styles['option']}>Roll By</h2>
-              <select className={styles['select']} onChange={e => setRollMethod(e.target.value)} value={rollMethod}>
-                { Object.keys(RollMethod).map(v => (
-                  <option value={RollMethod[v]} key={v}>{ROLL_METHOD[RollMethod[v]]}</option>
-                ))}
+              <select className={styles['select']} onChange={e => onSetRollMethod(e.target.value)} value={rollMethod}>
+                { Object.keys(RollMethod).map(v => {
+                  const method = RollMethod[v];
+
+                  if (method === RollMethod.TAP || (hasAccelerometer() && (method === RollMethod.SHAKE || method === RollMethod.TAP_AND_SHAKE))) {
+                    return (<option value={RollMethod[v]} key={v}>{ROLL_METHOD[RollMethod[v]]}</option>);
+                  }
+                  else {
+                    return (<></>);
+                  }
+                }) }
               </select>
             </div>
             <div className={styles['row']}>
@@ -97,8 +133,7 @@ export default function Settings({
           <button onClick={() => onReset()}>Reset</button>
           <button onClick={() => onDismiss()}>Done</button>
         </div>
-        {onRequestPermission && (typeof permissionRequestStatus !== 'string' || permissionRequestStatus === 'dismissed') && <button className={styles['request-button']} onClick={() => onRequestPermission()}>Request Accelerometer Access</button>}
-        {onRequestPermission && permissionRequestStatus === 'denied' && <p className={styles['request-status']}>You have previously denied access to the accelerometer, please restart the browser to retry.</p>}
+        {renderDeviceMotionStatus()}
       </main>
       <div className={styles['footer']}>
         <a className={styles['monogram']} href='https://andr.mu' dangerouslySetInnerHTML={{ __html: $$Logo }}/>
