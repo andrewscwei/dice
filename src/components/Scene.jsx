@@ -42,7 +42,6 @@ const DICE_INERTIA = {
 export default class Scene extends PureComponent {
   static propTypes = {
     className: PropTypes.string,
-    style: PropTypes.object,
     frameRate: PropTypes.number.isRequired,
     diceType: PropTypes.string.isRequired,
     diceScale: PropTypes.number.isRequired,
@@ -522,10 +521,10 @@ export default class Scene extends PureComponent {
   }
 
   render() {
-    const { className, style } = this.props;
+    const { className } = this.props;
 
     return (
-      <div className={classNames(styles['root'], className)} style={{ ...style || {} }} ref={this.nodeRefs.root}/>
+      <div className={classNames(styles['root'], className)} ref={this.nodeRefs.root}/>
     );
   }
 }

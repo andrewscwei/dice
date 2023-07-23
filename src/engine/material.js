@@ -45,7 +45,7 @@ export function createTextTexture(scale, text, diceColor, labelColor) {
   canvas.width = s;
   canvas.height = s;
 
-  ctx.font = s / (1 + 2) + 'pt Roboto';
+  ctx.font = s / (3.8) + 'pt monospace';
   ctx.fillStyle = toWebHexString(diceColor);
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.textAlign = 'center';

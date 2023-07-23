@@ -1,12 +1,27 @@
 @post normalize;
 
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 400;
+  src: url('./assets/fonts/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 800;
+  src: url('./assets/fonts/Roboto-Bold.ttf') format('truetype');
+}
+
 html {
   height: calc(100% + env(safe-area-inset-top));
 }
 
 body {
-  overflow: hidden;
   background: #111;
+  font-family: Roboto, sans-serif;
+  overflow: hidden;
 }
 
 :global(#app) {

@@ -20,7 +20,8 @@ export default class App extends PureComponent {
   constructor(props) {
     super(props);
 
-    const { diceType: defaultDiceType, diceCount: defaultDiceCount, rollMethod: defaultRollMethod, soundEnabled: defaultSoundEnabled } = JSON.parse(localStorage.getItem('settings') ?? {});
+    const defaultSettings = JSON.parse(localStorage.getItem('settings') ?? '{}');
+    const { diceType: defaultDiceType, diceCount: defaultDiceCount, rollMethod: defaultRollMethod, soundEnabled: defaultSoundEnabled } = defaultSettings;
 
     this.state = {
       areSettingsVisible: false,
@@ -70,7 +71,7 @@ export default class App extends PureComponent {
   }
 
   async initShakeGesture() {
-    if (typeof DeviceMotionEvent.requestPermission !== 'function') return;
+    if (typeof DeviceMotionEvent === 'undefined' || typeof DeviceMotionEvent.requestPermission !== 'function') return;
 
     const res = await DeviceMotionEvent.requestPermission();
 
