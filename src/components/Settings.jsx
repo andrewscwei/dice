@@ -55,9 +55,11 @@ export default function Settings({
   };
 
   const renderDeviceMotionStatus = () => {
+    const showWarning = rollMethod !== 'tap';
+
     switch (deviceMotionStatus) {
-    case 'denied': return <p className={styles['request-status']}>⚠ You have previously denied access to the device motion, please restart the browser to retry.</p>;
-    case 'notDetermined': return <button className={styles['request-button']} onClick={() => requestDeviceMotionPermission().then(setDeviceMotionStatus)}>⚠ Request device motion access</button>;
+    case 'denied': return <p className={styles['request-status']}>{showWarning ? '⚠ ' : ''}You have previously denied access to the device motion, please restart the browser to retry.</p>;
+    case 'notDetermined': return <button className={styles['request-button']} onClick={() => requestDeviceMotionPermission().then(setDeviceMotionStatus)}>{showWarning ? '⚠ ' : ''}Request device motion access</button>;
     default: return <></>;
     }
   };
