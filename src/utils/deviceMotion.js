@@ -5,11 +5,14 @@ export function needsDeviceMotionPermission() {
 }
 
 export async function checkDeviceMotionPermissionStatus() {
-  const res = await DeviceMotionEvent.requestPermission();
-
-  console.log('STATUS', res);
-
-  return res;
+  try {
+    const res = await DeviceMotionEvent.requestPermission();
+    console.log('STATUS', res);
+    return res;
+  }
+  catch (err) {
+    console.log('ERR', err);
+  }
 }
 
 export function hasRequestedDeviceMotionPermission() {
