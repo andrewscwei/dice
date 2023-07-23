@@ -53,8 +53,10 @@
   border-radius: 8px;
   color: #000;
 
-  :is(:global(.no-touch)) &:hover {
-    background: #ccc;
+  @media (hover: hover) {
+    &:hover {
+      background: #ccc;
+    }
   }
 }
 
@@ -62,7 +64,9 @@
   -post-transition: opacity 160ms ease-out;
   color: #fff;
 
-  :is(:global(.no-touch)) &:hover {
-    opacity: .8;
+  @media (hover: hover) {
+    &:hover {
+      opacity: .8;
+    }
   }
 }

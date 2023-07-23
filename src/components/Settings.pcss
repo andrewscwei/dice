@@ -79,9 +79,11 @@
   font-size: 18px;
   text-align: center;
 
-  :is(:global(.no-touch)) &:hover {
-    background: #ccc;
-    color: #000;
+  @media (hover: hover) {
+    &:hover {
+      background: #ccc;
+      color: #000;
+    }
   }
 
   + figure {
@@ -109,8 +111,10 @@
     letter-spacing: 2px;
     text-transform: uppercase;
 
-    :is(:global(.no-touch)) &:hover {
-      background: #ccc;
+    @media (hover: hover) {
+      &:hover {
+        background: #ccc;
+      }
     }
   }
 }
@@ -138,8 +142,10 @@
     -post-size: auto 100%;
   }
 
-  :is(:global(.no-touch)) &:hover {
-    opacity: .8;
+  @media (hover: hover) {
+    &:hover {
+      opacity: .8;
+    }
   }
 
   &:after {
@@ -159,8 +165,10 @@
     -post-size: 100%;
   }
 
-  :is(:global(.no-touch)) &:hover {
-    opacity: .8;
+  @media (hover: hover) {
+    &:hover {
+      opacity: .8;
+    }
   }
 
   &:after {
@@ -178,8 +186,10 @@
   color: #fff;
   height: 40px;
 
-  :is(:global(.no-touch)) &:hover {
-    opacity: .8;
+  @media (hover: hover) {
+    &:hover {
+      opacity: .8;
+    }
   }
 }
 
