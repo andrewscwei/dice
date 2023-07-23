@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { cancelRequestAccelerometerPermission, requestAccelerometerPermission } from '../utils/deviceMotion';
+import { cancelDeviceMotionPermissionRequest, requestDeviceMotionPermission } from '../utils/deviceMotion';
 import styles from './PermissionModal.pcss';
 
 export default function PermissionModal({ className, onDismiss }) {
@@ -12,8 +12,8 @@ export default function PermissionModal({ className, onDismiss }) {
         <h1 className={styles['title']}>Shake?</h1>
         <div>To support dice shaking the app requires permission to access your device accelerometer. You can disable shake later in settings.</div>
         <div className={styles['actions']}>
-          <button className={styles['request-button']} onClick={() => requestAccelerometerPermission().then(() => onDismiss())}>Allow Access</button>
-          <button className={styles['dismiss-button']} onClick={() => cancelRequestAccelerometerPermission().then(() => onDismiss())}>Dismiss</button>
+          <button className={styles['request-button']} onClick={() => requestDeviceMotionPermission().then(() => onDismiss())}>Allow Access</button>
+          <button className={styles['dismiss-button']} onClick={() => cancelDeviceMotionPermissionRequest().then(() => onDismiss())}>Dismiss</button>
         </div>
       </div>
     </div>

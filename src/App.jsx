@@ -9,7 +9,7 @@ import Scene from './components/Scene';
 import Settings from './components/Settings';
 import logging from './decorators/logging';
 import RollMethod from './enums/RollMethod';
-import { hasAccelerometer, hasRequestedAccelerometerPermission, isAccelerometerPermissionGranted } from './utils/deviceMotion';
+import { needsDeviceMotionPermission, hasRequestedDeviceMotionPermission, isDeviceMotionPermissionGranted } from './utils/deviceMotion';
 
 const CACHE_KEY_SETTINGS = 'settings';
 
@@ -29,7 +29,7 @@ export default class App extends PureComponent {
 
     this.state = {
       areSettingsVisible: false,
-      isPermissionModalVisible: hasAccelerometer() && !hasRequestedAccelerometerPermission() && !isAccelerometerPermissionGranted(),
+      isPermissionModalVisible: needsDeviceMotionPermission() && !hasRequestedDeviceMotionPermission() && !isDeviceMotionPermissionGranted(),
       diceType: defaultDiceType ?? $APP_CONFIG.preferences.defaultDiceType,
       diceCount: defaultDiceCount ?? $APP_CONFIG.preferences.defaultDiceCount,
       rollMethod: defaultRollMethod ?? $APP_CONFIG.preferences.defaultRollMethod,

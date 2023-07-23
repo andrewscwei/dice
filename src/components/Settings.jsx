@@ -5,7 +5,7 @@ import $$GitHubIcon from '../assets/svgs/github-icon.svg';
 import $$Logo from '../assets/svgs/mu.svg';
 import DiceType from '../enums/DiceType';
 import RollMethod from '../enums/RollMethod';
-import { hasAccelerometer, isAccelerometerPermissionGranted, isAcclerometerPermissionDenied, requestAccelerometerPermission } from '../utils/deviceMotion';
+import { needsDeviceMotionPermission, isDeviceMotionPermissionGranted, isDeviceMotionPermissionDenied, requestDeviceMotionPermission } from '../utils/deviceMotion';
 import styles from './Settings.pcss';
 
 const DICE_TYPE = {
@@ -49,13 +49,13 @@ export default function Settings({
   };
 
   const renderDeviceMotionStatus = () => {
-    if (!hasAccelerometer() || isAccelerometerPermissionGranted()) return (<></>);
+    if (!needsDeviceMotionPermission() || isDeviceMotionPermissionGranted()) return (<></>);
 
-    if (isAcclerometerPermissionDenied()) {
+    if (isDeviceMotionPermissionDenied()) {
       return (<p className={styles['request-status']}>You have previously denied access to the accelerometer, please restart the browser to retry.</p>);
     }
     else {
-      return (<button className={styles['request-button']} onClick={() => requestAccelerometerPermission()}>Request Accelerometer Access</button>);
+      return (<button className={styles['request-button']} onClick={() => requestDeviceMotionPermission()}>Request Accelerometer Access</button>);
     }
   };
 
