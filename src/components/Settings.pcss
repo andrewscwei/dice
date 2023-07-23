@@ -79,7 +79,7 @@
   font-size: 18px;
   text-align: center;
 
-  &:hover {
+  :is(:global(.no-touch)) &:hover {
     background: #ccc;
     color: #000;
   }
@@ -109,7 +109,7 @@
     letter-spacing: 2px;
     text-transform: uppercase;
 
-    &:hover {
+    :is(:global(.no-touch)) &:hover {
       background: #ccc;
     }
   }
@@ -138,7 +138,7 @@
     -post-size: auto 100%;
   }
 
-  &:hover {
+  :is(:global(.no-touch)) &:hover {
     opacity: .8;
   }
 
@@ -159,7 +159,7 @@
     -post-size: 100%;
   }
 
-  &:hover {
+  :is(:global(.no-touch)) &:hover {
     opacity: .8;
   }
 
@@ -178,7 +178,7 @@
   color: #fff;
   height: 40px;
 
-  &:hover {
+  :is(:global(.no-touch)) &:hover {
     opacity: .8;
   }
 }
