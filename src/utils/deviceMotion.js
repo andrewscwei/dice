@@ -19,14 +19,12 @@ export async function requestAccelerometerPermission() {
   else {
     sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'denied');
   }
-
-  localStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'requested');
 }
 
 export async function cancelRequestAccelerometerPermission() {
   if (!hasAccelerometer()) return;
 
-  localStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'pending');
+  localStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'dismissed');
 }
 
 export function isAccelerometerPermissionGranted() {
