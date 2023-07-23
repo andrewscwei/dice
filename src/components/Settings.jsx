@@ -40,6 +40,13 @@ export default function Settings({
     onChange?.({ diceType, diceCount, rollMethod, soundEnabled });
   }, [diceType, diceCount, rollMethod, soundEnabled]);
 
+  const onReset = () => {
+    setDiceType($APP_CONFIG.preferences.defaultDiceType);
+    setDiceCount($APP_CONFIG.preferences.defaultDiceCount);
+    setRollMethod($APP_CONFIG.preferences.defaultRollMethod);
+    setSoundEnabled($APP_CONFIG.preferences.defaultSoundEnabled);
+  };
+
   return (
     <div className={classNames(styles['root'], className)}>
       <div className={styles['background']} onClick={() => onDismiss()}/>
@@ -84,7 +91,8 @@ export default function Settings({
           </div>
         </div>
         <div className={styles['actions']}>
-          <button className={styles['done-button']} onClick={(event) => onDismiss()}>Done</button>
+          <button onClick={(event) => onReset()}>Reset</button>
+          <button onClick={(event) => onDismiss()}>Done</button>
         </div>
       </main>
       <div className={styles['footer']}>

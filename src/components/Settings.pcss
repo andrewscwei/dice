@@ -16,27 +16,6 @@
   opacity: .8;
 }
 
-.done-button {
-  -post-padding: 12px 34px;
-  -post-margin: 2em _ _;
-  -post-transition: background 160ms ease-out;
-  background: #fff;
-  border-radius: 8px;
-  color: #000;
-  font-size: 16px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-
-  & svg {
-    -post-size: 100%;
-    fill: #fff;
-  }
-
-  &:hover {
-    background: #ccc;
-  }
-}
-
 .title {
   -post-margin: _ _ 30px;
   font-size: 40px;
@@ -81,7 +60,8 @@
   -post-padding: _ 10px;
   -post-transition: background 160ms ease-out;
   appearance: none;
-  background: #fff;
+  background: #000;
+  color: #fff;
   border-radius: 8px;
   font-size: 18px;
   text-align: center;
@@ -93,6 +73,22 @@
 
 .actions {
   @post flex;
+
+  button {
+    -post-padding: 12px 34px;
+    -post-margin: 2em .5em _;
+    -post-transition: background 160ms ease-out;
+    background: #fff;
+    border-radius: 8px;
+    color: #000;
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+
+    &:hover {
+      background: #ccc;
+    }
+  }
 }
 
 .footer {
