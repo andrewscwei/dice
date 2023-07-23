@@ -19,6 +19,8 @@ export async function requestAccelerometerPermission() {
   else {
     sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'denied');
   }
+
+  localStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'requested');
 }
 
 export async function cancelRequestAccelerometerPermission() {
