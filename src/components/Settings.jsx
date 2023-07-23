@@ -30,6 +30,7 @@ export default function Settings({
   soundEnabled: defaultSoundEnabled,
   onChange,
   onDismiss,
+  onRequestPermission,
 }) {
   const [diceType, setDiceType] = useState(defaultDiceType);
   const [diceCount, setDiceCount] = useState(defaultDiceCount);
@@ -91,9 +92,10 @@ export default function Settings({
           </div>
         </div>
         <div className={styles['actions']}>
-          <button onClick={(event) => onReset()}>Reset</button>
-          <button onClick={(event) => onDismiss()}>Done</button>
+          <button onClick={() => onReset()}>Reset</button>
+          <button onClick={() => onDismiss()}>Done</button>
         </div>
+        {onRequestPermission && <button className={styles['request-button']} onClick={() => onRequestPermission()}>Request Accelerometer Access</button>}
       </main>
       <div className={styles['footer']}>
         <a className={styles['monogram']} href='https://andr.mu' dangerouslySetInnerHTML={{ __html: $$Logo }}/>
@@ -110,6 +112,7 @@ Settings.propTypes = {
   maxDiceCount: PropTypes.number.isRequired,
   rollMethod: PropTypes.string.isRequired,
   soundEnabled: PropTypes.bool.isRequired,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
   onDismiss: PropTypes.func.isRequired,
+  onRequestPermission: PropTypes.func,
 };

@@ -4,10 +4,14 @@ import React, { createRef, PureComponent } from 'react';
 import Shake from 'shake.js';
 import styles from './App.pcss';
 import Footer from './components/Footer';
+import PermissionModal from './components/PermissionModal';
 import Scene from './components/Scene';
 import Settings from './components/Settings';
 import logging from './decorators/logging';
 import RollMethod from './enums/RollMethod';
+
+const CACHE_KEY_SETTINGS = 'settings';
+const CACHE_KEY_PERMISSION_REQUESTED = 'permission-requested';
 
 @logging('App')
 export default class App extends PureComponent {
@@ -17,14 +21,17 @@ export default class App extends PureComponent {
     scene: createRef(),
   };
 
+  hasAccelerometer = typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function';
+
   constructor(props) {
     super(props);
 
-    const defaultSettings = JSON.parse(localStorage.getItem('settings') ?? '{}');
+    const defaultSettings = JSON.parse(localStorage.getItem(CACHE_KEY_SETTINGS) ?? '{}');
     const { diceType: defaultDiceType, diceCount: defaultDiceCount, rollMethod: defaultRollMethod, soundEnabled: defaultSoundEnabled } = defaultSettings;
 
     this.state = {
       areSettingsVisible: false,
+      isPermissionModalVisible: this.hasAccelerometer && localStorage.getItem(CACHE_KEY_PERMISSION_REQUESTED) !== 'true',
       diceType: defaultDiceType ?? $APP_CONFIG.preferences.defaultDiceType,
       diceCount: defaultDiceCount ?? $APP_CONFIG.preferences.defaultDiceCount,
       rollMethod: defaultRollMethod ?? $APP_CONFIG.preferences.defaultRollMethod,
@@ -71,7 +78,8 @@ export default class App extends PureComponent {
   }
 
   async initShakeGesture() {
-    if (typeof DeviceMotionEvent === 'undefined' || typeof DeviceMotionEvent.requestPermission !== 'function') return;
+    if (!this.hasAccelerometer) return;
+    if (this.shakeHandler !== undefined) return;
 
     const res = await DeviceMotionEvent.requestPermission();
 
@@ -96,9 +104,18 @@ export default class App extends PureComponent {
   onChangeSettings = ({ diceType, diceCount, rollMethod, soundEnabled }) => {
     const newSettings = { diceType, diceCount, rollMethod, soundEnabled };
 
-    localStorage.setItem('settings', JSON.stringify(newSettings));
+    localStorage.setItem(CACHE_KEY_SETTINGS, JSON.stringify(newSettings));
 
     this.setState({ ...newSettings });
+  };
+
+  onRequestPermissionModal = () => {
+    localStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'true');
+  };
+
+  onDismissPermissionModal = () => {
+    localStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'true');
+    this.setState({ isPermissionModalVisible: false });
   };
 
   onResize = () => {
@@ -152,6 +169,12 @@ export default class App extends PureComponent {
           soundEnabled={this.state.soundEnabled}
           onChange={this.onChangeSettings}
           onDismiss={this.onDismissSettings}
+          onRequestPermission={this.hasAccelerometer ? () => this.initShakeGesture() : undefined}
+        />
+        <PermissionModal
+          className={classNames(styles['permission'], { active: this.state.isPermissionModalVisible })}
+          onRequest={this.onRequestPermissionModal}
+          onDismiss={this.onDismissPermissionModal}
         />
       </div>
     );

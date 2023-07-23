@@ -59,6 +59,22 @@ body {
   }
 }
 
+.permission {
+  -post-align: top left fixed;
+  -post-size: 100%;
+  -post-transition: all 160ms ease-out;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale3d(1.4, 1.4, 1.4);
+  z-index: 30;
+
+  &:global(.active) {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
 .footer {
   -post-align: bottom left fixed;
   -post-size: 100% auto;
