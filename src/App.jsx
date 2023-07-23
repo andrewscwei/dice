@@ -4,11 +4,12 @@ import React, { createRef, PureComponent } from 'react';
 import Shake from 'shake.js';
 import styles from './App.pcss';
 import Footer from './components/Footer';
+import PermissionModal from './components/PermissionModal';
 import Scene from './components/Scene';
 import Settings from './components/Settings';
 import logging from './decorators/logging';
 import RollMethod from './enums/RollMethod';
-import { hasAccelerometer, hasRequestedAccelerometerPermission, requestAccelerometerPermission } from './utils/deviceMotion';
+import { hasAccelerometer, hasRequestedAccelerometerPermission } from './utils/deviceMotion';
 
 const CACHE_KEY_SETTINGS = 'settings';
 
@@ -28,7 +29,7 @@ export default class App extends PureComponent {
 
     this.state = {
       areSettingsVisible: false,
-      isPermissionModalVisible: hasAccelerometer() && hasRequestedAccelerometerPermission(),
+      isPermissionModalVisible: hasAccelerometer() && !hasRequestedAccelerometerPermission(),
       diceType: defaultDiceType ?? $APP_CONFIG.preferences.defaultDiceType,
       diceCount: defaultDiceCount ?? $APP_CONFIG.preferences.defaultDiceCount,
       rollMethod: defaultRollMethod ?? $APP_CONFIG.preferences.defaultRollMethod,
@@ -95,6 +96,10 @@ export default class App extends PureComponent {
     this.setState({ ...newSettings });
   };
 
+  onDismissPermissionModal = () => {
+    this.setState({ isPermissionModalVisible: false });
+  };
+
   onResize = () => {
     this.nodeRefs.scene.current?.reset();
   };
@@ -146,7 +151,10 @@ export default class App extends PureComponent {
           soundEnabled={this.state.soundEnabled}
           onChange={this.onChangeSettings}
           onDismiss={this.onDismissSettings}
-          onRequestPermission={hasAccelerometer() ? () => requestAccelerometerPermission() : undefined}
+        />
+        <PermissionModal
+          className={classNames(styles['permission'], { active: this.state.isPermissionModalVisible })}
+          onDismiss={this.onDismissPermissionModal}
         />
       </div>
     );

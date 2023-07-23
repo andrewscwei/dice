@@ -31,7 +31,6 @@ export default function Settings({
   soundEnabled: defaultSoundEnabled,
   onChange,
   onDismiss,
-  onRequestPermission,
 }) {
   const [diceType, setDiceType] = useState(defaultDiceType);
   const [diceCount, setDiceCount] = useState(defaultDiceCount);
@@ -49,36 +48,14 @@ export default function Settings({
     setSoundEnabled($APP_CONFIG.preferences.defaultSoundEnabled);
   };
 
-  const onSetRollMethod = (method) => {
-    if (method === RollMethod.TAP) {
-      setRollMethod(method);
-    }
-    else if (isAccelerometerPermissionGranted()) {
-      setRollMethod(method);
-    }
-    else if (isAcclerometerPermissionDenied()) {
-      setRollMethod(RollMethod.TAP);
-    }
-    else {
-      requestAccelerometerPermission().then(() => {
-        if (isAccelerometerPermissionGranted()) {
-          setRollMethod(method);
-        }
-        else {
-          setRollMethod(RollMethod.TAP);
-        }
-      });
-    }
-  };
-
   const renderDeviceMotionStatus = () => {
-    if (!onRequestPermission || !hasAccelerometer() || isAccelerometerPermissionGranted()) return (<></>);
+    if (!hasAccelerometer() || isAccelerometerPermissionGranted()) return (<></>);
 
     if (isAcclerometerPermissionDenied()) {
       return (<p className={styles['request-status']}>You have previously denied access to the accelerometer, please restart the browser to retry.</p>);
     }
     else {
-      return (<button className={styles['request-button']} onClick={() => onRequestPermission()}>Request Accelerometer Access</button>);
+      return (<button className={styles['request-button']} onClick={() => requestAccelerometerPermission()}>Request Accelerometer Access</button>);
     }
   };
 
@@ -110,7 +87,7 @@ export default function Settings({
           <div>
             <div className={styles['row']}>
               <h2 className={styles['option']}>Roll By</h2>
-              <select className={styles['select']} onChange={e => onSetRollMethod(e.target.value)} value={rollMethod}>
+              <select className={styles['select']} onChange={e => setRollMethod(e.target.value)} value={rollMethod}>
                 { Object.keys(RollMethod).map(v => {
                   const method = RollMethod[v];
 
@@ -155,5 +132,4 @@ Settings.propTypes = {
   soundEnabled: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
   onDismiss: PropTypes.func.isRequired,
-  onRequestPermission: PropTypes.func,
 };

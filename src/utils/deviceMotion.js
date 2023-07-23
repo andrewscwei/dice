@@ -5,7 +5,7 @@ export function hasAccelerometer() {
 }
 
 export function hasRequestedAccelerometerPermission() {
-  return typeof sessionStorage.getItem(CACHE_KEY_PERMISSION_REQUESTED) !== 'string';
+  return typeof localStorage.getItem(CACHE_KEY_PERMISSION_REQUESTED) !== 'string';
 }
 
 export async function requestAccelerometerPermission() {
@@ -24,7 +24,7 @@ export async function requestAccelerometerPermission() {
 export async function cancelRequestAccelerometerPermission() {
   if (!hasAccelerometer()) return;
 
-  sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'dismissed');
+  localStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'pending');
 }
 
 export function isAccelerometerPermissionGranted() {
@@ -33,8 +33,4 @@ export function isAccelerometerPermissionGranted() {
 
 export function isAcclerometerPermissionDenied() {
   return sessionStorage.getItem(CACHE_KEY_PERMISSION_REQUESTED) === 'denied';
-}
-
-export function isAcclerometerPermissionDismissed() {
-  return sessionStorage.getItem(CACHE_KEY_PERMISSION_REQUESTED) === 'dismissed';
 }

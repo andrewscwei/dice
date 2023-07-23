@@ -1,0 +1,68 @@
+.root {
+  @post flex(center);
+
+  -post-padding: 10px 20px;
+  -post-align: top left;
+  -post-size: 100%;
+}
+
+.modal {
+  border-radius: 8px;
+  color: #fff;
+  line-height: 150%;
+  max-width: 500px;
+  padding: 2em;
+  text-align: center;
+  width: 100%;
+}
+
+.background {
+  -post-align: top left;
+  -post-size: 100%;
+  background: #111;
+  opacity: .9;
+}
+
+.title {
+  -post-margin: _ _ 30px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.actions {
+  @post flex(vertical, center, top);
+  margin-top: 1em;
+
+  button {
+    -post-margin: 1em _;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+}
+
+.request-button {
+  -post-padding: 10px 20px;
+  -post-margin: .5em _;
+  -post-transition: background 160ms ease-out;
+  background: #fff;
+  border-radius: 8px;
+  color: #000;
+
+  &:hover {
+    background: #ccc;
+  }
+}
+
+.dismiss-button {
+  -post-transition: opacity 160ms ease-out;
+  color: #fff;
+
+  &:hover {
+    opacity: .8;
+  }
+}
