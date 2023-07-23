@@ -90,6 +90,8 @@ export default class App extends PureComponent {
       });
 
       this.shakeHandler.start();
+
+      this.setState({ isPermissionModalVisible: false });
     }
   }
 
@@ -111,6 +113,8 @@ export default class App extends PureComponent {
 
   onRequestPermissionModal = () => {
     localStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'true');
+
+    this.initShakeGesture();
   };
 
   onDismissPermissionModal = () => {
