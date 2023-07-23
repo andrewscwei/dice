@@ -48,6 +48,8 @@ export default function Settings({
     setSoundEnabled($APP_CONFIG.preferences.defaultSoundEnabled);
   };
 
+  const permissionRequestStatus = sessionStorage.getItem('permission-requested');
+
   return (
     <div className={classNames(styles['root'], className)}>
       <div className={styles['background']} onClick={() => onDismiss()}/>
@@ -95,7 +97,8 @@ export default function Settings({
           <button onClick={() => onReset()}>Reset</button>
           <button onClick={() => onDismiss()}>Done</button>
         </div>
-        {onRequestPermission && <button className={styles['request-button']} onClick={() => onRequestPermission()}>Request Accelerometer Access</button>}
+        {onRequestPermission && (typeof permissionRequestStatus !== 'string' || permissionRequestStatus === 'dismissed') && <button className={styles['request-button']} onClick={() => onRequestPermission()}>Request Accelerometer Access</button>}
+        {onRequestPermission && permissionRequestStatus === 'denied' && <p className={styles['request-status']}>You have previously denied access to the accelerometer, please restart the browser to retry.</p>}
       </main>
       <div className={styles['footer']}>
         <a className={styles['monogram']} href='https://andr.mu' dangerouslySetInnerHTML={{ __html: $$Logo }}/>

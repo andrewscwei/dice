@@ -31,7 +31,7 @@ export default class App extends PureComponent {
 
     this.state = {
       areSettingsVisible: false,
-      isPermissionModalVisible: this.hasAccelerometer && sessionStorage.getItem(CACHE_KEY_PERMISSION_REQUESTED) !== 'true',
+      isPermissionModalVisible: this.hasAccelerometer && typeof sessionStorage.getItem(CACHE_KEY_PERMISSION_REQUESTED) !== 'string',
       diceType: defaultDiceType ?? $APP_CONFIG.preferences.defaultDiceType,
       diceCount: defaultDiceCount ?? $APP_CONFIG.preferences.defaultDiceCount,
       rollMethod: defaultRollMethod ?? $APP_CONFIG.preferences.defaultRollMethod,
@@ -90,7 +90,10 @@ export default class App extends PureComponent {
     const res = await DeviceMotionEvent.requestPermission();
 
     if (res === 'granted') {
-
+      sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'granted');
+    }
+    else {
+      sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'denied');
     }
 
     this.setState({ isPermissionModalVisible: false });
@@ -113,13 +116,11 @@ export default class App extends PureComponent {
   };
 
   onRequestPermissionModal = () => {
-    sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'true');
-
     this.requestAccelerometerPermission();
   };
 
   onDismissPermissionModal = () => {
-    sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'true');
+    sessionStorage.setItem(CACHE_KEY_PERMISSION_REQUESTED, 'dismissed');
     this.setState({ isPermissionModalVisible: false });
   };
 
