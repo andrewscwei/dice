@@ -3,13 +3,13 @@ import Hammer from 'hammerjs';
 import React, { createRef, PureComponent } from 'react';
 import Shake from 'shake.js';
 import styles from './App.pcss';
+import DeviceMotionAlert from './components/DeviceMotionAlert';
 import Footer from './components/Footer';
-import PermissionModal from './components/PermissionModal';
 import Scene from './components/Scene';
 import Settings from './components/Settings';
 import logging from './decorators/logging';
 import RollMethod from './enums/RollMethod';
-import { needsDeviceMotionPermission, hasRequestedDeviceMotionPermission, isDeviceMotionPermissionGranted, checkDeviceMotionPermissionStatus } from './utils/deviceMotion';
+import { hasRequestedDeviceMotionPermission, requestDeviceMotionPermission } from './utils/deviceMotion';
 
 const CACHE_KEY_SETTINGS = 'settings';
 
@@ -29,9 +29,9 @@ export default class App extends PureComponent {
 
     this.state = {
       areSettingsVisible: false,
-      isPermissionModalVisible: false, // needsDeviceMotionPermission() && !hasRequestedDeviceMotionPermission() && !isDeviceMotionPermissionGranted(),
-      diceType: defaultDiceType ?? $APP_CONFIG.preferences.defaultDiceType,
       diceCount: defaultDiceCount ?? $APP_CONFIG.preferences.defaultDiceCount,
+      diceType: defaultDiceType ?? $APP_CONFIG.preferences.defaultDiceType,
+      isDeviceMotionAlertVisible: false,
       rollMethod: defaultRollMethod ?? $APP_CONFIG.preferences.defaultRollMethod,
       soundEnabled: defaultSoundEnabled ?? $APP_CONFIG.preferences.defaultSoundEnabled,
     };
@@ -57,7 +57,11 @@ export default class App extends PureComponent {
 
     this.nodeRefs.scene.current?.roll(undefined, undefined, window.__GAMEBOY__);
 
-    checkDeviceMotionPermissionStatus();
+    requestDeviceMotionPermission().then(status => {
+      if (status !== 'notDetermined') return;
+
+      this.setState({ isDeviceMotionAlertVisible: !hasRequestedDeviceMotionPermission() });
+    });
   }
 
   componentWillUnmount() {
@@ -99,7 +103,7 @@ export default class App extends PureComponent {
   };
 
   onDismissPermissionModal = () => {
-    this.setState({ isPermissionModalVisible: false });
+    this.setState({ isDeviceMotionAlertVisible: false });
   };
 
   onResize = () => {
@@ -154,8 +158,8 @@ export default class App extends PureComponent {
           onChange={this.onChangeSettings}
           onDismiss={this.onDismissSettings}
         />
-        <PermissionModal
-          className={classNames(styles['permission'], { active: this.state.isPermissionModalVisible })}
+        <DeviceMotionAlert
+          className={classNames(styles['permission'], { active: this.state.isDeviceMotionAlertVisible })}
           onDismiss={this.onDismissPermissionModal}
         />
       </div>

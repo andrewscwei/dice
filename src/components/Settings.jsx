@@ -5,7 +5,7 @@ import $$GitHubIcon from '../assets/svgs/github-icon.svg';
 import $$Logo from '../assets/svgs/mu.svg';
 import DiceType from '../enums/DiceType';
 import RollMethod from '../enums/RollMethod';
-import { needsDeviceMotionPermission, isDeviceMotionPermissionGranted, isDeviceMotionPermissionDenied, requestDeviceMotionPermission } from '../utils/deviceMotion';
+import { getDeviceMotionPermission, requestDeviceMotionPermission } from '../utils/deviceMotion';
 import styles from './Settings.pcss';
 
 const DICE_TYPE = {
@@ -36,6 +36,7 @@ export default function Settings({
   const [diceCount, setDiceCount] = useState(defaultDiceCount);
   const [rollMethod, setRollMethod] = useState(defaultRollMethod);
   const [soundEnabled, setSoundEnabled] = useState(defaultSoundEnabled);
+  const [deviceMotionStatus, setDeviceMotionStatus] = useState(getDeviceMotionPermission());
 
   useEffect(() => {
     onChange?.({ diceType, diceCount, rollMethod, soundEnabled });
@@ -49,13 +50,10 @@ export default function Settings({
   };
 
   const renderDeviceMotionStatus = () => {
-    if (!needsDeviceMotionPermission() || isDeviceMotionPermissionGranted()) return (<></>);
-
-    if (isDeviceMotionPermissionDenied()) {
-      return (<p className={styles['request-status']}>You have previously denied access to the accelerometer, please restart the browser to retry.</p>);
-    }
-    else {
-      return (<button className={styles['request-button']} onClick={() => requestDeviceMotionPermission()}>Request Accelerometer Access</button>);
+    switch (deviceMotionStatus) {
+    case 'denied': return <p className={styles['request-status']}>You have previously denied access to the device motion, please restart the browser to retry.</p>;
+    case 'notDetermined': return <button className={styles['request-button']} onClick={() => requestDeviceMotionPermission().then(setDeviceMotionStatus)}>Request device motion access</button>;
+    default: return <></>;
     }
   };
 
