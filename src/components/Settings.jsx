@@ -88,16 +88,9 @@ export default function Settings({
             <div className={styles['row']}>
               <h2 className={styles['option']}>Roll By</h2>
               <select className={styles['select']} onChange={e => setRollMethod(e.target.value)} value={rollMethod}>
-                { Object.keys(RollMethod).map(v => {
-                  const method = RollMethod[v];
-
-                  if (method === RollMethod.TAP || (hasAccelerometer() && (method === RollMethod.SHAKE || method === RollMethod.TAP_AND_SHAKE))) {
-                    return (<option value={RollMethod[v]} key={v}>{ROLL_METHOD[RollMethod[v]]}</option>);
-                  }
-                  else {
-                    return (<></>);
-                  }
-                }) }
+                { Object.keys(RollMethod).map(v => (
+                  <option value={RollMethod[v]} key={v}>{ROLL_METHOD[RollMethod[v]]}</option>
+                )) }
               </select>
             </div>
             <div className={styles['row']}>
