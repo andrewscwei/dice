@@ -137,7 +137,7 @@ export default class Scene extends PureComponent {
 
   get renderer() {
     if (this._renderer) return this._renderer;
-    this._renderer = window.WebGLRenderingContext ? new THREE.WebGLRenderer({ antialias: true }) : new THREE.CanvasRenderer({ antialias: true });
+    this._renderer = new THREE.WebGLRenderer({ antialias: true });
     this._renderer.shadowMap.enabled = true;
     this._renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this._renderer.setClearColor(0xffffff, 1);
