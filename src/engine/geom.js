@@ -1,62 +1,99 @@
-import CANNON from 'cannon';
 import * as THREE from 'three';
-import makeGeometry from './makeGeometry';
+import CANNON from 'cannon';
 
 export function createShape(vertices, faces, radius) {
-  const newVertices = vertices.map(({ x, y, z }) => new CANNON.Vec3(x * radius, y * radius, z * radius));
-  const newFaces = faces.map(t => t.slice(0, t.length - 1));
+  let cv = new Array(vertices.length);
+  let cf = new Array(faces.length);
 
-  return new CANNON.ConvexPolyhedron(newVertices, newFaces);
-}
-
-export function chamferGeom(vertices, faces, chamfer) {
-  const chamferPoints = [];
-  const chamferFaces = [];
-  const cornerFaces = vertices.map(t => []);
+  for (let i = 0; i < vertices.length; i++) {
+    const v = vertices[i];
+    cv[i] = new CANNON.Vec3(v.x * radius, v.y * radius, v.z * radius);
+  }
 
   for (let i = 0; i < faces.length; i++) {
-    const face = faces[i];
-    const numPoints = face.length - 1;
+    cf[i] = faces[i].slice(0, faces[i].length - 1);
+  }
+
+  return new CANNON.ConvexPolyhedron(cv, cf);
+}
+
+export function makeGeom(vertices, faces, radius, tab, af) {
+  const geom = new THREE.Geometry();
+
+  for (let i = 0; i < vertices.length; i++) {
+    const vertex = vertices[i].multiplyScalar(radius);
+    vertex.index = geom.vertices.push(vertex) - 1;
+  }
+
+  for (let i = 0; i < faces.length; i++) {
+    const ii = faces[i];
+    const fl = ii.length - 1;
+    const aa = Math.PI * 2 / fl;
+
+    for (let j = 0; j < fl - 2; j++) {
+      geom.faces.push(new THREE.Face3(ii[0], ii[j + 1], ii[j + 2], [geom.vertices[ii[0]], geom.vertices[ii[j + 1]], geom.vertices[ii[j + 2]]], 0, ii[fl] + 1));
+      geom.faceVertexUvs[0].push([
+        new THREE.Vector2((Math.cos(af) + 1 + tab) / 2 / (1 + tab), (Math.sin(af) + 1 + tab) / 2 / (1 + tab)),
+        new THREE.Vector2((Math.cos(aa * (j + 1) + af) + 1 + tab) / 2 / (1 + tab), (Math.sin(aa * (j + 1) + af) + 1 + tab) / 2 / (1 + tab)),
+        new THREE.Vector2((Math.cos(aa * (j + 2) + af) + 1 + tab) / 2 / (1 + tab), (Math.sin(aa * (j + 2) + af) + 1 + tab) / 2 / (1 + tab)),
+      ]);
+    }
+  }
+
+  geom.computeFaceNormals();
+  geom.boundingSphere = new THREE.Sphere(new THREE.Vector3(), radius);
+
+  return geom;
+}
+
+export function chamferGeom(vectors, faces, chamfer) {
+  let chamferVectors = [];
+  let chamferFaces = [];
+  let cornerFaces = new Array(vectors.length);
+
+  for (let i = 0; i < vectors.length; i++) {
+    cornerFaces[i] = [];
+  }
+
+  for (let i = 0; i < faces.length; i++) {
+    const ii = faces[i], fl = ii.length - 1;
     const centerPoint = new THREE.Vector3();
-    const newFace = new Array(numPoints);
+    const face = new Array(fl);
 
-    for (let j = 0; j < numPoints; j++) {
-      const pointIdx = face[j];
-      const point = vertices[pointIdx].clone();
-      centerPoint.add(point);
-      cornerFaces[pointIdx].push(newFace[j] = chamferPoints.push(point) - 1);
+    for (let j = 0; j < fl; j++) {
+      const vv = vectors[ii[j]].clone();
+      centerPoint.add(vv);
+      cornerFaces[ii[j]].push(face[j] = chamferVectors.push(vv) - 1);
     }
 
-    centerPoint.divideScalar(numPoints);
+    centerPoint.divideScalar(fl);
 
-    for (let j = 0; j < numPoints; j++) {
-      const point = chamferPoints[newFace[j]];
-      point.subVectors(point, centerPoint).multiplyScalar(chamfer).addVectors(point, centerPoint);
+    for (let j = 0; j < fl; j++) {
+      const vv = chamferVectors[face[j]];
+      vv.subVectors(vv, centerPoint).multiplyScalar(chamfer).addVectors(vv, centerPoint);
     }
 
-    newFace.push(face[numPoints]);
-    chamferFaces.push(newFace);
+    face.push(ii[fl]);
+    chamferFaces.push(face);
   }
 
   for (let i = 0; i < faces.length - 1; i++) {
     for (let j = i + 1; j < faces.length; j++) {
-      const pairs = [];
-      const face = faces[i];
+      let pairs = [];
+      let lastm = -1;
 
-      let tmp = -1;
+      for (let m = 0; m < faces[i].length - 1; m++) {
+        const n = faces[j].indexOf(faces[i][m]);
 
-      for (let k = 0; k < face.length - 1; k++) {
-        const pointIdx = faces[j].indexOf(face[k]);
-
-        if (pointIdx >= 0 && pointIdx < faces[j].length - 1) {
-          if (tmp >= 0 && k != tmp + 1) {
-            pairs.unshift([i, k], [j, pointIdx]);
+        if (n >= 0 && n < faces[j].length - 1) {
+          if (lastm >= 0 && m != lastm + 1) {
+            pairs.unshift([i, m], [j, n]);
           }
           else {
-            pairs.push([i, k], [j, pointIdx]);
+            pairs.push([i, m], [j, n]);
           }
 
-          tmp = k;
+          lastm = m;
         }
       }
 
@@ -73,28 +110,27 @@ export function chamferGeom(vertices, faces, chamfer) {
   }
 
   for (let i = 0; i < cornerFaces.length; i++) {
-    const cornerFace = cornerFaces[i];
-    const face = [cornerFace[0]];
+    let cf = cornerFaces[i];
+    let face = [cf[0]];
+    let count = cf.length - 1;
 
-    let tmp = cornerFace.length - 1;
+    while (count) {
+      for (let m = faces.length; m < chamferFaces.length; m++) {
+        let index = chamferFaces[m].indexOf(face[face.length - 1]);
 
-    while (tmp) {
-      for (let k = faces.length; k < chamferFaces.length; k++) {
-        let pointIdx = chamferFaces[k].indexOf(face[face.length - 1]);
+        if (index >= 0 && index < 4) {
+          if (--index == -1) index = 3;
 
-        if (pointIdx >= 0 && pointIdx < 4) {
-          if (--pointIdx == -1) pointIdx = 3;
+          let next_vertex = chamferFaces[m][index];
 
-          let next_vertex = chamferFaces[k][pointIdx];
-
-          if (cornerFace.indexOf(next_vertex) >= 0) {
+          if (cf.indexOf(next_vertex) >= 0) {
             face.push(next_vertex);
             break;
           }
         }
       }
 
-      --tmp;
+      --count;
     }
 
     face.push(-1);
@@ -102,16 +138,21 @@ export function chamferGeom(vertices, faces, chamfer) {
   }
 
   return {
-    vertices: chamferPoints,
+    vectors: chamferVectors,
     faces: chamferFaces,
   };
 }
 
 export function createGeom(vertices, faces, radius, tab, af, chamfer) {
-  const newVertices = vertices.map(t => (new THREE.Vector3()).fromArray(t).normalize());
-  const cg = chamferGeom(newVertices, faces, chamfer);
-  const geom = makeGeometry(cg.vertices, cg.faces, radius, tab, af);
-  geom.cannonShape = createShape(newVertices, faces, radius);
+  let vectors = new Array(vertices.length);
+
+  for (let i = 0; i < vertices.length; i++) {
+    vectors[i] = (new THREE.Vector3()).fromArray(vertices[i]).normalize();
+  }
+
+  let cg = chamferGeom(vectors, faces, chamfer);
+  let geom = makeGeom(cg.vectors, cg.faces, radius, tab, af);
+  geom.cannonShape = createShape(vectors, faces, radius);
 
   return geom;
 }
