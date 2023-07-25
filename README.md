@@ -16,7 +16,3 @@ $ npm run build
 ```
 
 See `scripts` in `package.json` for additional commands.
-
-## Credits
-
-Based on http://a.teall.info/dice/ by Anton Natarov.
