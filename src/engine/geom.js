@@ -1,5 +1,6 @@
 import CANNON from 'cannon';
 import * as THREE from 'three';
+import makeGeometry from './makeGeometry';
 
 export function createShape(vertices, faces, radius) {
   const newVertices = vertices.map(({ x, y, z }) => new CANNON.Vec3(x * radius, y * radius, z * radius));
@@ -106,39 +107,10 @@ export function chamferGeom(vertices, faces, chamfer) {
   };
 }
 
-export function makeGeom(vertices, faces, radius, tab, af) {
-  const geom = new THREE.Geometry();
-
-  for (let i = 0; i < vertices.length; i++) {
-    const vertex = vertices[i].multiplyScalar(radius);
-    vertex.index = geom.vertices.push(vertex) - 1;
-  }
-
-  for (let i = 0; i < faces.length; i++) {
-    const ii = faces[i];
-    const fl = ii.length - 1;
-    const aa = Math.PI * 2 / fl;
-
-    for (let j = 0; j < fl - 2; j++) {
-      geom.faces.push(new THREE.Face3(ii[0], ii[j + 1], ii[j + 2], [geom.vertices[ii[0]], geom.vertices[ii[j + 1]], geom.vertices[ii[j + 2]]], 0, ii[fl] + 1));
-      geom.faceVertexUvs[0].push([
-        new THREE.Vector2((Math.cos(af) + 1 + tab) / 2 / (1 + tab), (Math.sin(af) + 1 + tab) / 2 / (1 + tab)),
-        new THREE.Vector2((Math.cos(aa * (j + 1) + af) + 1 + tab) / 2 / (1 + tab), (Math.sin(aa * (j + 1) + af) + 1 + tab) / 2 / (1 + tab)),
-        new THREE.Vector2((Math.cos(aa * (j + 2) + af) + 1 + tab) / 2 / (1 + tab), (Math.sin(aa * (j + 2) + af) + 1 + tab) / 2 / (1 + tab)),
-      ]);
-    }
-  }
-
-  geom.computeFaceNormals();
-  geom.boundingSphere = new THREE.Sphere(new THREE.Vector3(), radius);
-
-  return geom;
-}
-
 export function createGeom(vertices, faces, radius, tab, af, chamfer) {
   const newVertices = vertices.map(t => (new THREE.Vector3()).fromArray(t).normalize());
   const cg = chamferGeom(newVertices, faces, chamfer);
-  const geom = makeGeom(cg.vertices, cg.faces, radius, tab, af);
+  const geom = makeGeometry(cg.vertices, cg.faces, radius, tab, af);
   geom.cannonShape = createShape(newVertices, faces, radius);
 
   return geom;
