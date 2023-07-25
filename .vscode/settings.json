@@ -1,4 +1,3 @@
 {
-  "files.trimFinalNewlines": true,
-  "typescript.format.semicolons": "remove"
+  "files.trimFinalNewlines": true
 }
