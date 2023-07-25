@@ -1,16 +1,11 @@
 import CANNON from 'cannon';
 import { Face3, Geometry, Sphere, Vector2, Vector3 } from 'three';
 
-export default function createGeom(vertices, faces, radius, tab, af, chamferMod) {
-  let vectors = new Array(vertices.length);
-
-  for (let i = 0; i < vertices.length; i++) {
-    vectors[i] = (new Vector3()).fromArray(vertices[i]).normalize();
-  }
-
-  let { vectors: cVectors, faces: cFaces } = chamferGeom(vectors, faces, chamferMod);
-  let geom = makeGeom(cVectors, cFaces, radius, tab, af);
-  geom.cannonShape = createShape(vectors, faces, radius);
+export default function createGeom(vectors, faces, radius, tab, af, chamferMod) {
+  const vertices = vectors.map(t => (new Vector3()).fromArray(t).normalize());
+  const { vectors: newVectors, faces: newFaces } = chamferGeom(vertices, faces, chamferMod);
+  const geom = makeGeom(newVectors, newFaces, radius, tab, af);
+  geom.cannonShape = createShape(vertices, faces, radius);
 
   return geom;
 }
@@ -91,10 +86,10 @@ function chamferGeom(vectors, faceDescriptors, mod) {
         if (index >= 0 && index < 4) {
           if (--index == -1) index = 3;
 
-          let next_vertex = newFaces[m][index];
+          const nextVertex = newFaces[m][index];
 
-          if (cf.indexOf(next_vertex) >= 0) {
-            face.push(next_vertex);
+          if (cf.indexOf(nextVertex) >= 0) {
+            face.push(nextVertex);
             break;
           }
         }
