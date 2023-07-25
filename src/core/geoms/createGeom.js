@@ -17,25 +17,17 @@ function chamferGeom(vectors, faceDescriptors, mod) {
 
   for (const face of faceDescriptors) {
     const n = face.length - 1;
-    const centerPoint = new Vector3();
-    const newFace = new Array(n);
     const mat = face[n];
+
+    let newFace = new Array(n);
 
     for (let i = 0; i < n; i++) {
       const vecIdx = face[i];
       const vec = vectors[vecIdx].clone();
       newVectors.push(vec);
 
-      centerPoint.add(vec);
       newFace[i] = newVectors.length - 1;
       tmp[vecIdx].push(newFace[i]);
-    }
-
-    centerPoint.divideScalar(n);
-
-    for (let i = 0; i < n; i++) {
-      const vec = newVectors[newFace[i]];
-      vec.subVectors(vec, centerPoint).multiplyScalar(mod).addVectors(vec, centerPoint);
     }
 
     newFace.push(mat);
@@ -45,20 +37,20 @@ function chamferGeom(vectors, faceDescriptors, mod) {
   for (let i = 0; i < faceDescriptors.length - 1; i++) {
     for (let j = i + 1; j < faceDescriptors.length; j++) {
       let pairs = [];
-      let lastm = -1;
+      let mLast = -1;
 
       for (let m = 0; m < faceDescriptors[i].length - 1; m++) {
         const n = faceDescriptors[j].indexOf(faceDescriptors[i][m]);
 
         if (n >= 0 && n < faceDescriptors[j].length - 1) {
-          if (lastm >= 0 && m != lastm + 1) {
+          if (mLast >= 0 && m != mLast + 1) {
             pairs.unshift([i, m], [j, n]);
           }
           else {
             pairs.push([i, m], [j, n]);
           }
 
-          lastm = m;
+          mLast = m;
         }
       }
 
