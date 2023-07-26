@@ -28,6 +28,5 @@
   ],
   "name": "Dice",
   "orientation": "portrait",
-  "start_url": "index.html",
   "theme_color": "#000000"
 }
