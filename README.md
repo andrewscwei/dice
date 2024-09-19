@@ -1,4 +1,4 @@
-# Dice [![Netlify Status](https://img.shields.io/netlify/d92bf45a-701b-4916-a4e1-de164713955b)](https://app.netlify.com/sites/dice3d/deploys)
+# Dice [![CD](https://github.com/andrewscwei/dice/workflows/CD/badge.svg)](https://github.com/andrewscwei/dice/actions?query=workflow%3ACD)
 
 This is a web-based dice rolling app that uses React, Three and Cannon. Demo is available [here](https://dice.andr.mu).
 
