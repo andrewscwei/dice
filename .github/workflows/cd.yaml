@@ -20,7 +20,7 @@ jobs:
       - name: Deploy to GitHub pages
         uses: andrewscwei/actions/gh-pages-deploy@v2
         with:
-          deploy-path: build
+          deploy-path: public
   notify:
     name: Notify
     needs: [deploy]
